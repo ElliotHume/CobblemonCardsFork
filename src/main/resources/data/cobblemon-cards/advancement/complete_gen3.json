@@ -1,0 +1,23 @@
+{
+  "parent": "cobblemon-cards:root",
+  "display": {
+    "icon": {
+      "id": "cobblemon-cards:booster_pack_gen3"
+    },
+    "title": {
+      "translate": "advancements.cobblemon-cards.complete_gen3.title"
+    },
+    "description": {
+      "translate": "advancements.cobblemon-cards.complete_gen3.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

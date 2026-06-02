@@ -1,0 +1,43 @@
+{
+  "variants": {
+    "facing=north,fill_level=0": { "model": "cobblemon-cards:block/card_cabinet" },
+    "facing=south,fill_level=0": { "model": "cobblemon-cards:block/card_cabinet", "y": 180 },
+    "facing=west,fill_level=0":  { "model": "cobblemon-cards:block/card_cabinet", "y": 270 },
+    "facing=east,fill_level=0":  { "model": "cobblemon-cards:block/card_cabinet", "y": 90 },
+
+    "facing=north,fill_level=1": { "model": "cobblemon-cards:block/card_cabinet_level_1" },
+    "facing=south,fill_level=1": { "model": "cobblemon-cards:block/card_cabinet_level_1", "y": 180 },
+    "facing=west,fill_level=1":  { "model": "cobblemon-cards:block/card_cabinet_level_1", "y": 270 },
+    "facing=east,fill_level=1":  { "model": "cobblemon-cards:block/card_cabinet_level_1", "y": 90 },
+
+    "facing=north,fill_level=2": { "model": "cobblemon-cards:block/card_cabinet_level_2" },
+    "facing=south,fill_level=2": { "model": "cobblemon-cards:block/card_cabinet_level_2", "y": 180 },
+    "facing=west,fill_level=2":  { "model": "cobblemon-cards:block/card_cabinet_level_2", "y": 270 },
+    "facing=east,fill_level=2":  { "model": "cobblemon-cards:block/card_cabinet_level_2", "y": 90 },
+
+    "facing=north,fill_level=3": { "model": "cobblemon-cards:block/card_cabinet_level_3" },
+    "facing=south,fill_level=3": { "model": "cobblemon-cards:block/card_cabinet_level_3", "y": 180 },
+    "facing=west,fill_level=3":  { "model": "cobblemon-cards:block/card_cabinet_level_3", "y": 270 },
+    "facing=east,fill_level=3":  { "model": "cobblemon-cards:block/card_cabinet_level_3", "y": 90 },
+
+    "facing=north,fill_level=4": { "model": "cobblemon-cards:block/card_cabinet_level_4" },
+    "facing=south,fill_level=4": { "model": "cobblemon-cards:block/card_cabinet_level_4", "y": 180 },
+    "facing=west,fill_level=4":  { "model": "cobblemon-cards:block/card_cabinet_level_4", "y": 270 },
+    "facing=east,fill_level=4":  { "model": "cobblemon-cards:block/card_cabinet_level_4", "y": 90 },
+
+    "facing=north,fill_level=5": { "model": "cobblemon-cards:block/card_cabinet_level_5" },
+    "facing=south,fill_level=5": { "model": "cobblemon-cards:block/card_cabinet_level_5", "y": 180 },
+    "facing=west,fill_level=5":  { "model": "cobblemon-cards:block/card_cabinet_level_5", "y": 270 },
+    "facing=east,fill_level=5":  { "model": "cobblemon-cards:block/card_cabinet_level_5", "y": 90 },
+
+    "facing=north,fill_level=6": { "model": "cobblemon-cards:block/card_cabinet_level_6" },
+    "facing=south,fill_level=6": { "model": "cobblemon-cards:block/card_cabinet_level_6", "y": 180 },
+    "facing=west,fill_level=6":  { "model": "cobblemon-cards:block/card_cabinet_level_6", "y": 270 },
+    "facing=east,fill_level=6":  { "model": "cobblemon-cards:block/card_cabinet_level_6", "y": 90 },
+
+    "facing=north,fill_level=7": { "model": "cobblemon-cards:block/card_cabinet_level_7" },
+    "facing=south,fill_level=7": { "model": "cobblemon-cards:block/card_cabinet_level_7", "y": 180 },
+    "facing=west,fill_level=7":  { "model": "cobblemon-cards:block/card_cabinet_level_7", "y": 270 },
+    "facing=east,fill_level=7":  { "model": "cobblemon-cards:block/card_cabinet_level_7", "y": 90 }
+  }
+}

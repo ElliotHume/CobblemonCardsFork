@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GBG",
+    "GGG"
+  ],
+  "key": {
+    "G": { "item": "minecraft:gold_ingot" },
+    "B": { "item": "cobblemon-cards:iron_binder" }
+  },
+  "result": {
+    "id": "cobblemon-cards:gold_binder",
+    "count": 1
+  }
+}

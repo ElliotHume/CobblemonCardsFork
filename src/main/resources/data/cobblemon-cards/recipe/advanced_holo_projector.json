@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "IHI",
+    "DCD"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "item": "cobblemon-cards:card_dust_sack"
+    },
+    "H": {
+      "item": "cobblemon-cards:holo_projector"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:advanced_holo_projector",
+    "count": 1
+  }
+}

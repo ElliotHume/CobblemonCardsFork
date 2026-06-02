@@ -1,0 +1,22 @@
+{
+  "display": {
+    "icon": {
+      "id": "cobblemon-cards:booster_pack"
+    },
+    "title": {
+      "translate": "advancements.cobblemon-cards.root.title"
+    },
+    "description": {
+      "translate": "advancements.cobblemon-cards.root.description"
+    },
+    "background": "minecraft:textures/block/polished_andesite.png",
+    "show_toast": true,
+    "announce_to_chat": false,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

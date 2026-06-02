@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "com.howlite.cobblemoncards.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"ExampleMixin",
+		"ShapedRecipeMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

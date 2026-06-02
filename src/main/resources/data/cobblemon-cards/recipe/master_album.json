@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DDD",
+    "DND",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "minecraft:glass"
+    },
+    "N": {
+      "item": "cobblemon-cards:leather_binder"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:master_album",
+    "count": 1
+  }
+}

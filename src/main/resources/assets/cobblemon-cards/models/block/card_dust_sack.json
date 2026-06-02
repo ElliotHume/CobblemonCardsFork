@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "cobblemon-cards:block/card_dust_sack_side",
+    "down": "cobblemon-cards:block/card_dust_sack_bottom",
+    "up": "cobblemon-cards:block/card_dust_sack_top",
+    "north": "cobblemon-cards:block/card_dust_sack_front",
+    "south": "cobblemon-cards:block/card_dust_sack_side",
+    "west": "cobblemon-cards:block/card_dust_sack_side",
+    "east": "cobblemon-cards:block/card_dust_sack_side"
+  }
+}

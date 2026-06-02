@@ -1,0 +1,32 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ELE",
+    "BDC",
+    "GLG"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:redstone"
+    },
+    "L": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "item": "cobblemon-cards:card_dust_sack"
+    },
+    "B": {
+      "item": "minecraft:chain"
+    },
+    "C": {
+      "item": "minecraft:ink_sac"
+    },
+    "G": {
+      "tag": "minecraft:planks"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:instant_dex",
+    "count": 1
+  }
+}

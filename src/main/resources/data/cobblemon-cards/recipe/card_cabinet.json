@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "CGC",
+    "PPP"
+  ],
+  "key": {
+    "P": {
+      "item": "minecraft:oak_planks"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    },
+    "G": {
+      "item": "cobblemon-cards:master_album"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:card_cabinet",
+    "count": 1
+  }
+}

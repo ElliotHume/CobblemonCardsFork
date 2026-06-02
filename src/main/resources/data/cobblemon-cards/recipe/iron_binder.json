@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IFI",
+    "IBI",
+    "IFI"
+  ],
+  "key": {
+    "I": { "item": "minecraft:iron_ingot" },
+    "F": { "item": "minecraft:iron_ingot" },
+    "B": { "item": "cobblemon-cards:leather_binder" }
+  },
+  "result": {
+    "id": "cobblemon-cards:iron_binder",
+    "count": 1
+  }
+}

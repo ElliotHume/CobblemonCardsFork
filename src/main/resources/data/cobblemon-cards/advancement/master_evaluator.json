@@ -1,0 +1,23 @@
+{
+  "parent": "cobblemon-cards:root",
+  "display": {
+    "icon": {
+      "id": "cobblemon-cards:grading_station_bypass"
+    },
+    "title": {
+      "translate": "advancements.cobblemon-cards.master_evaluator.title"
+    },
+    "description": {
+      "translate": "advancements.cobblemon-cards.master_evaluator.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

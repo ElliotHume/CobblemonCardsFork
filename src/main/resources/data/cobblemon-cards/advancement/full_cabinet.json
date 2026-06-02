@@ -1,0 +1,23 @@
+{
+  "parent": "cobblemon-cards:root",
+  "display": {
+    "icon": {
+      "id": "cobblemon-cards:card_cabinet"
+    },
+    "title": {
+      "translate": "advancements.cobblemon-cards.full_cabinet.title"
+    },
+    "description": {
+      "translate": "advancements.cobblemon-cards.full_cabinet.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

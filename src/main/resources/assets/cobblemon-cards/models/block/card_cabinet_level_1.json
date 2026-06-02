@@ -1,0 +1,6 @@
+{
+  "parent": "cobblemon-cards:block/card_cabinet",
+  "textures": {
+    "1": "cobblemon-cards:block/card_cabinet_front_1"
+  }
+}

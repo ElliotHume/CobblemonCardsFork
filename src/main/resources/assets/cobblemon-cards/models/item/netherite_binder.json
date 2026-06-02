@@ -1,0 +1,7 @@
+{
+  "textures": {
+    "screen": "cobblemon-cards:item/binder_screen",
+    "all": "cobblemon-cards:item/binder_netherite"
+  },
+  "parent": "cobblemon-cards:item/binder_red_model"
+}

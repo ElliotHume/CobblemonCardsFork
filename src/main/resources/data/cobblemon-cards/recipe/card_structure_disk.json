@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IGI",
+    "RCR",
+    "ISI"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "S": {
+      "item": "minecraft:iron_block"
+    },
+    "C": {
+      "item": "cobblemon-cards:card_dust_pouch"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:card_structure_disk",
+    "count": 1
+  }
+}

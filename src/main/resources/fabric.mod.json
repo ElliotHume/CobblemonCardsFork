@@ -1,0 +1,52 @@
+{
+	"schemaVersion": 1,
+	"id": "cobblemon-cards",
+	"version": "${version}",
+	"name": "Cobblemon Cards",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Howlite"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/cobblemon-cards/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.howlite.cobblemoncards.CobblemonCards"
+		],
+		"client": [
+			"com.howlite.cobblemoncards.client.CobblemonCardsClient"
+		],
+		"fabric-datagen": [
+			"com.howlite.cobblemoncards.client.CobblemonCardsDataGenerator"
+		],
+		"jei_mod_plugin": [
+			"com.howlite.cobblemoncards.compat.jei.CardRecyclerJeiPlugin"
+		],
+		"rei_client": [
+			"com.howlite.cobblemoncards.compat.rei.CardRecyclerReiPlugin"
+		],
+		"emi": [
+			"com.howlite.cobblemoncards.compat.emi.CardRecyclerEmiPlugin"
+		]
+	},
+	"mixins": [
+		"cobblemon-cards.mixins.json",
+		{
+			"config": "cobblemon-cards.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.6",
+		"minecraft": "~1.21.1",
+		"java": ">=21",
+		"fabric-api": "*",
+		"fabric-language-kotlin": ">=1.13.0",
+		"cobblemon": ">=1.6.0"
+	}
+}

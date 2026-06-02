@@ -1,0 +1,74 @@
+{
+  "music.battle_necrozma": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cobblemon-cards:music/battle_necrozma",
+        "stream": true
+      }
+    ]
+  },
+  "music.battle_plasma": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cobblemon-cards:music/battle_plasma",
+        "stream": true
+      }
+    ]
+  },
+  "music.battle_zinnia": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cobblemon-cards:music/battle_zinnia",
+        "stream": true
+      }
+    ]
+  },
+  "music.cynthia": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cobblemon-cards:music/cynthia",
+        "stream": true
+      }
+    ]
+  },
+  "music.littleroot": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cobblemon-cards:music/littleroot",
+        "stream": true
+      }
+    ]
+  },
+  "music.route_209": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cobblemon-cards:music/route_209",
+        "stream": true
+      }
+    ]
+  },
+  "music.snowpoint_city": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cobblemon-cards:music/snowpoint_city",
+        "stream": true
+      }
+    ]
+  },
+  "music.soul_heart": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "cobblemon-cards:music/soul_heart",
+        "stream": true
+      }
+    ]
+  }
+}

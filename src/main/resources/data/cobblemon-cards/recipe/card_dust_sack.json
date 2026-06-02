@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HHH",
+    "HHH",
+    "HHH"
+  ],
+  "key": {
+    "H": {
+      "item": "cobblemon-cards:card_dust_pouch"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:card_dust_sack",
+    "count": 1
+  }
+}

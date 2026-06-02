@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "IWI",
+    "STS",
+    "ICI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "S": {
+      "item": "minecraft:copper_ingot"
+    },
+    "C": {
+      "item": "minecraft:redstone_torch"
+    },
+    "W": {
+      "item": "minecraft:redstone_lamp"
+    },
+    "T": {
+      "item": "cobblemon:upgrade"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:card_recycler",
+    "count": 1
+  }
+}

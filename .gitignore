@@ -1,0 +1,45 @@
+# Gradle build and cache files
+.gradle/
+build/
+out/
+classes/
+.gradle/loom-cache/
+
+# Keep the Gradle Wrapper jar so others can build the project
+!gradle/wrapper/gradle-wrapper.jar
+
+# IDEA (IntelliJ)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# Eclipse
+.settings/
+bin/
+.classpath
+.project
+*.launch
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Minecraft Run Directory (contains logs, worlds, configs of test runs)
+run/
+**/run/
+
+# Local backup folders
+backup_entity_icons/
+
+# Java crashes & logging
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr

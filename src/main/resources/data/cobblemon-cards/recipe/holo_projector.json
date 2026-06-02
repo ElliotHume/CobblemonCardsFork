@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "   ",
+    "   ",
+    "IGI"
+  ],
+  "key": {
+    "G": {
+      "item": "cobblemon-cards:card_dust_pouch"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:holo_projector",
+    "count": 1
+  }
+}

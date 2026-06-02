@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "cobblemon-cards:card_dust_sack"
+    }
+  ],
+  "result": {
+    "id": "cobblemon-cards:card_dust_pouch",
+    "count": 9
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "parent": "cobblemon-cards:root",
+  "display": {
+    "icon": {
+      "id": "cobblemon-cards:frame_shiny"
+    },
+    "title": {
+      "translate": "advancements.cobblemon-cards.first_shiny.title"
+    },
+    "description": {
+      "translate": "advancements.cobblemon-cards.first_shiny.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "impossible": {
+      "trigger": "minecraft:impossible"
+    }
+  }
+}

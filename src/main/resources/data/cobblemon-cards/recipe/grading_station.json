@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CSC",
+    "IWI"
+  ],
+  "key": {
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "S": {
+      "item": "minecraft:spyglass"
+    },
+    "C": {
+      "item": "minecraft:glass"
+    },
+    "W": {
+      "item": "cobblemon-cards:card_dust_pouch"
+    }
+  },
+  "result": {
+    "id": "cobblemon-cards:grading_station",
+    "count": 1
+  }
+}

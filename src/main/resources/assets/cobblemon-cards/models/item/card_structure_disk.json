@@ -1,0 +1,6 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "cobblemon-cards:item/card_structure_disk"
+  }
+}
