@@ -98,7 +98,7 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
             // Si le sprite 40x30 par défaut est manquant, on cherche dans le dossier entity_icon (Gen 1-9, format 68x56)
             if (!Minecraft.getInstance().getResourceManager().getResource(pokemonTex).isPresent()) {
                 String baseSpecies = getBaseSpeciesName(resolvedPokemonId);
-                Species species = PokemonSpecies.getByName(sanitizeLookupName(baseSpecies));
+                Species species = com.howlite.cobblemoncards.util.CardUtil.getSpecies(baseSpecies);
                 if (species != null) {
                     String cleanName = sanitizeEntityIconPath(species.getName());
                     String dexString = String.format("%04d", species.getNationalPokedexNumber());
@@ -303,7 +303,50 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
     }
     
     private boolean isCustomNewBackground(String bg) {
-        return bg.equals("mega_energy") || bg.equals("alola_beach") || bg.equals("hisui_ancient") || bg.equals("galar_industrial") || bg.equals("paldea_crystal") || bg.equals("distortion_rift") || bg.equals("dreamscape") || bg.equals("magma_chamber");
+        return bg.equals("mega_energy") || bg.equals("alola_beach") || bg.equals("hisui_ancient") || bg.equals("galar_industrial") || bg.equals("paldea_crystal") || bg.equals("distortion_rift") || bg.equals("dreamscape") || bg.equals("magma_chamber") || bg.equals("stained_glass") || bg.equals("fluid_marble") || bg.equals("fossilized_amber");
+    }
+    
+    private double getMarbleHeight(double u, double v, double time) {
+        double px = u * 4.0;
+        double py = v * 5.0;
+        
+        double qx = Math.sin(px + time * 0.8) + Math.cos(py * 1.5 - time * 0.5);
+        double qy = Math.cos(py + time * 0.6) + Math.sin(px * 1.2 + time * 0.4);
+        
+        double rx = Math.sin(px + 2.5 * qx + time * 1.2) + Math.cos(py + 2.5 * qy - time * 0.9);
+        double ry = Math.cos(py + 2.5 * qy + time * 1.0) + Math.sin(px + 2.5 * qx + time * 0.7);
+        
+        return Math.sin(px + 2.0 * rx) * Math.cos(py + 2.0 * ry) * 0.5 + 0.5;
+    }
+    
+    private double getMagmaHeight(double u, double v, double time) {
+        double scaleX = u * 9.0;
+        double scaleY = v * 11.0;
+        
+        double wobble = Math.sin(scaleX * 1.5 + time * 0.8) * 0.4 + Math.cos(scaleY * 1.5 - time * 0.6) * 0.4;
+        double n1 = Math.sin(scaleX + wobble);
+        double n2 = Math.sin(scaleY + wobble * 0.7);
+        
+        double crack = Math.abs(n1 * n2);
+        return smoothstep(0.0, 0.22, crack);
+    }
+    
+    private double smoothstep(double edge0, double edge1, double x) {
+        double t = Math.max(0.0, Math.min(1.0, (x - edge0) / (edge1 - edge0)));
+        return t * t * (3.0 - 2.0 * t);
+    }
+    
+    private float distToSegment(float px, float py, float ax, float ay, float bx, float by) {
+        float pax = px - ax;
+        float pay = py - ay;
+        float bax = bx - ax;
+        float bay = by - ay;
+        float ba2 = bax * bax + bay * bay;
+        if (ba2 < 1e-6f) return (float) Math.sqrt(pax * pax + pay * pay);
+        float h = Math.max(0.0f, Math.min(1.0f, (pax * bax + pay * bay) / ba2));
+        float dx = pax - bax * h;
+        float dy = pay - bay * h;
+        return (float) Math.sqrt(dx * dx + dy * dy);
     }
     
     private boolean isProceduralBackground(String bg) {
@@ -1283,31 +1326,269 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
                         }
                     }
                     case "magma_chamber" -> {
-                        float wave1 = (float) Math.sin(u * 8.0f - time * 1.5f) * 0.15f;
-                        float wave2 = (float) Math.cos(v * 10.0f + time * 1.2f) * 0.1f;
-                        float wave = wave1 + wave2;
+                        double h_center = getMagmaHeight(u, v, time);
+                        double h_right = getMagmaHeight(u + 0.025, v, time);
+                        double h_down = getMagmaHeight(u, v + 0.025, time);
                         
-                        float rDeep = 0.35f, gDeep = 0.04f, bDeep = 0.02f;
-                        float rLava = 0.95f, gLava = 0.25f, bLava = 0.05f;
-                        float rGold = 1.0f, gGold = 0.85f, bGold = 0.1f;
+                        double gradX = (h_right - h_center) / 0.025;
+                        double gradY = (h_down - h_center) / 0.025;
                         
-                        float val = (float)(Math.sin((u + v) * 6.0f + wave - time * 0.8f) * 0.5f + 0.5f);
-                        float rMix = rDeep * (1.0f - val) + rLava * val;
-                        float gMix = gDeep * (1.0f - val) + gLava * val;
-                        float bMix = bDeep * (1.0f - val) + bLava * val;
+                        double nx = -gradX;
+                        double ny = -gradY;
+                        double nz = 1.0;
+                        double nLen = Math.sqrt(nx*nx + ny*ny + nz*nz);
+                        nx /= nLen;
+                        ny /= nLen;
+                        nz /= nLen;
                         
-                        float goldVeins = Math.max(0.0f, Math.min(1.0f, (val - 0.72f) / 0.23f));
-                        r = rMix * (1.0f - goldVeins * 0.8f) + rGold * goldVeins * 0.8f;
-                        g = gMix * (1.0f - goldVeins * 0.8f) + gGold * goldVeins * 0.8f;
-                        b = bMix * (1.0f - goldVeins * 0.8f) + bGold * goldVeins * 0.8f;
+                        double lx = -0.5 / 1.224744871391589;
+                        double ly = 0.5 / 1.224744871391589;
+                        double lz = 1.0 / 1.224744871391589;
                         
-                        double emberSeed = ix * 23.31 + Math.floor(iy + time * 12.0) * 53.41;
+                        double hx = lx;
+                        double hy = ly;
+                        double hz = lz + 1.0;
+                        double hLen = Math.sqrt(hx*hx + hy*hy + hz*hz);
+                        hx /= hLen;
+                        hy /= hLen;
+                        hz /= hLen;
+                        
+                        double dot = nx*hx + ny*hy + nz*hz;
+                        double spec = dot > 0.0 ? Math.pow(dot, 12.0) : 0.0;
+                        
+                        double rObsidian = 0.06, gObsidian = 0.05, bObsidian = 0.08;
+                        
+                        double distFromCenter = Math.sqrt((u - 0.5) * (u - 0.5) + (v - 0.5) * (v - 0.5));
+                        double pulse = Math.sin(time * 2.0 - distFromCenter * 4.0) * 0.5 + 0.5;
+                        
+                        double rMagma = 0.65 * (1.0 - pulse) + 1.0 * pulse;
+                        double gMagma = 0.03 * (1.0 - pulse) + 0.80 * pulse;
+                        double bMagma = 0.0 * (1.0 - pulse) + 0.15 * pulse;
+                        
+                        double rBase = rMagma * (1.0 - h_center) + rObsidian * h_center;
+                        double gBase = gMagma * (1.0 - h_center) + gObsidian * h_center;
+                        double bBase = bMagma * (1.0 - h_center) + bObsidian * h_center;
+                        
+                        double rSpec = 1.0, gSpec = 0.85, bSpec = 0.9;
+                        
+                        r = (float) (rBase + rSpec * spec * 0.45 * h_center);
+                        g = (float) (gBase + gSpec * spec * 0.45 * h_center);
+                        b = (float) (bBase + bSpec * spec * 0.45 * h_center);
+                        
+                        double drift = Math.sin(v * 4.0 + time * 1.0) * 2.0;
+                        double virtualX = ix + drift;
+                        double virtualY = iy + time * 3.0;
+                        
+                        double emberSeed = virtualX * 23.31 + Math.floor(virtualY) * 53.41;
                         double emberHash = Math.abs(Math.sin(emberSeed));
                         emberHash = emberHash - Math.floor(emberHash);
-                        if (emberHash > 0.978) {
+                        if (emberHash > 0.994) {
+                            r = (float) (r * 0.2 + 1.0 * 0.8);
+                            g = (float) (g * 0.2 + 0.65 * 0.8);
+                            b = (float) (b * 0.2 + 0.15 * 0.8);
+                        }
+                    }
+                    case "stained_glass" -> {
+                        float dx = u - 0.5f;
+                        float dy = (v - 0.5f) * 1.3f;
+                        float radius = (float) Math.sqrt(dx * dx + dy * dy);
+                        float theta = (float) Math.atan2(dy, dx);
+                        if (theta < 0.0f) theta += 2.0f * (float)Math.PI;
+
+                        float r1 = 0.12f;
+                        float r2 = 0.26f;
+                        float r3 = 0.42f;
+                        float r4 = 0.58f;
+
+                        float thicknessVal = 0.012f;
+                        boolean isBorder = Math.abs(radius - r1) < thicknessVal || 
+                                           Math.abs(radius - r2) < thicknessVal || 
+                                           Math.abs(radius - r3) < thicknessVal || 
+                                           Math.abs(radius - r4) < thicknessVal;
+
+                        int ring = 0;
+                        int sectors = 0;
+
+                        if (radius < r1) {
+                            ring = 0;
+                            sectors = 6;
+                        } else if (radius < r2) {
+                            ring = 1;
+                            sectors = 8;
+                        } else if (radius < r3) {
+                            ring = 2;
+                            sectors = 12;
+                        } else {
+                            ring = 3;
+                            sectors = 16;
+                        }
+
+                        float sectorAngle = (2.0f * (float)Math.PI) / (float) sectors;
+                        float sectorIdx = (float) Math.floor(theta / sectorAngle);
+                        float localTheta = theta - sectorAngle * (float) Math.floor(theta / sectorAngle);
+
+                        if (radius >= r1) {
+                            float borderDist = Math.min(localTheta, sectorAngle - localTheta) * radius;
+                            if (borderDist < thicknessVal) {
+                                isBorder = true;
+                            }
+                        }
+
+                        if (isBorder) {
+                            r = 0.06f; g = 0.06f; b = 0.08f;
+                        } else {
+                            double hashInput = ring * 12.9898 + sectorIdx * 78.233;
+                            double cellHashVal = Math.abs(Math.sin(hashInput)) * 43758.5453;
+                            float cellHash = (float) (cellHashVal - Math.floor(cellHashVal));
+
+                            float rA, gA, bA, rB, gB, bB;
+                            if (cellHash < 0.2f) {
+                                rA = 0.8f;  gA = 0.05f; bA = 0.15f;
+                                rB = 0.95f; gB = 0.35f; bB = 0.3f;
+                            } else if (cellHash < 0.4f) {
+                                rA = 0.05f; gA = 0.25f; bA = 0.8f;
+                                rB = 0.15f; gB = 0.6f;  bB = 0.95f;
+                            } else if (cellHash < 0.6f) {
+                                rA = 0.45f; gA = 0.05f; bA = 0.65f;
+                                rB = 0.7f;  gB = 0.25f; bB = 0.9f;
+                            } else if (cellHash < 0.8f) {
+                                rA = 0.05f; gA = 0.65f; bA = 0.25f;
+                                rB = 0.35f; gB = 0.9f;  bB = 0.55f;
+                            } else {
+                                rA = 0.9f;  gA = 0.55f; bA = 0.05f;
+                                rB = 1.0f;  gB = 0.82f; bB = 0.25f;
+                            }
+
+                            float rayTheta = theta - time * 0.4f;
+                            float ray = (float)Math.sin(rayTheta * 3.0f) * 0.5f + 0.5f;
+                            float lightIntensity = (float)(ray * Math.exp(-Math.pow(radius / 0.55f, 2.0f)));
+
+                            float glassNoise = (float)(Math.sin(u * 220.0f) * Math.cos(v * 190.0f) * 0.08f + Math.sin(u * 90.0f + v * 120.0f) * 0.04f);
+
+                            float tBlend = (float)(0.5f + 0.5f * Math.sin(time * 0.8f + cellHash * 10.0f));
+                            float rGlass = rA * (1.0f - tBlend) + rB * tBlend + glassNoise;
+                            float gGlass = gA * (1.0f - tBlend) + gB * tBlend + glassNoise;
+                            float bGlass = bA * (1.0f - tBlend) + bB * tBlend + glassNoise;
+
+                            float rGoldLight = 1.0f, gGoldLight = 0.88f, bGoldLight = 0.45f;
+                            float rGlassFinal = rGlass * (1.0f - lightIntensity * 0.55f) + rGoldLight * (lightIntensity * 0.55f);
+                            float gGlassFinal = gGlass * (1.0f - lightIntensity * 0.55f) + gGoldLight * (lightIntensity * 0.55f);
+                            float bGlassFinal = bGlass * (1.0f - lightIntensity * 0.55f) + bGoldLight * (lightIntensity * 0.55f);
+
+                            float ringMinDist = radius < r1 ? r1 - radius : 
+                                                (radius < r2 ? Math.min(radius - r1, r2 - radius) : 
+                                                (radius < r3 ? Math.min(radius - r2, r3 - radius) : 
+                                                               Math.min(radius - r3, r4 - radius)));
+                            float sectorMinDist = radius < r1 ? radius : Math.min(localTheta, sectorAngle - localTheta) * radius;
+                            float edgeDist = Math.min(ringMinDist, sectorMinDist);
+                            
+                            float tBevel = Math.max(0.0f, Math.min(1.0f, (edgeDist - 0.0f) / 0.08f));
+                            float bevel = tBevel * tBevel * (3.0f - 2.0f * tBevel);
+
+                            r = rGlassFinal * (0.5f + 0.5f * bevel);
+                            g = gGlassFinal * (0.5f + 0.5f * bevel);
+                            b = bGlassFinal * (0.5f + 0.5f * bevel);
+                        }
+                    }
+                    case "fluid_marble" -> {
+                        double h_center = getMarbleHeight(u, v, time);
+                        double h_right = getMarbleHeight(u + 0.025, v, time);
+                        double h_down = getMarbleHeight(u, v + 0.025, time);
+                        
+                        double gradX = (h_right - h_center) / 0.025;
+                        double gradY = (h_down - h_center) / 0.025;
+                        
+                        double nx = -gradX;
+                        double ny = -gradY;
+                        double nz = 1.0;
+                        double nLen = Math.sqrt(nx*nx + ny*ny + nz*nz);
+                        nx /= nLen;
+                        ny /= nLen;
+                        nz /= nLen;
+                        
+                        double lx = -0.5 / 1.224744871391589;
+                        double ly = 0.5 / 1.224744871391589;
+                        double lz = 1.0 / 1.224744871391589;
+                        
+                        double hx = lx;
+                        double hy = ly;
+                        double hz = lz + 1.0;
+                        double hLen = Math.sqrt(hx*hx + hy*hy + hz*hz);
+                        hx /= hLen;
+                        hy /= hLen;
+                        hz /= hLen;
+                        
+                        double dot = nx*hx + ny*hy + nz*hz;
+                        double spec = dot > 0.0 ? Math.pow(dot, 16.0) : 0.0;
+                        
+                        double rBase, gBase, bBase;
+                        if (h_center < 0.35) {
+                            double t = smoothstep(0.0, 0.35, h_center);
+                            rBase = 0.08 * (1.0 - t) + 0.85 * t;
+                            gBase = 0.06 * (1.0 - t) + 0.08 * t;
+                            bBase = 0.38 * (1.0 - t) + 0.62 * t;
+                        } else if (h_center < 0.65) {
+                            double t = smoothstep(0.35, 0.65, h_center);
+                            rBase = 0.85 * (1.0 - t) + 1.0 * t;
+                            gBase = 0.08 * (1.0 - t) + 0.82 * t;
+                            bBase = 0.62 * (1.0 - t) + 0.35 * t;
+                        } else {
+                            double t = smoothstep(0.65, 1.0, h_center);
+                            rBase = 1.0 * (1.0 - t) + 0.08 * t;
+                            gBase = 0.82 * (1.0 - t) + 0.06 * t;
+                            bBase = 0.35 * (1.0 - t) + 0.38 * t;
+                        }
+                        
+                        r = (float) (rBase + 1.0 * spec * 0.6);
+                        g = (float) (gBase + 0.92 * spec * 0.6);
+                        b = (float) (bBase + 0.75 * spec * 0.6);
+                    }
+                    case "fossilized_amber" -> {
+                        float rBack = 0.98f * (1.0f - v) + 0.72f * v;
+                        float gBack = 0.72f * (1.0f - v) + 0.28f * v;
+                        float bBack = 0.12f * (1.0f - v) + 0.02f * v;
+                        
+                        float shimmer = (float) (Math.sin(u * 5.0f - time * 0.5f) * Math.cos(v * 4.0f + time * 0.3f) * 0.5f + 0.5f);
+                        r = rBack * (1.0f - shimmer * 0.35f) + 0.85f * shimmer * 0.35f;
+                        g = gBack * (1.0f - shimmer * 0.35f) + 0.48f * shimmer * 0.35f;
+                        b = bBack * (1.0f - shimmer * 0.35f) + 0.05f * shimmer * 0.35f;
+                        
+                        float hX = (float) (0.5f + Math.sin(v * 8.0f + time * 0.9f) * 0.08f);
+                        float hX2 = (float) (0.5f - Math.sin(v * 8.0f + time * 0.9f) * 0.08f);
+                        float distHelix1 = Math.abs(u - hX);
+                        float distHelix2 = Math.abs(u - hX2);
+                        
+                        if ((distHelix1 < 0.015f || distHelix2 < 0.015f) && v > 0.15f && v < 0.85f) {
                             r = r * 0.25f + 1.0f * 0.75f;
-                            g = g * 0.25f + 0.75f * 0.75f;
-                            b = b * 0.25f + 0.2f * 0.75f;
+                            g = g * 0.25f + 0.88f * 0.75f;
+                            b = b * 0.25f + 0.4f * 0.75f;
+                        }
+                        
+                        float crossInterval = (v * 10.0f + time * 0.15f) % 1.0f;
+                        if (crossInterval < 0.08f && u > Math.min(hX, hX2) && u < Math.max(hX, hX2) && v > 0.15f && v < 0.85f) {
+                            r = r * 0.4f + 1.0f * 0.6f;
+                            g = g * 0.4f + 0.88f * 0.6f;
+                            b = b * 0.4f + 0.4f * 0.6f;
+                        }
+                        
+                        double debrisSeed = ix * 37.71 + Math.floor(iy - time * 4.0) * 19.53;
+                        double debrisHash = Math.abs(Math.sin(debrisSeed));
+                        debrisHash = debrisHash - Math.floor(debrisHash);
+                        if (debrisHash > 0.982) {
+                            r = r * 0.2f + 1.0f * 0.8f;
+                            g = g * 0.2f + 0.95f * 0.8f;
+                            b = b * 0.2f + 0.6f * 0.8f;
+                        }
+                        
+                        float crack1 = (float) Math.abs(Math.sin(u * 16.0f + v * 12.0f + Math.cos(time * 0.2f) * 0.5f));
+                        float crack2 = (float) Math.abs(Math.cos(u * 8.0f - v * 20.0f + Math.sin(time * 0.3f) * 0.4f));
+                        float minCrack = Math.min(crack1, crack2);
+                        if (minCrack < 0.012f) {
+                            float glint = (float) (Math.sin(time * 2.0f + u * 10.0f) * 0.5f + 0.5f);
+                            float factor = (1.0f - minCrack / 0.012f) * glint * 0.65f;
+                            r = r * (1.0f - factor) + 1.0f * factor;
+                            g = g * (1.0f - factor) + 0.88f * factor;
+                            b = b * (1.0f - factor) + 0.45f * factor;
                         }
                     }
                 }
@@ -2762,6 +3043,9 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
             case "distortion_rift" -> 30;
             case "dreamscape" -> 31;
             case "magma_chamber" -> 32;
+            case "stained_glass" -> 33;
+            case "fluid_marble" -> 34;
+            case "fossilized_amber" -> 35;
             default -> 0;
         };
     }

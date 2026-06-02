@@ -34,7 +34,7 @@ public class AdvancedHoloProjectorScreen extends AbstractContainerScreen<Advance
         this.toggleNameButton = Button.builder(Component.translatable("gui.cobblemon-cards.advanced_holo_projector.toggle_name"), button -> {
             ClientPlayNetworking.send(new ToggleProjectorNamePayload());
         })
-        .bounds(x + this.imageWidth - 85, y + 4, 78, 12)
+        .bounds(x + this.imageWidth - 85, y - 15, 78, 12)
         .build();
 
         this.addRenderableWidget(this.toggleNameButton);

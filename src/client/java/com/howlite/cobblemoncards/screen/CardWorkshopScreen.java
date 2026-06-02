@@ -40,7 +40,8 @@ public class CardWorkshopScreen extends Screen {
             "cherry_blossom_wind", "cyber_city", "ancient_ruins", "frozen_tundra",
             "rainbow_highway", "plasma_storm", "galactic_supernova", "water2", 
             "mega_energy", "alola_beach", "hisui_ancient", "galar_industrial", "paldea_crystal",
-            "distortion_rift", "dreamscape", "magma_chamber", "none"
+            "distortion_rift", "dreamscape", "magma_chamber", 
+            "stained_glass", "fluid_marble", "fossilized_amber", "none"
     );
 
     private static final List<String> EFFECTS = Arrays.asList(

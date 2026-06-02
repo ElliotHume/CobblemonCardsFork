@@ -187,10 +187,7 @@ public class CardAdvancementManager {
                 // Build G1-G9 and National requirements based on Cobblemon registry
                 try {
                     String cleanId = id.replace("’", "").replace("'", "");
-                    Species species = PokemonSpecies.getByName(cleanId);
-                    if (species == null) {
-                        species = PokemonSpecies.getByName(id);
-                    }
+                    Species species = com.howlite.cobblemoncards.util.CardUtil.getSpecies(cleanId);
 
                     if (species != null) {
                         int dexNum = species.getNationalPokedexNumber();

@@ -17,6 +17,13 @@ out vec4 fragColor;
 
 // ===== UTILITAIRES =====
 
+float line_segment_dist(vec2 p, vec2 a, vec2 b) {
+    vec2 pa = p - a;
+    vec2 ba = b - a;
+    float h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
+    return length(pa - ba * h);
+}
+
 // Hash pseudo-aléatoire (pattern standard GPU)
 float hash21(float x, float y) {
     return fract(abs(sin(x * 12.9898 + y * 78.233)) * 43758.5453);
@@ -846,26 +853,235 @@ vec3 bg_dreamscape(float u, float v, int ix, int iy, float time) {
     return color;
 }
 
-// 32: magma_chamber — Molten gold and deep vermilion lava currents with rising heat embers
+// 32: magma_chamber — Tectonic obsidian plates with beveled specular highlights, pulsing magma fissures, and drifting thermal sparks
+float get_magma_height(float u, float v, float time) {
+    float scaleX = u * 9.0;
+    float scaleY = v * 11.0;
+    
+    float wobble = sin(scaleX * 1.5 + time * 0.8) * 0.4 + cos(scaleY * 1.5 - time * 0.6) * 0.4;
+    float n1 = sin(scaleX + wobble);
+    float n2 = sin(scaleY + wobble * 0.7);
+    
+    float crack = abs(n1 * n2);
+    return smoothstep(0.0, 0.22, crack);
+}
+
 vec3 bg_magma_chamber(float u, float v, int ix, int iy, float time) {
-    float wave1 = sin(u * 8.0 - time * 1.5) * 0.15;
-    float wave2 = cos(v * 10.0 + time * 1.2) * 0.1;
-    float wave = wave1 + wave2;
+    float h_center = get_magma_height(u, v, time);
+    float h_right = get_magma_height(u + 0.025, v, time);
+    float h_down = get_magma_height(u, v + 0.025, time);
     
-    vec3 deepMagma = vec3(0.35, 0.04, 0.02);
-    vec3 brightLava = vec3(0.95, 0.25, 0.05);
-    vec3 liquidGold = vec3(1.0, 0.85, 0.1);
+    vec2 grad = vec2(h_right - h_center, h_down - h_center) / 0.025;
+    vec3 normal = normalize(vec3(-grad.x, -grad.y, 1.0));
     
-    float val = sin((u + v) * 6.0 + wave - time * 0.8) * 0.5 + 0.5;
-    vec3 color = mix(deepMagma, brightLava, val);
-    float goldVeins = smoothstep(0.72, 0.95, val);
-    color = mix(color, liquidGold, goldVeins * 0.8);
+    vec3 lightDir = normalize(vec3(-0.5, 0.5, 1.0));
+    vec3 viewDir = vec3(0.0, 0.0, 1.0);
+    vec3 halfDir = normalize(lightDir + viewDir);
     
-    float emberSeed = float(ix) * 23.31 + floor(float(iy) + time * 12.0) * 53.41;
-    float emberHash = fract(abs(sin(emberSeed)) * 43758.5453);
-    if (emberHash > 0.978) {
-        color = mix(color, vec3(1.0, 0.75, 0.2), 0.75);
+    float spec = pow(max(dot(normal, halfDir), 0.0), 12.0);
+    
+    vec3 obsidianColor = vec3(0.06, 0.05, 0.08);
+    
+    float distFromCenter = length(vec2(u - 0.5, v - 0.5));
+    float pulse = sin(time * 2.0 - distFromCenter * 4.0) * 0.5 + 0.5;
+    vec3 magmaColor = mix(vec3(0.65, 0.03, 0.0), vec3(1.0, 0.80, 0.15), 0.2 + 0.8 * pulse);
+    
+    vec3 baseColor = mix(magmaColor, obsidianColor, h_center);
+    
+    vec3 specColor = vec3(1.0, 0.85, 0.9);
+    vec3 color = baseColor + specColor * spec * 0.45 * h_center;
+    
+    float drift = sin(v * 4.0 + time * 1.0) * 2.0;
+    float virtualX = float(ix) + drift;
+    float virtualY = float(iy) + time * 3.0;
+    
+    float emberSeed = virtualX * 23.31 + floor(virtualY) * 53.41;
+    float emberHash = hash11(emberSeed);
+    if (emberHash > 0.994) {
+        color = mix(color, vec3(1.0, 0.65, 0.15), 0.8);
     }
+    
+    return color;
+}
+
+// 33: stained_glass — Gothic concentric rose window patterns with jewel colors, lead lines, and light rays
+vec3 bg_stained_glass(float u, float v, int ix, int iy, float time) {
+    float dx = u - 0.5;
+    float dy = (v - 0.5) * 1.3;
+    float radius = sqrt(dx * dx + dy * dy);
+    float theta = atan(dy, dx);
+    if (theta < 0.0) theta += 6.2831853;
+    
+    float r1 = 0.12;
+    float r2 = 0.26;
+    float r3 = 0.42;
+    float r4 = 0.58;
+    
+    float thickness = 0.012;
+    bool isBorder = abs(radius - r1) < thickness || 
+                    abs(radius - r2) < thickness || 
+                    abs(radius - r3) < thickness || 
+                    abs(radius - r4) < thickness;
+                    
+    int ring = 0;
+    int sectors = 0;
+    
+    if (radius < r1) {
+        ring = 0;
+        sectors = 6;
+    } else if (radius < r2) {
+        ring = 1;
+        sectors = 8;
+    } else if (radius < r3) {
+        ring = 2;
+        sectors = 12;
+    } else {
+        ring = 3;
+        sectors = 16;
+    }
+    
+    float sectorAngle = 6.2831853 / float(sectors);
+    float sectorIdx = floor(theta / sectorAngle);
+    float localTheta = mod(theta, sectorAngle);
+    
+    if (radius >= r1) {
+        float borderDist = min(localTheta, sectorAngle - localTheta) * radius;
+        if (borderDist < thickness) {
+            isBorder = true;
+        }
+    }
+    
+    if (isBorder) {
+        return vec3(0.06, 0.06, 0.08);
+    }
+    
+    float cellHash = hash21(float(ring), sectorIdx);
+    
+    vec3 colorA, colorB;
+    if (cellHash < 0.2) {
+        colorA = vec3(0.8, 0.05, 0.15); // Ruby Red
+        colorB = vec3(0.95, 0.35, 0.3);
+    } else if (cellHash < 0.4) {
+        colorA = vec3(0.05, 0.25, 0.8); // Sapphire Blue
+        colorB = vec3(0.15, 0.6, 0.95);
+    } else if (cellHash < 0.6) {
+        colorA = vec3(0.45, 0.05, 0.65); // Amethyst Violet
+        colorB = vec3(0.7, 0.25, 0.9);
+    } else if (cellHash < 0.8) {
+        colorA = vec3(0.05, 0.65, 0.25); // Emerald Green
+        colorB = vec3(0.35, 0.9, 0.55);
+    } else {
+        colorA = vec3(0.9, 0.55, 0.05); // Gold/Amber
+        colorB = vec3(1.0, 0.82, 0.25);
+    }
+    
+    float rayTheta = theta - time * 0.4;
+    float ray = sin(rayTheta * 3.0) * 0.5 + 0.5;
+    float lightIntensity = ray * exp(-pow(radius / 0.55, 2.0));
+    
+    float glassNoise = sin(u * 220.0) * cos(v * 190.0) * 0.08 + sin(u * 90.0 + v * 120.0) * 0.04;
+    
+    vec3 glassColor = mix(colorA, colorB, 0.5 + 0.5 * sin(time * 0.8 + cellHash * 10.0));
+    glassColor += vec3(glassNoise);
+    
+    vec3 goldLight = vec3(1.0, 0.88, 0.45);
+    glassColor = mix(glassColor, goldLight, lightIntensity * 0.55);
+    
+    float ringMinDist = radius < r1 ? r1 - radius : 
+                        (radius < r2 ? min(radius - r1, r2 - radius) : 
+                        (radius < r3 ? min(radius - r2, r3 - radius) : 
+                                       min(radius - r3, r4 - radius)));
+    float sectorMinDist = radius < r1 ? radius : min(localTheta, sectorAngle - localTheta) * radius;
+    float edgeDist = min(ringMinDist, sectorMinDist);
+    float bevel = smoothstep(0.0, 0.08, edgeDist);
+    
+    return glassColor * (0.5 + 0.5 * bevel);
+}
+
+// 34: fluid_marble — Swirling flows of premium liquid acrylic paint
+float get_marble_height(float u, float v, float time) {
+    float px = u * 4.0;
+    float py = v * 5.0;
+    
+    float qx = sin(px + time * 0.8) + cos(py * 1.5 - time * 0.5);
+    float qy = cos(py + time * 0.6) + sin(px * 1.2 + time * 0.4);
+    
+    float rx = sin(px + 2.5 * qx + time * 1.2) + cos(py + 2.5 * qy - time * 0.9);
+    float ry = cos(py + 2.5 * qy + time * 1.0) + sin(px + 2.5 * qx + time * 0.7);
+    
+    return sin(px + 2.0 * rx) * cos(py + 2.0 * ry) * 0.5 + 0.5;
+}
+
+vec3 bg_fluid_marble(float u, float v, int ix, int iy, float time) {
+    float h_center = get_marble_height(u, v, time);
+    float h_right = get_marble_height(u + 0.025, v, time);
+    float h_down = get_marble_height(u, v + 0.025, time);
+    
+    vec2 grad = vec2(h_right - h_center, h_down - h_center) / 0.025;
+    vec3 normal = normalize(vec3(-grad.x, -grad.y, 1.0));
+    
+    vec3 lightDir = normalize(vec3(-0.5, 0.5, 1.0));
+    vec3 viewDir = vec3(0.0, 0.0, 1.0);
+    vec3 halfDir = normalize(lightDir + viewDir);
+    
+    float spec = pow(max(dot(normal, halfDir), 0.0), 16.0);
+    
+    vec3 indigo = vec3(0.08, 0.06, 0.38);
+    vec3 magenta = vec3(0.85, 0.08, 0.62);
+    vec3 gold = vec3(1.0, 0.82, 0.35);
+    
+    vec3 baseColor;
+    if (h_center < 0.35) {
+        float t = smoothstep(0.0, 0.35, h_center);
+        baseColor = mix(indigo, magenta, t);
+    } else if (h_center < 0.65) {
+        float t = smoothstep(0.35, 0.65, h_center);
+        baseColor = mix(magenta, gold, t);
+    } else {
+        float t = smoothstep(0.65, 1.0, h_center);
+        baseColor = mix(gold, indigo, t);
+    }
+    
+    vec3 specColor = vec3(1.0, 0.92, 0.75);
+    vec3 finalColor = baseColor + specColor * spec * 0.6;
+    
+    return finalColor;
+}
+
+// 35: fossilized_amber — Honey-golden translucent amber with suspended DNA spirals and glinting cracks
+vec3 bg_fossilized_amber(float u, float v, int ix, int iy, float time) {
+    vec3 amberBack = mix(vec3(0.98, 0.72, 0.12), vec3(0.72, 0.28, 0.02), v);
+    float shimmer = sin(u * 5.0 - time * 0.5) * cos(v * 4.0 + time * 0.3) * 0.5 + 0.5;
+    vec3 color = mix(amberBack, vec3(0.85, 0.48, 0.05), shimmer * 0.35);
+    
+    float hX = 0.5 + sin(v * 8.0 + time * 0.9) * 0.08;
+    float hX2 = 0.5 - sin(v * 8.0 + time * 0.9) * 0.08;
+    float distHelix1 = abs(u - hX);
+    float distHelix2 = abs(u - hX2);
+    
+    if ((distHelix1 < 0.015 || distHelix2 < 0.015) && v > 0.15 && v < 0.85) {
+        color = mix(color, vec3(1.0, 0.88, 0.4), 0.75);
+    }
+    
+    float crossInterval = fract(v * 10.0 + time * 0.15);
+    if (crossInterval < 0.08 && u > min(hX, hX2) && u < max(hX, hX2) && v > 0.15 && v < 0.85) {
+        color = mix(color, vec3(1.0, 0.88, 0.4), 0.6);
+    }
+    
+    float debrisSeed = float(ix) * 37.71 + floor(float(iy) - time * 4.0) * 19.53;
+    float debrisHash = hash11(debrisSeed);
+    if (debrisHash > 0.982) {
+        color = mix(color, vec3(1.0, 0.95, 0.6), 0.8);
+    }
+    
+    float crack1 = abs(sin(u * 16.0 + v * 12.0 + cos(time * 0.2) * 0.5));
+    float crack2 = abs(cos(u * 8.0 - v * 20.0 + sin(time * 0.3) * 0.4));
+    float minCrack = min(crack1, crack2);
+    if (minCrack < 0.012) {
+        float glint = sin(time * 2.0 + u * 10.0) * 0.5 + 0.5;
+        color = mix(color, vec3(1.0, 0.88, 0.45), (1.0 - minCrack / 0.012) * glint * 0.65);
+    }
+    
     return color;
 }
 
@@ -923,6 +1139,9 @@ void main() {
     else if (effectId == 30) color = bg_distortion_rift(u, v, ix, iy, time);
     else if (effectId == 31) color = bg_dreamscape(u, v, ix, iy, time);
     else if (effectId == 32) color = bg_magma_chamber(u, v, ix, iy, time);
+    else if (effectId == 33) color = bg_stained_glass(u, v, ix, iy, time);
+    else if (effectId == 34) color = bg_fluid_marble(u, v, ix, iy, time);
+    else if (effectId == 35) color = bg_fossilized_amber(u, v, ix, iy, time);
 
     fragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
 }

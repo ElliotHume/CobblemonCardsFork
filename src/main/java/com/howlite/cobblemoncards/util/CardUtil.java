@@ -121,4 +121,67 @@ public class CardUtil {
         // Default fallback beautiful blue sky background
         return "skybg2";
     }
+
+    /**
+     * Récupère une espèce Cobblemon de manière robuste en essayant plusieurs formats de nettoyage.
+     * Indispensable pour des espèces comme "Iron Leaves" -> "ironleaves", "Mr. Rime" -> "mrrime", etc.
+     */
+    public static com.cobblemon.mod.common.pokemon.Species getSpecies(String name) {
+        if (name == null || name.isEmpty()) {
+            return null;
+        }
+
+        // 1. Essai direct (nom original)
+        if (isValidPath(name)) {
+            try {
+                com.cobblemon.mod.common.pokemon.Species species = com.cobblemon.mod.common.api.pokemon.PokemonSpecies.getByName(name);
+                if (species != null) return species;
+            } catch (Exception ignored) {}
+        }
+
+        // 2. Essai en minuscule
+        String lower = name.toLowerCase();
+        if (isValidPath(lower)) {
+            try {
+                com.cobblemon.mod.common.pokemon.Species species = com.cobblemon.mod.common.api.pokemon.PokemonSpecies.getByName(lower);
+                if (species != null) return species;
+            } catch (Exception ignored) {}
+        }
+
+        // 3. Essai sans aucun caractère spécial (espaces, tirets, points, tirets bas)
+        String clean = lower.replace(" ", "")
+                            .replace("-", "")
+                            .replace("_", "")
+                            .replace(".", "");
+        if (isValidPath(clean)) {
+            try {
+                com.cobblemon.mod.common.pokemon.Species species = com.cobblemon.mod.common.api.pokemon.PokemonSpecies.getByName(clean);
+                if (species != null) return species;
+            } catch (Exception ignored) {}
+        }
+
+        // 4. Essai snake_case classique (espaces/tirets/points remplacés par des tirets bas)
+        String snake = lower.replace(" ", "_")
+                            .replace("-", "_")
+                            .replace(".", "");
+        if (isValidPath(snake)) {
+            try {
+                com.cobblemon.mod.common.pokemon.Species species = com.cobblemon.mod.common.api.pokemon.PokemonSpecies.getByName(snake);
+                if (species != null) return species;
+            } catch (Exception ignored) {}
+        }
+
+        return null;
+    }
+
+    private static boolean isValidPath(String path) {
+        if (path == null) return false;
+        for (int i = 0; i < path.length(); i++) {
+            char c = path.charAt(i);
+            if (!(c >= 'a' && c <= 'z' || c >= '0' && c <= '9' || c == '_' || c == '-' || c == '.' || c == '/')) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

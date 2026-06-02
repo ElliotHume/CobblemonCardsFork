@@ -312,10 +312,7 @@ public class CardDexScreen extends Screen {
         }
         try {
             String cleanId = baseName.replace("’", "").replace("'", "");
-            Species species = PokemonSpecies.getByName(cleanId);
-            if (species == null) {
-                species = PokemonSpecies.getByName(baseName);
-            }
+            Species species = com.howlite.cobblemoncards.util.CardUtil.getSpecies(cleanId);
             if (species != null) {
                 return species.getNationalPokedexNumber();
             }
@@ -357,10 +354,7 @@ public class CardDexScreen extends Screen {
             for (String id : allPokemon) {
                 try {
                     String cleanId = id.replace("’", "").replace("'", "");
-                    Species species = PokemonSpecies.getByName(cleanId);
-                    if (species == null) {
-                        species = PokemonSpecies.getByName(id);
-                    }
+                    Species species = com.howlite.cobblemoncards.util.CardUtil.getSpecies(cleanId);
 
                     if (species != null) {
                         int dexNum = species.getNationalPokedexNumber();

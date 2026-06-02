@@ -63,7 +63,8 @@ public class BoosterLootTable {
             "cherry_blossom_wind", "cyber_city", "ancient_ruins", "frozen_tundra",
             "rainbow_highway", "plasma_storm", "galactic_supernova", "water2",
             "mega_energy", "alola_beach", "hisui_ancient", "galar_industrial", "paldea_crystal",
-            "distortion_rift", "dreamscape", "magma_chamber"
+            "distortion_rift", "dreamscape", "magma_chamber",
+            "stained_glass", "fluid_marble", "fossilized_amber"
     );
     
     private static final List<String> EFFECTS = Arrays.asList(
@@ -270,10 +271,7 @@ public class BoosterLootTable {
             for (String id : allIds) {
                 try {
                     String cleanId = id.replace("’", "").replace("'", "");
-                    com.cobblemon.mod.common.pokemon.Species species = com.cobblemon.mod.common.api.pokemon.PokemonSpecies.getByName(cleanId);
-                    if (species == null) {
-                        species = com.cobblemon.mod.common.api.pokemon.PokemonSpecies.getByName(id);
-                    }
+                    com.cobblemon.mod.common.pokemon.Species species = com.howlite.cobblemoncards.util.CardUtil.getSpecies(cleanId);
                     if (species != null) {
                         if (matchesFilter(species, type)) {
                             filtered.add(id);
