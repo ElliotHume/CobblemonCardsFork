@@ -5,101 +5,101 @@
 [![Cobblemon Compatible](https://img.shields.io/badge/Cobblemon-Compatible-orange.svg?style=for-the-badge&logo=pokemon)](https://cobblemon.com)
 [![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)](LICENSE)
 
-Un mod Minecraft Fabric complet et immersif qui introduit le **jeu de cartes à collectionner ultime** au sein de l'univers **Cobblemon** ! Collectionnez, échangez, évaluez et affichez fièrement vos Pokémon favoris sous forme de cartes magnifiques dotées de shaders holographiques animés en 3D.
+An immersive and feature-rich Minecraft Fabric mod that introduces the **ultimate Trading Card Game** to the **Cobblemon** universe! Collect, trade, grade, and proudly display your favorite Pokémon on gorgeous 3D cards complete with animated holographic shaders.
 
 ---
 
-## 🌟 Fonctionnalités Principales
+## 🌟 Key Features
 
-### 📦 Boosters Thématiques & Générationnels
-* **Plus de 20 boosters différents** à ouvrir avec une interface personnalisée interactive.
-* **Générations 1 à 9** : Ciblez les Pokémon d'une génération spécifique !
-* **Boosters Élémentaires** : Ouvrez des paquets contenant uniquement des types précis (Feu, Eau, Plante, Électrik, Spectre, etc.).
-* **Ticket de God Pack** : Un objet légendaire garantissant que votre prochain booster contiendra uniquement des cartes ultra-rares !
+### 📦 Thematic & Generational Booster Packs
+* **Over 20 distinct booster packs** to open using an interactive custom opening interface.
+* **Generations 1 to 9**: Focus your collection on specific regions and generations!
+* **Type-Themed Boosters**: Target your search with elemental packs containing only specific types (Fire, Water, Grass, Electric, Ghost, etc.).
+* **God Pack Ticket**: A legendary item that guarantees your next booster pack will be an ultra-rare "God Pack"!
 
-### 🎴 Les Cartes Pokémon de Collection
-* **Niveaux de Rareté** : *Common*, *Uncommon*, *Rare*, *Epic*, *Legendary*, *Mythic*.
-* **Variantes Visuelles** : Pokémon normaux et Pokémon Chromatiques (Shinies) avec des textures adaptées !
-* **Formes Spéciales** : Intégration complète des formes régionales (Alola, Galar, Hisui) et des Méga-Évolutions.
+### 🎴 Collectible Pokémon Cards
+* **Multiple Rarity Tiers**: *Common*, *Uncommon*, *Rare*, *Epic*, *Legendary*, and *Mythic*.
+* **Visual Variants**: Normal cards and full-art **Shiny** (Chromatiques) variants with custom visual models.
+* **Special Forms**: Complete integration of Regional variants (Alola, Galar, Hisui) and Mega Evolutions.
 
-### ✨ Shaders Holographiques & Effets Visuels Révolutionnaires
-Découvrez plus de **20 effets holographiques procéduraux** grâce à des shaders personnalisés qui font briller vos cartes sous la lumière du jour :
+### ✨ Dynamic Holographic Shaders & Visual Effects
+Witness over **20 unique procedural holographic effects** powered by custom shaders that glisten and shift as you look around:
 * *Foil Stars, Rainbow Prism, Plasma, Cosmic Constellation, Cyber Dust, Magical Wind...*
-* Des effets uniques pour les formes spéciales comme *Mega Vortex, Alolan Shore, Galarian Steam, Paldean Terastal, Distortion Rift, Time Gears, Spatial Crack, Prism Stars...*
+* Custom special-form effects like *Mega Vortex, Alolan Shore, Galarian Steam, Paldean Terastal, Distortion Rift, Time Gears, Spatial Crack, and Prism Stars...*
 
-### 📖 Classeurs de Collection (Binders) & Meubles (Cabinets)
-* **Progression par Paliers** : Fabriquez des classeurs en cuir, fer, or, diamant ou netherite, ainsi que l'ultime **Master Album**.
-* **Statistiques RPG & Bonus Actifs** : Insérer des cartes dans vos classeurs vous octroie des bonus permanents dans le jeu (Vitesse de minage, Vitesse de déplacement, Dégâts d'attaque, Chance, Armure, PV Max, Taux d'apparition de Pokémon spécifiques, etc.).
-* **Cabinet à Cartes** : Un meuble en bois élégant capable de stocker jusqu'à **12 000 cartes** avec une interface de tri et de recherche intégrée.
+### 📖 Card Binders & Storage Cabinets
+* **Tiered Binders**: Craft Leather, Iron, Gold, Diamond, Netherite, and the ultimate **Master Album**.
+* **RPG Stats & Passive Bonuses**: Equip your binders in your Trinkets slot! Slotted cards grant passive stat boosts (Mining Speed, Movement Speed, Attack Damage, Luck, Armor, Max Health, and custom wild spawn rate multipliers).
+* **Card Cabinet**: A beautiful piece of furniture storing up to **12,000 cards** featuring built-in search, sorting, and filter controls.
 
-### 🔬 Station d'Évaluation (Grading Station) & Recyclage
-* **Station de Graduation** : Analysez vos cartes pour leur attribuer une note (Grade de 1 à 10). Les cartes de Grade supérieur augmentent drastiquement vos bonus de statistiques RPG !
-* **Recycleur de Cartes** : Recyclez vos doublons inutiles pour obtenir de la **Poussière de Carte** (*Cobblecard Dust*).
-* Utilisez la poussière pour alimenter d'autres outils technologiques ou accélérer vos évaluations.
+### 🔬 Grading Station & Recycling System
+* **Grading Station**: Analyze and rate your cards (Grades 1 to 10). High-grade cards grant massive multipliers to active RPG stats!
+* **Card Recycler**: Grind duplicate or unwanted cards down into **Cobblecard Dust**.
+* Use dust to power scanning equipment or speed up the card grading process.
 
-### 📡 Outil Instant-Dex & Disque de Structure
-* **Scanner Instant-Dex** : Un outil technologique permettant de scanner les Pokémon sauvages dans la nature.
-* **Disque de Structure** : Chargez-le avec de la poussière de carte pour calibrer une espèce, enregistrez les données de vos rencontres sauvages, et générez votre propre carte physique une fois le scan complété !
+### 📡 Instant-Dex Tool & Structure Disks
+* **Instant-Dex Scanner**: A handheld utility tool to scan wild Pokémon in the wild.
+* **Card Structure Disks**: Load them with card dust, lock in a target species, scan them in the wild, and print a physical card once compilation hits 100%!
 
-### 🌌 Projecteurs Holographiques 3D
-* Exposez vos plus belles cartes dans votre base grâce aux **Projecteurs Holographiques** normaux et avancés.
-* **Modes d'affichage** : Rotation continue, face au joueur, mode dynamique, fixe, à plat, balancement simple.
-* Le projecteur avancé permet de programmer une séquence animée de défilement pour **27 cartes**.
+### 🌌 3D Holographic Projectors
+* Showcase your trophy cards in your base using regular and advanced **Holo Projectors**.
+* **6 Display Modes**: Continuous Rotation, Face Player, Dynamic (Spin & Face), Fixed, Flat, and Simple Bobbing.
+* The advanced projector lets you slot in and sequence a moving gallery of up to **27 cards**!
 
 ---
 
-## 🛠️ Dépendances Requises
+## 🛠️ Required Dependencies
 
-Pour faire fonctionner **Cobblemon Cards**, vous devez installer les mods suivants dans votre dossier `mods` :
+To run **Cobblemon Cards**, download and place the following mods inside your client or server `mods` directory:
 
-| Mod | Version Recommandée | Rôle |
+| Mod | Required Version | Purpose |
 | :--- | :--- | :--- |
-| **Fabric API** | `0.116.10+1.21.1` | Bibliothèque de base Fabric |
-| **Cobblemon** | Compatible 1.21.1 | Mod principal Pokémon |
-| **Architectury API** | `13.0.6` | Bibliothèque de compatibilité multiplateforme |
-| **Cloth Config** | `15.0.140` | Gestionnaire de configurations |
-| **Trinkets** | `3.10.0` | Permet d'équiper les classeurs pour obtenir les bonus RPG |
-| **MidnightLib** | `1.9.2+1.21.1` | Configuration et dépendance système |
-| **Cardinal Components** | `6.1.3` | Gestion des données système attachées aux entités |
+| **Fabric API** | `0.116.10+1.21.1` | Core Fabric library |
+| **Cobblemon** | Compatible 1.21.1 | Core Pokémon mod |
+| **Architectury API** | `13.0.6` | Cross-platform compatibility helper |
+| **Cloth Config** | `15.0.140` | Mod configuration and UI systems |
+| **Trinkets** | `3.10.0` | Enables accessory slots to equip binders for RPG stats |
+| **MidnightLib** | `1.9.2+1.21.1` | Lightweight config library |
+| **Cardinal Components** | `6.1.3` | Entity data attachment system |
 
 > [!TIP]
-> **Compatibilités optionnelles (EMI, REI, JEI) :** Le mod intègre le support complet des visualisateurs de recettes pour consulter facilement les recettes de craft de la station de graduation, du recycleur et des classeurs.
+> **Recipe Viewers (EMI, REI, JEI):** The mod fully integrates recipe viewers compileOnly contracts. This makes it easy for players to check custom crafting recipes for Binders, Cabinets, Recyclers, and the Grading Station in-game!
 
 ---
 
-## 🚀 Comment l'installer sur votre serveur ou client
+## 🚀 Installation Guide
 
-1. Téléchargez et installez le **Fabric Loader** pour Minecraft `1.21.1`.
-2. Téléchargez les dépendances mentionnées ci-dessus et déposez-les dans votre dossier `.minecraft/mods`.
-3. Compilez ou téléchargez le fichier JAR de **Cobblemon Cards** et placez-le également dans le dossier `mods`.
-4. Lancez le jeu et commencez à chasser vos premières cartes !
+1. Download and install **Fabric Loader** for Minecraft version `1.21.1`.
+2. Grab the dependencies listed above and place them into your `.minecraft/mods` folder.
+3. Download or compile the **Cobblemon Cards** `.jar` file and drop it into the `mods` folder.
+4. Launch the game and start your ultimate collection journey!
 
 ---
 
-## 💻 Pour les Développeurs : Compiler le projet
+## 💻 For Developers: Compiling from Source
 
-Si vous souhaitez modifier le code ou compiler vous-même le mod :
+If you want to modify the source code or build the mod manually:
 
-1. Clonez ce dépôt GitHub :
+1. Clone this repository:
    ```bash
-   git clone https://github.com/VOTRE_PSEUDO/CobblemonCards.git
+   git clone https://github.com/YOUR_USERNAME/CobblemonCards.git
    cd CobblemonCards
    ```
-2. Configurez l'environnement de développement Minecraft :
+2. Decompile and set up the Minecraft environment:
    ```bash
    ./gradlew genSources
    ```
-3. Compilez le mod (le fichier JAR sera généré dans `build/libs/`) :
+3. Build the mod JAR (found in `build/libs/` after compilation):
    ```bash
    ./gradlew build
    ```
 
 ---
 
-## 📜 Licence
+## 📜 License
 
-Ce projet est sous licence propriétaire. Tous droits réservés. L'utilisation du code source et des ressources graphiques est soumise à l'autorisation de l'auteur.
+This project is licensed under proprietary terms. All rights reserved. Code modification and asset distribution are subject to written approval from the repository owner.
 
 ---
 
-*Fait avec ❤️ par la communauté des dresseurs de Pokémon sur Minecraft.*
+*Made with ❤️ by Pokemon card enthusiasts in Minecraft.*
