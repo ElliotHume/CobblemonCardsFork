@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import com.howlite.cobblemoncards.component.ModDataComponents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,42 +45,52 @@ public class BoosterPackItem extends Item {
             List<ItemStack> serverRewards = new ArrayList<>();
             List<ItemStack> displayRewards = new ArrayList<>();
 
-            // 1. Détermination si c'est un God Pack
-            boolean naturalGodPack = level.random.nextFloat() * 100f <= CobblemonCardsConfig.godPackTicketChance;
-            boolean guaranteedGodPack = player.getAttachedOrCreate(PlayerDataAttachments.HAS_GUARANTEED_GOD_PACK, () -> false);
-            boolean isGodPack = naturalGodPack || guaranteedGodPack;
+            List<ItemStack> customRewards = itemStack.get(ModDataComponents.CUSTOM_BOOSTER_DATA);
+            boolean isCustom = customRewards != null && !customRewards.isEmpty();
 
-            if (isGodPack) {
-                // Son du tonnerre pour le God Pack
-                level.playSound(null, player.getX(), player.getY(), player.getZ(), 
-                    SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 1.0f, 1.0f);
-                
-                // On génère 5 cartes épiques/légendaires shiny
-                for (int i = 0; i < 5; i++) {
-                    ItemStack card = BoosterLootTable.getGodPackReward(this.boosterType);
-                    serverRewards.add(card.copy());
-                    displayRewards.add(card.copy());
-                }
-
-                // Consommation de la garantie si utilisée
-                if (guaranteedGodPack) {
-                    player.setAttached(PlayerDataAttachments.HAS_GUARANTEED_GOD_PACK, false);
+            if (isCustom) {
+                for (ItemStack reward : customRewards) {
+                    serverRewards.add(reward.copy());
+                    displayRewards.add(reward.copy());
                 }
             } else {
-                // Logique classique
-                for (int i = 0; i < 3; i++) {
-                    ItemStack card = BoosterLootTable.getRandomReward("common", this.boosterType);
-                    serverRewards.add(card.copy());
-                    displayRewards.add(card.copy());
+                // 1. Détermination si c'est un God Pack
+                boolean naturalGodPack = level.random.nextFloat() * 100f <= CobblemonCardsConfig.godPackTicketChance;
+                boolean guaranteedGodPack = player.getAttachedOrCreate(PlayerDataAttachments.HAS_GUARANTEED_GOD_PACK, () -> false);
+                boolean isGodPack = naturalGodPack || guaranteedGodPack;
+
+                if (isGodPack) {
+                    // Son du tonnerre pour le God Pack
+                    level.playSound(null, player.getX(), player.getY(), player.getZ(), 
+                        SoundEvents.LIGHTNING_BOLT_THUNDER, SoundSource.PLAYERS, 1.0f, 1.0f);
+                    
+                    // On génère 5 cartes épiques/légendaires shiny
+                    for (int i = 0; i < 5; i++) {
+                        ItemStack card = BoosterLootTable.getGodPackReward(this.boosterType);
+                        serverRewards.add(card.copy());
+                        displayRewards.add(card.copy());
+                    }
+
+                    // Consommation de la garantie si utilisée
+                    if (guaranteedGodPack) {
+                        player.setAttached(PlayerDataAttachments.HAS_GUARANTEED_GOD_PACK, false);
+                    }
+                } else {
+                    // Logique classique
+                    for (int i = 0; i < 3; i++) {
+                        ItemStack card = BoosterLootTable.getRandomReward("common", this.boosterType);
+                        serverRewards.add(card.copy());
+                        displayRewards.add(card.copy());
+                    }
+
+                    ItemStack uncommon = BoosterLootTable.getRandomReward("uncommon", this.boosterType);
+                    serverRewards.add(uncommon.copy());
+                    displayRewards.add(uncommon.copy());
+
+                    ItemStack rare = BoosterLootTable.getRandomRewardAbove("rare", this.boosterType);
+                    serverRewards.add(rare.copy());
+                    displayRewards.add(rare.copy());
                 }
-
-                ItemStack uncommon = BoosterLootTable.getRandomReward("uncommon", this.boosterType);
-                serverRewards.add(uncommon.copy());
-                displayRewards.add(uncommon.copy());
-
-                ItemStack rare = BoosterLootTable.getRandomRewardAbove("rare", this.boosterType);
-                serverRewards.add(rare.copy());
-                displayRewards.add(rare.copy());
             }
 
             // On garde les cartes sur le serveur
@@ -104,7 +115,11 @@ public class BoosterPackItem extends Item {
 
     @Override
     public void appendHoverText(net.minecraft.world.item.ItemStack stack, net.minecraft.world.item.Item.TooltipContext context, java.util.List<net.minecraft.network.chat.Component> tooltipComponents, net.minecraft.world.item.TooltipFlag tooltipFlag) {
-        tooltipComponents.add(net.minecraft.network.chat.Component.translatable("tooltip.cobblemon-cards.booster_pack." + this.boosterType + ".description").withStyle(net.minecraft.ChatFormatting.GRAY));
+        if (stack.has(ModDataComponents.CUSTOM_BOOSTER_DATA)) {
+            tooltipComponents.add(net.minecraft.network.chat.Component.translatable("tooltip.cobblemon-cards.custom_booster_pack.description").withStyle(net.minecraft.ChatFormatting.GRAY));
+        } else {
+            tooltipComponents.add(net.minecraft.network.chat.Component.translatable("tooltip.cobblemon-cards.booster_pack." + this.boosterType + ".description").withStyle(net.minecraft.ChatFormatting.GRAY));
+        }
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
     }
 }

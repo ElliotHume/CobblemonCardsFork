@@ -265,5 +265,18 @@
   "holo.cobblemon-cards.magma_chamber": "Magma Chamber",
   "holo.cobblemon-cards.holo_time_gears": "Time Gears",
   "holo.cobblemon-cards.holo_spatial_crack": "Spatial Crack",
-  "holo.cobblemon-cards.holo_prism_stars": "Prism Stars"
+  "holo.cobblemon-cards.holo_prism_stars": "Prism Stars",
+  "item.cobblemon-cards.custom_booster_pack": "§d§lCustom Admin Booster Pack",
+  "tooltip.cobblemon-cards.custom_booster_pack.description": "A booster pack containing special customized rewards!",
+  "gui.cobblemon-cards.custom_booster_creator.title": "Custom Booster Creator",
+  "gui.cobblemon-cards.custom_booster_creator.confirm": "§a§lCreate Custom Booster",
+  "gui.cobblemon-cards.custom_booster_creator.blocked": "§7Blocked",
+  "gui.cobblemon-cards.custom_booster_creator.lore_line_1": "§7Place 5 cards/items in the first 5 slots",
+  "gui.cobblemon-cards.custom_booster_creator.lore_line_2": "§7then click this Nether Star",
+  "gui.cobblemon-cards.custom_booster_creator.lore_line_3": "§7to create your personalized booster pack.",
+  "message.cobblemon-cards.custom_booster_creator.no_items": "§c[Custom Booster] You must place at least one item in the first 5 slots.",
+  "message.cobblemon-cards.custom_booster_creator.success": "§a§l[Custom Booster] Your personalized booster pack has been created successfully!",
+  "message.cobblemon-cards.custom_booster_creator.no_permission": "You must be a player to execute this command.",
+  "gui.cobblemon-cards.custom_booster_creator.selected_skin": "§bSelected Skin: %s",
+  "gui.cobblemon-cards.custom_booster_creator.select_skin_tooltip": "§7Click a variant below to change the skin."
 }

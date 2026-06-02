@@ -26,6 +26,7 @@ import com.howlite.cobblemoncards.network.SyncDiscoveredCardsPayload;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.command.GiveCardCommand;
+import com.howlite.cobblemoncards.command.CustomBoosterCommand;
 import eu.midnightdust.lib.config.MidnightConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -168,6 +169,7 @@ public class CobblemonCards implements ModInitializer {
         
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             GiveCardCommand.register(dispatcher);
+            CustomBoosterCommand.register(dispatcher);
         });
     }
 

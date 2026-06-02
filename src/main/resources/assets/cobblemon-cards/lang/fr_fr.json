@@ -265,5 +265,18 @@
   "holo.cobblemon-cards.magma_chamber": "Chambre Magmatique",
   "holo.cobblemon-cards.holo_time_gears": "Rouages du Temps",
   "holo.cobblemon-cards.holo_spatial_crack": "Fissure Spatiale",
-  "holo.cobblemon-cards.holo_prism_stars": "Étoiles Prisme"
+  "holo.cobblemon-cards.holo_prism_stars": "Étoiles Prisme",
+  "item.cobblemon-cards.custom_booster_pack": "§d§lBooster Customisé Admin",
+  "tooltip.cobblemon-cards.custom_booster_pack.description": "Un booster contenant des récompenses spéciales !",
+  "gui.cobblemon-cards.custom_booster_creator.title": "Création de Booster Custom",
+  "gui.cobblemon-cards.custom_booster_creator.confirm": "§a§lCréer le Booster Custom",
+  "gui.cobblemon-cards.custom_booster_creator.blocked": "§7Bloqué",
+  "gui.cobblemon-cards.custom_booster_creator.lore_line_1": "§7Placez 5 cartes/items dans les 5 premiers slots",
+  "gui.cobblemon-cards.custom_booster_creator.lore_line_2": "§7puis cliquez sur cette Étoile du Nether",
+  "gui.cobblemon-cards.custom_booster_creator.lore_line_3": "§7pour créer votre booster personnalisé.",
+  "message.cobblemon-cards.custom_booster_creator.no_items": "§c[Booster Custom] Vous devez placer au moins un item dans les 5 premiers slots.",
+  "message.cobblemon-cards.custom_booster_creator.success": "§a§l[Booster Custom] Votre booster personnalisé a été créé avec succès !",
+  "message.cobblemon-cards.custom_booster_creator.no_permission": "Vous devez être un joueur pour exécuter cette commande.",
+  "gui.cobblemon-cards.custom_booster_creator.selected_skin": "§bApparence sélectionnée : %s",
+  "gui.cobblemon-cards.custom_booster_creator.select_skin_tooltip": "§7Cliquez sur une variante ci-dessous pour changer l'apparence."
 }
