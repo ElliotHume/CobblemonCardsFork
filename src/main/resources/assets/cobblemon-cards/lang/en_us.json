@@ -278,5 +278,9 @@
   "message.cobblemon-cards.custom_booster_creator.success": "§a§l[Custom Booster] Your personalized booster pack has been created successfully!",
   "message.cobblemon-cards.custom_booster_creator.no_permission": "You must be a player to execute this command.",
   "gui.cobblemon-cards.custom_booster_creator.selected_skin": "§bSelected Skin: %s",
-  "gui.cobblemon-cards.custom_booster_creator.select_skin_tooltip": "§7Click a variant below to change the skin."
+  "gui.cobblemon-cards.custom_booster_creator.select_skin_tooltip": "§7Click a variant below to change the skin.",
+  "gui.cobblemon-cards.custom_booster_creator.rename_button": "§eRename Booster",
+  "gui.cobblemon-cards.custom_booster_creator.rename_button_lore_1": "§7Current Name: %s",
+  "gui.cobblemon-cards.custom_booster_creator.rename_button_lore_2": "§7Click to rename the booster.",
+  "gui.cobblemon-cards.custom_booster_creator.rename_gui_title": "Rename Custom Booster"
 }

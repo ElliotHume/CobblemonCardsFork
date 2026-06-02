@@ -278,5 +278,9 @@
   "message.cobblemon-cards.custom_booster_creator.success": "§a§l[Booster Custom] Votre booster personnalisé a été créé avec succès !",
   "message.cobblemon-cards.custom_booster_creator.no_permission": "Vous devez être un joueur pour exécuter cette commande.",
   "gui.cobblemon-cards.custom_booster_creator.selected_skin": "§bApparence sélectionnée : %s",
-  "gui.cobblemon-cards.custom_booster_creator.select_skin_tooltip": "§7Cliquez sur une variante ci-dessous pour changer l'apparence."
+  "gui.cobblemon-cards.custom_booster_creator.select_skin_tooltip": "§7Cliquez sur une variante ci-dessous pour changer l'apparence.",
+  "gui.cobblemon-cards.custom_booster_creator.rename_button": "§eRenommer le Booster",
+  "gui.cobblemon-cards.custom_booster_creator.rename_button_lore_1": "§7Nom actuel : %s",
+  "gui.cobblemon-cards.custom_booster_creator.rename_button_lore_2": "§7Cliquez pour renommer le booster.",
+  "gui.cobblemon-cards.custom_booster_creator.rename_gui_title": "Renommer le Booster"
 }

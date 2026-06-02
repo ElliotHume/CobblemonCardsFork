@@ -20,6 +20,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import com.howlite.cobblemoncards.item.ModItems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -435,7 +436,13 @@ public class BoosterPackScreen extends Screen {
             graphics.pose().scale(scale, -scale, scale);
 
             if (i < rewards.size()) {
-                renderItem3D(graphics, rewards.get(i));
+                ItemStack stackToRender = rewards.get(i);
+                // Si l'objet n'est pas une carte de base et n'est pas encore retourné à plus de 50%,
+                // on affiche un dos de carte générique pour cacher le modèle 3D de l'item/block !
+                if (!stackToRender.is(ModItems.CARD) && flipProgress[i] < 0.5f) {
+                    stackToRender = new ItemStack(ModItems.CARD);
+                }
+                renderItem3D(graphics, stackToRender);
             }
             
             graphics.pose().popPose();
