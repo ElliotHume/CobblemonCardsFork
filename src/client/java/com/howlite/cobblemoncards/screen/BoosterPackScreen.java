@@ -31,6 +31,7 @@ public class BoosterPackScreen extends Screen {
     private int[] shakeTicks = new int[5]; // Temps de tremblement restant (en ticks)
     private float[] flipProgress = new float[5]; // De 0.0 (dos) à 1.0 (face)
     private float[] hoverAlpha = new float[5]; // Opacité du texte (0.0 à 1.0)
+    private boolean[] introSoundPlayed = new boolean[5]; // Si le son d'intro a été joué
     private Button[] cardButtons = new Button[5];
     private float ticks = 0;
 
@@ -66,7 +67,7 @@ public class BoosterPackScreen extends Screen {
             this.cardButtons[i] = Button.builder(Component.empty(), button -> {
                 if (!clicked[index]) {
                     this.clicked[index] = true;
-                    this.shakeTicks[index] = 12; // Trembler pendant 12 frames de rendu
+                    this.shakeTicks[index] = getShakeDuration(index); // Tremblement de durée dynamique selon rareté
                     button.active = false;
                     playRevealSound(index);
                 }
@@ -93,8 +94,124 @@ public class BoosterPackScreen extends Screen {
             return;
         }
 
-        // Son initial de "shaking / suspense"
-        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_CHIME, 0.6f + random.nextFloat() * 0.2f));
+        String rarity = data.rarity().toLowerCase();
+        boolean isShiny = data.isShiny();
+
+        if (isShiny || rarity.equals("legendary") || rarity.equals("mythic")) {
+            // Son de suspense majestueux
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BEACON_ACTIVATE, 1.5f));
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_BELL, 0.5f));
+        } else if (rarity.equals("epic")) {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_CHIME, 0.7f));
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.AMETHYST_BLOCK_CHIME, 0.9f));
+        } else if (rarity.equals("rare")) {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.NOTE_BLOCK_CHIME, 1.0f));
+        } else {
+            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.2f));
+        }
+    }
+
+    private int getShakeDuration(int index) {
+        if (rewards.size() <= index) return 12;
+        ItemStack stack = rewards.get(index);
+        CardData data = stack.get(ModDataComponents.CARD_DATA);
+        if (data == null) return 12;
+        String rarity = data.rarity().toLowerCase();
+        boolean isShiny = data.isShiny();
+
+        if (isShiny || rarity.equals("legendary") || rarity.equals("mythic")) {
+            return 32; // Tremblement prolongé pour le suspense légendaire !
+        } else if (rarity.equals("epic")) {
+            return 20; // Tremblement moyen
+        } else if (rarity.equals("rare")) {
+            return 14; // Tremblement court
+        }
+        return 8; // Très rapide pour les communes
+    }
+
+    private float getFlipSpeed(int index) {
+        if (rewards.size() <= index) return 0.08f;
+        ItemStack stack = rewards.get(index);
+        CardData data = stack.get(ModDataComponents.CARD_DATA);
+        if (data == null) return 0.08f;
+        String rarity = data.rarity().toLowerCase();
+        boolean isShiny = data.isShiny();
+
+        if (isShiny || rarity.equals("legendary") || rarity.equals("mythic")) {
+            return 0.04f; // Retournement majestueux lent
+        } else if (rarity.equals("epic")) {
+            return 0.06f; // Vitesse épique
+        } else if (rarity.equals("rare")) {
+            return 0.08f; // Vitesse rare
+        }
+        return 0.12f; // Retournement éclair pour communes
+    }
+
+    private void spawnShakingParticles(int index, float xCenter, float yCenter) {
+        if (rewards.size() <= index) return;
+        ItemStack stack = rewards.get(index);
+        CardData data = stack.get(ModDataComponents.CARD_DATA);
+        if (data == null) return;
+
+        String rarity = data.rarity().toLowerCase();
+        boolean isShiny = data.isShiny();
+        
+        int color = 0xFFFFFF;
+        boolean shinyOrLegendary = isShiny || rarity.equals("legendary") || rarity.equals("mythic");
+        
+        if (shinyOrLegendary) {
+            color = isShiny ? 0xFFFF55 : 0xFFAA00;
+        } else if (rarity.equals("epic")) {
+            color = 0xFF55FF;
+        } else if (rarity.equals("rare")) {
+            color = 0x5555FF;
+        } else {
+            return; // Pas d'étincelles préalables pour les communes
+        }
+
+        // Fait jaillir des étincelles depuis les bords de la carte
+        float angle = random.nextFloat() * 2.0f * (float) Math.PI;
+        float dist = 20.0f + random.nextFloat() * 15.0f;
+        float px = xCenter + (float) Math.cos(angle) * dist;
+        float py = yCenter + (float) Math.sin(angle) * dist;
+        float dx = (xCenter - px) * 0.05f + (random.nextFloat() - 0.5f) * 1.5f;
+        float dy = (yCenter - py) * 0.05f + (random.nextFloat() - 0.5f) * 1.5f;
+        
+        screenParticles.add(new ScreenParticle(px, py, dx, dy, color, 1.5f + random.nextFloat() * 2.0f, 10 + random.nextInt(10), true));
+    }
+
+    private void renderCardGlowAndRays(GuiGraphics graphics, int color) {
+        float time = this.ticks * 0.8f;
+        int r = (color >> 16) & 0xFF;
+        int g = (color >> 8) & 0xFF;
+        int b = color & 0xFF;
+        
+        // 1. Rayons de soleil rotatifs
+        int rayCount = 8;
+        float maxRayLen = 65.0f + (float) Math.sin(this.ticks * 0.1f) * 10.0f;
+        int rayAlpha = 45; // Rayons translucides subtils
+        int rayColor = (rayAlpha << 24) | (r << 16) | (g << 8) | b;
+        
+        graphics.pose().pushPose();
+        graphics.pose().mulPose(Axis.ZP.rotationDegrees(time));
+        for (int i = 0; i < rayCount; i++) {
+            graphics.pose().pushPose();
+            graphics.pose().mulPose(Axis.ZP.rotationDegrees(i * (360.0f / rayCount)));
+            // Dessiner un diamant/rectangle fin rayonnant vers l'extérieur
+            graphics.fill(-6, (int)-maxRayLen, 6, (int)maxRayLen, rayColor);
+            graphics.pose().popPose();
+        }
+        graphics.pose().popPose();
+        
+        // 2. Halo de fond doux pulsant
+        int haloAlpha = 30 + (int)(15.0f * Math.sin(this.ticks * 0.15f));
+        int haloColor = (haloAlpha << 24) | (r << 16) | (g << 8) | b;
+        
+        graphics.pose().pushPose();
+        graphics.pose().mulPose(Axis.ZP.rotationDegrees(-time * 0.5f));
+        float haloSize = 42.0f + (float) Math.sin(this.ticks * 0.05f) * 4.0f;
+        graphics.fill((int)-haloSize, (int)-haloSize, (int)haloSize, (int)haloSize, haloColor);
+        graphics.pose().popPose();
     }
 
     private float smoothStep(float x) {
@@ -213,15 +330,38 @@ public class BoosterPackScreen extends Screen {
         Lighting.setupForFlatItems();
 
         for (int i = 0; i < 5; i++) {
+            // Animation d'entrée échelonnée (Staggered card entrance)
+            float cardIntro = Math.max(0.0f, Math.min(1.0f, (this.ticks - i * 3.0f) / 12.0f));
+            float easedIntro = smoothStep(cardIntro);
+            
+            if (cardIntro > 0.0f && !introSoundPlayed[i]) {
+                introSoundPlayed[i] = true;
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BOOK_PAGE_TURN, 1.3f + i * 0.15f));
+            }
+
+            // Met à jour la position Y réelle du bouton correspondant pour qu'elle corresponde au visuel glissant !
+            int targetY = yCenter - (95 / 2);
+            int currentY = targetY + (int)((1.0f - easedIntro) * 250.0f);
+            if (cardButtons[i] != null) {
+                cardButtons[i].setY(currentY);
+            }
+
             if (clicked[i]) {
                 if (shakeTicks[i] > 0) {
                     shakeTicks[i]--;
+                    
+                    // Fait jaillir des étincelles pendant la vibration !
+                    if (random.nextFloat() < 0.25f) {
+                        int xCenter = startX + (i * (cardWidth + spacing)) + (cardWidth / 2);
+                        spawnShakingParticles(i, xCenter, yCenter);
+                    }
+
                     if (shakeTicks[i] == 0) {
                         int xCenter = startX + (i * (cardWidth + spacing)) + (cardWidth / 2);
                         triggerDopamineEffects(i, xCenter, yCenter);
                     }
                 } else if (flipProgress[i] < 1.0f) {
-                    flipProgress[i] += 0.08f * delta;
+                    flipProgress[i] += getFlipSpeed(i) * delta;
                     if (flipProgress[i] > 1.0f) flipProgress[i] = 1.0f;
                 }
             }
@@ -239,29 +379,59 @@ public class BoosterPackScreen extends Screen {
             float easedProgress = smoothStep(flipProgress[i]);
             float rotationY = (1.0f - easedProgress) * 180.0f;
 
-            // Flottement sinusoïdal élégant de la carte face visible
+            // Flottement sinusoïdal élégant de la carte face visible + inclinaison Z
             float floatOffset = 0.0f;
+            float ZRotation = 0.0f;
             if (flipProgress[i] > 0.0f) {
                 floatOffset = (float) Math.sin(ticks * 0.1f + i * 1.2f) * 3.5f * easedProgress;
+                if (isHovered) {
+                    ZRotation = (float) Math.sin(ticks * 0.15f) * 2.5f;
+                }
             }
 
-            graphics.pose().pushPose();
-            graphics.pose().translate(xCenter, yCenter + floatOffset, 100 + i);
+            float introYOffset = (1.0f - easedIntro) * 250.0f;
+            float currentCardY = yCenter + floatOffset + introYOffset;
 
-            // Physique de tremblement si en cours !
+            graphics.pose().pushPose();
+            graphics.pose().translate(xCenter, currentCardY, 100 + i);
+
+            // Dessiner le soleil tournant (God Rays) derrière la carte si révélée et rare+
+            if (flipProgress[i] == 1.0f && i < rewards.size()) {
+                ItemStack stack = rewards.get(i);
+                CardData data = stack.get(ModDataComponents.CARD_DATA);
+                if (data != null) {
+                    String rarity = data.rarity().toLowerCase();
+                    boolean isShiny = data.isShiny();
+                    if (isShiny || rarity.equals("legendary") || rarity.equals("mythic") || rarity.equals("epic") || rarity.equals("rare")) {
+                        int glowColor = 0x5555FF; // Rare
+                        if (isShiny) glowColor = 0xFFFF55;
+                        else if (rarity.equals("legendary") || rarity.equals("mythic")) glowColor = 0xFFAA00;
+                        else if (rarity.equals("epic")) glowColor = 0xFF55FF;
+                        
+                        graphics.pose().pushPose();
+                        graphics.pose().translate(0, 0, -0.5f);
+                        renderCardGlowAndRays(graphics, glowColor);
+                        graphics.pose().popPose();
+                    }
+                }
+            }
+
+            // Physique de tremblement si en cours avec intensité crescendo !
             if (clicked[i] && shakeTicks[i] > 0) {
-                float intensity = 2.2f;
+                float progress = 1.0f - ((float) shakeTicks[i] / getShakeDuration(i));
+                float intensity = 1.5f + progress * 2.0f;
                 float shakeX = (random.nextFloat() - 0.5f) * intensity;
                 float shakeY = (random.nextFloat() - 0.5f) * intensity;
                 float shakeZ = (random.nextFloat() - 0.5f) * (intensity * 0.5f);
                 graphics.pose().translate(shakeX, shakeY, shakeZ);
-                graphics.pose().mulPose(Axis.ZP.rotationDegrees((random.nextFloat() - 0.5f) * 5.0f));
+                graphics.pose().mulPose(Axis.ZP.rotationDegrees((random.nextFloat() - 0.5f) * (progress * 8.0f)));
             }
 
+            graphics.pose().mulPose(Axis.ZP.rotationDegrees(ZRotation));
             graphics.pose().mulPose(Axis.YP.rotationDegrees(rotationY));
             
-            // Effet de zoom / pop au survol dynamique
-            float scale = isHovered ? 118.0f : 110.0f;
+            // Effet de zoom / pop au survol dynamique + échelle d'entrée
+            float scale = (isHovered ? 118.0f : 110.0f) * (0.5f + 0.5f * easedIntro);
             graphics.pose().scale(scale, -scale, scale);
 
             if (i < rewards.size()) {
@@ -269,6 +439,28 @@ public class BoosterPackScreen extends Screen {
             }
             
             graphics.pose().popPose();
+
+            // Particules d'ambiance post-révélation pour les cartes rares
+            if (flipProgress[i] == 1.0f && i < rewards.size() && random.nextFloat() < 0.05f * delta) {
+                ItemStack stack = rewards.get(i);
+                CardData data = stack.get(ModDataComponents.CARD_DATA);
+                if (data != null) {
+                    String rarity = data.rarity().toLowerCase();
+                    boolean isShiny = data.isShiny();
+                    if (isShiny || rarity.equals("legendary") || rarity.equals("mythic") || rarity.equals("epic") || rarity.equals("rare")) {
+                        int baseColor = 0x5555FF;
+                        if (isShiny) baseColor = 0xFFFF55;
+                        else if (rarity.equals("legendary") || rarity.equals("mythic")) baseColor = 0xFFAA00;
+                        else if (rarity.equals("epic")) baseColor = 0xFF55FF;
+                        
+                        float px = xCenter + (random.nextFloat() - 0.5f) * 60.0f;
+                        float py = currentCardY + (random.nextFloat() - 0.5f) * 90.0f;
+                        float dx = (random.nextFloat() - 0.5f) * 0.6f;
+                        float dy = -0.1f - random.nextFloat() * 0.4f;
+                        screenParticles.add(new ScreenParticle(px, py, dx, dy, baseColor, 1.5f + random.nextFloat() * 1.5f, 15 + random.nextInt(15), true));
+                    }
+                }
+            }
 
             // Affichage du nom et du bonus avec Fade et flottement assorti
             if (hoverAlpha[i] > 0.01f && i < rewards.size()) {
@@ -297,13 +489,13 @@ public class BoosterPackScreen extends Screen {
                 int statColor = (alpha << 24) | (0x55FF55 & 0xFFFFFF);
 
                 // Dessiner le nom avec flottement
-                graphics.drawCenteredString(this.font, stack.getHoverName().getString(), xCenter, (int)(yCenter + 70 + floatOffset), nameColor);
+                graphics.drawCenteredString(this.font, stack.getHoverName().getString(), xCenter, (int)(currentCardY + 70), nameColor);
 
                 // Dessiner le bonus si data présent
                 if (data != null) {
                     int percent = Math.round(data.statValue() * 100);
                     Component bonusText = Component.literal("+" + percent + "% ").append(data.stat().getTranslatedName()).withStyle(ChatFormatting.GREEN);
-                    graphics.drawCenteredString(this.font, bonusText, xCenter, (int)(yCenter + 82 + floatOffset), statColor);
+                    graphics.drawCenteredString(this.font, bonusText, xCenter, (int)(currentCardY + 82), statColor);
                 }
             }
         }
