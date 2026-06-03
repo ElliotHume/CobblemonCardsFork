@@ -6,6 +6,7 @@ import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.util.ClientAccess;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -37,60 +38,132 @@ public class CardItem extends Item {
 
         if (data != null) {
             if (ClientAccess.isShiftDown()) {
+                ChatFormatting rarityColor = getRarityColor(data);
+
                 if (data.pokemonId().startsWith("player_")) {
-                    tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.cosmetic_card").withStyle(ChatFormatting.LIGHT_PURPLE));
+                    // Séparateur décoratif
+                    tooltipComponents.add(Component.literal("─────────────────").withStyle(ChatFormatting.DARK_GRAY));
+                    tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.cosmetic_card")
+                            .withStyle(ChatFormatting.LIGHT_PURPLE));
                 } else {
-                    // 1. Statistique (Mise en avant)
+                    // 1. Statistique (mise en avant avec couleur de rareté)
                     float realValue = data.statValue() * CobblemonCardsConfig.globalStatMultiplier;
                     String sign = realValue >= 0 ? "+" : "";
                     String formattedValue = String.format("%s%.2f", sign, realValue);
-                    tooltipComponents.add(Component.literal(formattedValue + " ").append(data.stat().getTranslatedName())
-                            .withStyle(ChatFormatting.GREEN));
+
+                    // Séparateur décoratif supérieur
+                    tooltipComponents.add(Component.literal("─────────────────").withStyle(ChatFormatting.DARK_GRAY));
+
+                    tooltipComponents.add(
+                        Component.literal("  " + formattedValue + " ")
+                            .withStyle(Style.EMPTY.withColor(rarityColor).withBold(true))
+                            .append(data.stat().getTranslatedName()
+                                .copy().withStyle(Style.EMPTY.withColor(rarityColor).withBold(false)))
+                    );
                 }
 
-                tooltipComponents.add(Component.empty()); // Séparateur
+                tooltipComponents.add(Component.empty());
 
-                // 2. Pokémon (Label GRAY | Valeur WHITE)
-                tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.label.pokemon").withStyle(ChatFormatting.GRAY)
-                        .append(Component.literal(" " + getFormattedName(data.pokemonId())).withStyle(ChatFormatting.WHITE)));
+                // 2. Pokémon (Label + Valeur WHITE)
+                tooltipComponents.add(
+                    Component.literal("  ")
+                        .append(Component.translatable("tooltip.cobblemon-cards.label.pokemon")
+                            .withStyle(ChatFormatting.GRAY))
+                        .append(Component.literal(" " + getFormattedName(data.pokemonId()))
+                            .withStyle(ChatFormatting.WHITE))
+                );
 
-                // 3. Rareté (Label GRAY | Valeur AQUA)
-                tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.label.rarity").withStyle(ChatFormatting.GRAY)
-                        .append(Component.translatable("rarity.cobblemon-cards." + data.rarity().toLowerCase()).withStyle(ChatFormatting.AQUA)));
+                // 3. Rareté (Label + Valeur colorée selon rareté)
+                tooltipComponents.add(
+                    Component.literal("  ")
+                        .append(Component.translatable("tooltip.cobblemon-cards.label.rarity")
+                            .withStyle(ChatFormatting.GRAY))
+                        .append(Component.literal(" "))
+                        .append(Component.translatable("rarity.cobblemon-cards." + data.rarity().toLowerCase())
+                            .withStyle(rarityColor))
+                );
 
                 // 4. Effet Holo (Label GRAY | Valeur LIGHT_PURPLE)
                 data.effect().ifPresent(effect -> {
-                    tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.label.holo").withStyle(ChatFormatting.GRAY)
-                            .append(Component.translatable("holo.cobblemon-cards." + effect).withStyle(ChatFormatting.LIGHT_PURPLE)));
+                    String holoKey = "holo.cobblemon-cards." + effect;
+                    tooltipComponents.add(
+                        Component.literal("  ")
+                            .append(Component.translatable("tooltip.cobblemon-cards.label.holo")
+                                .withStyle(ChatFormatting.GRAY))
+                            .append(Component.literal(" "))
+                            .append(Component.translatable(holoKey)
+                                .withStyle(ChatFormatting.LIGHT_PURPLE))
+                    );
                 });
 
                 // 5. Arrière-plan (Label GRAY | Valeur YELLOW)
                 data.background().ifPresent(bg -> {
-                    tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.label.background").withStyle(ChatFormatting.GRAY)
-                            .append(Component.literal(" " + capitalize(bg)).withStyle(ChatFormatting.YELLOW)));
+                    tooltipComponents.add(
+                        Component.literal("  ")
+                            .append(Component.translatable("tooltip.cobblemon-cards.label.background")
+                                .withStyle(ChatFormatting.GRAY))
+                            .append(Component.literal(" " + capitalize(bg))
+                                .withStyle(ChatFormatting.YELLOW))
+                    );
                 });
 
-                // 6. Shiny (Label GRAY | Valeur GOLD BOLD)
-                Component shinyText = data.isShiny() 
-                    ? Component.translatable("tooltip.cobblemon-cards.yes").withStyle(style -> style.withColor(ChatFormatting.GOLD).withBold(true))
-                    : Component.translatable("tooltip.cobblemon-cards.no").withStyle(ChatFormatting.GRAY);
+                // 6. Shiny (Label GRAY | Valeur GOLD BOLD si vrai, GRAY si faux)
+                Component shinyValue = data.isShiny()
+                    ? Component.literal("✦ ").withStyle(ChatFormatting.GOLD)
+                        .append(Component.translatable("tooltip.cobblemon-cards.yes")
+                            .withStyle(style -> style.withColor(ChatFormatting.GOLD).withBold(true)))
+                    : Component.translatable("tooltip.cobblemon-cards.no")
+                        .withStyle(ChatFormatting.DARK_GRAY);
 
-                tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.label.shiny").withStyle(ChatFormatting.GRAY)
-                        .append(Component.literal(" ")).append(shinyText));
+                tooltipComponents.add(
+                    Component.literal("  ")
+                        .append(Component.translatable("tooltip.cobblemon-cards.label.shiny")
+                            .withStyle(ChatFormatting.GRAY))
+                        .append(Component.literal(" "))
+                        .append(shinyValue)
+                );
 
                 // 7. Grade (Label GRAY | Valeur WHITE)
                 if (data.grade() > 0) {
-                    tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.label.grade").withStyle(ChatFormatting.GRAY)
-                            .append(Component.literal(" " + data.grade()).withStyle(ChatFormatting.WHITE)));
+                    tooltipComponents.add(
+                        Component.literal("  ")
+                            .append(Component.translatable("tooltip.cobblemon-cards.label.grade")
+                                .withStyle(ChatFormatting.GRAY))
+                            .append(Component.literal(" " + data.grade())
+                                .withStyle(ChatFormatting.WHITE))
+                    );
                 }
+
+                // Séparateur décoratif inférieur
+                tooltipComponents.add(Component.literal("─────────────────").withStyle(ChatFormatting.DARK_GRAY));
+
             } else {
-                // Info Shift (DARK_GRAY)
-                tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.press_shift")
-                        .withStyle(ChatFormatting.DARK_GRAY));
+                // Hint "Press SHIFT" avec icône clé
+                tooltipComponents.add(
+                    Component.literal("⬆ ").withStyle(ChatFormatting.DARK_AQUA)
+                        .append(Component.translatable("tooltip.cobblemon-cards.press_shift")
+                            .withStyle(ChatFormatting.DARK_GRAY))
+                );
             }
         }
 
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    }
+
+    /**
+     * Retourne la couleur de ChatFormatting correspondant à la rareté de la carte.
+     */
+    private ChatFormatting getRarityColor(CardData data) {
+        if (data == null) return ChatFormatting.GRAY;
+        if (data.isShiny()) return ChatFormatting.GOLD;
+        return switch (data.rarity().toLowerCase()) {
+            case "uncommon"  -> ChatFormatting.GREEN;
+            case "rare"      -> ChatFormatting.AQUA;
+            case "epic"      -> ChatFormatting.LIGHT_PURPLE;
+            case "legendary" -> ChatFormatting.GOLD;
+            case "mythic"    -> ChatFormatting.RED;
+            default          -> ChatFormatting.WHITE;
+        };
     }
 
     private String getFormattedName(String id) {
@@ -111,4 +184,4 @@ public class CardItem extends Item {
         if (text == null || text.isEmpty()) return text;
         return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
     }
-}
+}
