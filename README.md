@@ -3,7 +3,7 @@
 [![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.1-blue.svg?style=for-the-badge&logo=minecraft&logoColor=white)](https://minecraft.net)
 [![Fabric Loader](https://img.shields.io/badge/Loader-Fabric-lightgrey.style?style=for-the-badge&logo=fabric)](https://fabricmc.net)
 [![Cobblemon Compatible](https://img.shields.io/badge/Cobblemon-Compatible-orange.svg?style=for-the-badge&logo=pokemon)](https://cobblemon.com)
-[![License](https://img.shields.io/badge/License-Proprietary-red.svg?style=for-the-badge)](LICENSE)
+[![License](https://img.shields.io/badge/License-CC0_1.0-blue.svg?style=for-the-badge)](LICENSE)
 
 An immersive and feature-rich Minecraft Fabric mod that introduces the **ultimate Trading Card Game** to the **Cobblemon** universe! Collect, trade, grade, and proudly display your favorite Pokémon on gorgeous 3D cards complete with animated holographic shaders.
 
@@ -98,7 +98,7 @@ If you want to modify the source code or build the mod manually:
 
 ## 📜 License
 
-This project is licensed under proprietary terms. All rights reserved. Code modification and asset distribution are subject to written approval from the repository owner.
+This project is licensed under the CC0 1.0 Universal License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
