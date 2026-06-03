@@ -16,7 +16,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import org.joml.Matrix4f;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
 import com.mojang.authlib.GameProfile;
 
@@ -335,19 +334,7 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
         double t = Math.max(0.0, Math.min(1.0, (x - edge0) / (edge1 - edge0)));
         return t * t * (3.0 - 2.0 * t);
     }
-    
-    private float distToSegment(float px, float py, float ax, float ay, float bx, float by) {
-        float pax = px - ax;
-        float pay = py - ay;
-        float bax = bx - ax;
-        float bay = by - ay;
-        float ba2 = bax * bax + bay * bay;
-        if (ba2 < 1e-6f) return (float) Math.sqrt(pax * pax + pay * pay);
-        float h = Math.max(0.0f, Math.min(1.0f, (pax * bax + pay * bay) / ba2));
-        float dx = pax - bax * h;
-        float dy = pay - bay * h;
-        return (float) Math.sqrt(dx * dx + dy * dy);
-    }
+
     
     private boolean isProceduralBackground(String bg) {
         return bg.equals("water_anim") || bg.equals("lava_anim") || bg.equals("balatro_swirl") || 
@@ -2946,15 +2933,6 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
                  .replace(".", "")
                  .replace(" ", "")
                  .replace("-", "")
-                 .replaceAll("[^a-z0-9/._-]", "");
-    }
-
-    private String sanitizeLookupName(String id) {
-        if (id == null) return "";
-        return id.toLowerCase()
-                 .replace(".", "")
-                 .replace(" ", "_")
-                 .replace("-", "_")
                  .replaceAll("[^a-z0-9/._-]", "");
     }
 

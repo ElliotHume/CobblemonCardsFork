@@ -16,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.cobblemon.mod.common.pokemon.Species;
 import org.lwjgl.glfw.GLFW;
 
@@ -37,7 +36,6 @@ public class CardDexScreen extends Screen {
     private int maxScroll = 0;
     private boolean isDraggingScrollbar = false;
 
-    private int cardWidth = 34;
     private int cardHeight = 48;
 
     private int albumW = 278;
@@ -446,7 +444,6 @@ public class CardDexScreen extends Screen {
             return text;
         }
         String suffix = "..";
-        int suffixW = this.font.width(suffix);
         String truncated = text;
         while (truncated.length() > 0 && this.font.width(truncated + suffix) > maxWidth) {
             truncated = truncated.substring(0, truncated.length() - 1);
