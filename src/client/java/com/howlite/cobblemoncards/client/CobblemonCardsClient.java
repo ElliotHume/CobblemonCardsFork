@@ -7,12 +7,14 @@ import com.howlite.cobblemoncards.client.render.AdvancedHoloProjectorBlockEntity
 import com.howlite.cobblemoncards.client.render.CardCabinetBlockEntityRenderer;
 import com.howlite.cobblemoncards.client.render.GradingStationBlockEntityRenderer;
 import com.howlite.cobblemoncards.client.render.HoloProjectorBlockEntityRenderer;
+import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.item.ModItems;
 import com.howlite.cobblemoncards.menu.ModMenuTypes;
 import com.howlite.cobblemoncards.network.GiveRewardPayload;
 import com.howlite.cobblemoncards.network.OpenBinderPayload;
 import com.howlite.cobblemoncards.network.OpenBoosterPayload;
 import com.howlite.cobblemoncards.network.OpenWorkshopPayload;
+import com.howlite.cobblemoncards.network.RenderCardPayload;
 import com.howlite.cobblemoncards.network.SyncDiscoveredCardsPayload;
 import com.howlite.cobblemoncards.render.CardItemRenderer;
 import com.howlite.cobblemoncards.screen.AdvancedHoloProjectorScreen;
@@ -39,6 +41,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class CobblemonCardsClient implements ClientModInitializer {
     private static KeyMapping openBinderKey;
+    private static KeyMapping openShowcaseKey;  // Ouvre le Showcase depuis l'inventaire
 
     @Override
     public void onInitializeClient() {
@@ -52,7 +55,7 @@ public class CobblemonCardsClient implements ClientModInitializer {
         // Enregistre le provider pour la touche Shift de manière sécurisée (Split Environments)
         ClientAccess.setShiftKeyProvider(Screen::hasShiftDown);
 
-        // Enregistrement de la touche raccourci
+        // Enregistrement de la touche raccourci Classeur
         openBinderKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
                 "key.cobblemon-cards.open_binder",
                 InputConstants.Type.KEYSYM,
@@ -60,10 +63,39 @@ public class CobblemonCardsClient implements ClientModInitializer {
                 "category.cobblemon-cards"
         ));
 
-        // Gestion du clic sur la touche
+        // Enregistrement de la touche Showcase (Touche V par défaut)
+        // Ouvre l'écran de mise en scène avec les cartes de l'inventaire du joueur,
+        // sans passer par le serveur (lecture directe côté client).
+        openShowcaseKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
+                "key.cobblemon-cards.open_showcase",
+                InputConstants.Type.KEYSYM,
+                GLFW.GLFW_KEY_V,
+                "category.cobblemon-cards"
+        ));
+
+        // Gestion des touches
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
+            // Classeur
             while (openBinderKey.consumeClick()) {
                 ClientPlayNetworking.send(new OpenBinderPayload());
+            }
+
+            // Showcase : lit les cartes de l'inventaire et ouvre l'écran directement
+            while (openShowcaseKey.consumeClick()) {
+                Minecraft mc = Minecraft.getInstance();
+                if (mc.player != null && mc.level != null) {
+                    java.util.List<net.minecraft.world.item.ItemStack> showcaseCards = new java.util.ArrayList<>();
+                    // Parcourt tout l'inventaire (hotbar 0-8 en premier, puis 9-35)
+                    for (net.minecraft.world.item.ItemStack stack : mc.player.getInventory().items) {
+                        if (stack.has(ModDataComponents.CARD_DATA)) {
+                            showcaseCards.add(stack.copy());
+                            if (showcaseCards.size() >= 10) break;
+                        }
+                    }
+                    if (!showcaseCards.isEmpty()) {
+                        mc.setScreen(new com.howlite.cobblemoncards.screen.CardShowcaseScreen(showcaseCards));
+                    }
+                }
             }
         });
 
@@ -111,6 +143,14 @@ public class CobblemonCardsClient implements ClientModInitializer {
         ClientPlayNetworking.registerGlobalReceiver(SyncDiscoveredCardsPayload.ID, (payload, context) -> {
             context.client().execute(() -> {
                 Minecraft.getInstance().setScreen(new com.howlite.cobblemoncards.screen.CardDexScreen(payload.discoveredIds()));
+            });
+        });
+
+        // Showcase : affiche les cartes dans l'écran cinématique de mise en scène
+        ClientPlayNetworking.registerGlobalReceiver(RenderCardPayload.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                Minecraft.getInstance().setScreen(
+                        new com.howlite.cobblemoncards.screen.CardShowcaseScreen(payload.cards()));
             });
         });
 

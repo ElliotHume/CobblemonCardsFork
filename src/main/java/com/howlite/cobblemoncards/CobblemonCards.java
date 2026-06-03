@@ -22,6 +22,7 @@ import com.howlite.cobblemoncards.network.SortBinderPayload;
 import com.howlite.cobblemoncards.network.ToggleProjectorNamePayload;
 import com.howlite.cobblemoncards.network.GenerateCardPayload;
 import com.howlite.cobblemoncards.network.OpenWorkshopPayload;
+import com.howlite.cobblemoncards.network.RenderCardPayload;
 import com.howlite.cobblemoncards.network.SyncDiscoveredCardsPayload;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
@@ -76,6 +77,7 @@ public class CobblemonCards implements ModInitializer {
         PayloadTypeRegistry.playC2S().register(GenerateCardPayload.ID, GenerateCardPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(OpenWorkshopPayload.ID, OpenWorkshopPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SyncDiscoveredCardsPayload.ID, SyncDiscoveredCardsPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(RenderCardPayload.ID, RenderCardPayload.CODEC);
 
         // Réception du paquet pour changer de page dans le classeur ou le meuble
         ServerPlayNetworking.registerGlobalReceiver(BinderPagePayload.ID, (payload, context) -> {

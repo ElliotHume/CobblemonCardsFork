@@ -6,12 +6,14 @@ import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.item.ModItems;
+import com.howlite.cobblemoncards.network.RenderCardPayload;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
@@ -20,6 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -97,11 +100,118 @@ public class GiveCardCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("cobblecard")
             .requires(source -> source.hasPermission(2))
+            // ─── /cobblecard render ─────────────────────────────────────────────
+            // Ouvre un écran cinématique de mise en scène (showcase) pour screenshots.
+            // Syntaxe : /cobblecard render <pokemon> <shiny> <rarity> [<background> [<effect>]]
+            //   + optionnel : more <pokemon2> <shiny2> <rarity2> [<background2> [<effect2>]]
+            //     (répétable jusqu'à 5 cartes au total)
+            .then(Commands.literal("render")
+                .then(Commands.argument("pokemon", StringArgumentType.string())
+                    .suggests(POKEMON_SUGGESTIONS)
+                    .then(Commands.argument("shiny", BoolArgumentType.bool())
+                        .then(Commands.argument("rarity", StringArgumentType.string())
+                            .suggests(RARITY_SUGGESTIONS)
+                            // 1 carte, sans background ni effect
+                            .executes(context -> executeRender(context, 1))
+                            .then(Commands.argument("background", StringArgumentType.string())
+                                .suggests(BACKGROUND_SUGGESTIONS)
+                                // 1 carte avec background
+                                .executes(context -> executeRender(context, 1))
+                                .then(Commands.argument("effect", StringArgumentType.string())
+                                    .suggests(EFFECT_SUGGESTIONS)
+                                    // 1 carte avec background + effect
+                                    .executes(context -> executeRender(context, 1))
+                                    // ── Carte 2 ──
+                                    .then(Commands.literal("more")
+                                        .then(Commands.argument("pokemon2", StringArgumentType.string())
+                                            .suggests(POKEMON_SUGGESTIONS)
+                                            .then(Commands.argument("shiny2", BoolArgumentType.bool())
+                                                .then(Commands.argument("rarity2", StringArgumentType.string())
+                                                    .suggests(RARITY_SUGGESTIONS)
+                                                    .executes(context -> executeRender(context, 2))
+                                                    .then(Commands.argument("background2", StringArgumentType.string())
+                                                        .suggests(BACKGROUND_SUGGESTIONS)
+                                                        .executes(context -> executeRender(context, 2))
+                                                        .then(Commands.argument("effect2", StringArgumentType.string())
+                                                            .suggests(EFFECT_SUGGESTIONS)
+                                                            .executes(context -> executeRender(context, 2))
+                                                            // ── Carte 3 ──
+                                                            .then(Commands.literal("more")
+                                                                .then(Commands.argument("pokemon3", StringArgumentType.string())
+                                                                    .suggests(POKEMON_SUGGESTIONS)
+                                                                    .then(Commands.argument("shiny3", BoolArgumentType.bool())
+                                                                        .then(Commands.argument("rarity3", StringArgumentType.string())
+                                                                            .suggests(RARITY_SUGGESTIONS)
+                                                                            .executes(context -> executeRender(context, 3))
+                                                                            .then(Commands.argument("background3", StringArgumentType.string())
+                                                                                .suggests(BACKGROUND_SUGGESTIONS)
+                                                                                .executes(context -> executeRender(context, 3))
+                                                                                .then(Commands.argument("effect3", StringArgumentType.string())
+                                                                                    .suggests(EFFECT_SUGGESTIONS)
+                                                                                    .executes(context -> executeRender(context, 3))
+                                                                                    // ── Carte 4 ──
+                                                                                    .then(Commands.literal("more")
+                                                                                        .then(Commands.argument("pokemon4", StringArgumentType.string())
+                                                                                            .suggests(POKEMON_SUGGESTIONS)
+                                                                                            .then(Commands.argument("shiny4", BoolArgumentType.bool())
+                                                                                                .then(Commands.argument("rarity4", StringArgumentType.string())
+                                                                                                    .suggests(RARITY_SUGGESTIONS)
+                                                                                                    .executes(context -> executeRender(context, 4))
+                                                                                                    .then(Commands.argument("background4", StringArgumentType.string())
+                                                                                                        .suggests(BACKGROUND_SUGGESTIONS)
+                                                                                                        .executes(context -> executeRender(context, 4))
+                                                                                                        .then(Commands.argument("effect4", StringArgumentType.string())
+                                                                                                            .suggests(EFFECT_SUGGESTIONS)
+                                                                                                            .executes(context -> executeRender(context, 4))
+                                                                                                            // ── Carte 5 ──
+                                                                                                            .then(Commands.literal("more")
+                                                                                                                .then(Commands.argument("pokemon5", StringArgumentType.string())
+                                                                                                                    .suggests(POKEMON_SUGGESTIONS)
+                                                                                                                    .then(Commands.argument("shiny5", BoolArgumentType.bool())
+                                                                                                                        .then(Commands.argument("rarity5", StringArgumentType.string())
+                                                                                                                            .suggests(RARITY_SUGGESTIONS)
+                                                                                                                            .executes(context -> executeRender(context, 5))
+                                                                                                                            .then(Commands.argument("background5", StringArgumentType.string())
+                                                                                                                                .suggests(BACKGROUND_SUGGESTIONS)
+                                                                                                                                .executes(context -> executeRender(context, 5))
+                                                                                                                                .then(Commands.argument("effect5", StringArgumentType.string())
+                                                                                                                                    .suggests(EFFECT_SUGGESTIONS)
+                                                                                                                                    .executes(context -> executeRender(context, 5))
+                                                                                                                                )
+                                                                                                                            )
+                                                                                                                        )
+                                                                                                                    )
+                                                                                                                )
+                                                                                                            )
+                                                                                                        )
+                                                                                                    )
+                                                                                                )
+                                                                                            )
+                                                                                        )
+                                                                                    )
+                                                                                )
+                                                                            )
+                                                                        )
+                                                                    )
+                                                                )
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            )
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    )
+                )
+            )
             .then(Commands.literal("workshop")
                 .executes(context -> {
                     try {
                         ServerPlayer player = context.getSource().getPlayerOrException();
-                        net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new com.howlite.cobblemoncards.network.OpenWorkshopPayload());
+                        ServerPlayNetworking.send(player, new com.howlite.cobblemoncards.network.OpenWorkshopPayload());
                         return 1;
                     } catch (Exception e) {
                         context.getSource().sendFailure(Component.translatable("command.cobblemon-cards.workshop.player_only"));
@@ -193,6 +303,73 @@ public class GiveCardCommand {
 
     private static int execute(CommandContext<CommandSourceStack> context) {
         return executeInternal(context, false, false);
+    }
+
+    /**
+     * Exécute /cobblecard render : construit les stacks de cartes et envoie RenderCardPayload au joueur.
+     * @param cardCount nombre de cartes à inclure (1 à 5)
+     */
+    private static int executeRender(CommandContext<CommandSourceStack> context, int cardCount) {
+        try {
+            ServerPlayer player = context.getSource().getPlayerOrException();
+            List<ItemStack> cards = new ArrayList<>();
+
+            String[] suffixes = {"", "2", "3", "4", "5"};
+
+            for (int i = 0; i < cardCount; i++) {
+                String suf = suffixes[i];
+                String pokemonId = StringArgumentType.getString(context, "pokemon" + suf).toLowerCase();
+                boolean isShiny  = BoolArgumentType.getBool(context, "shiny" + suf);
+                String rarity    = StringArgumentType.getString(context, "rarity" + suf).toLowerCase();
+
+                // Background (optionnel)
+                Optional<String> background = Optional.empty();
+                try {
+                    String bg = StringArgumentType.getString(context, "background" + suf);
+                    if (!bg.equals("none")) background = Optional.of(bg);
+                } catch (IllegalArgumentException ignored) {}
+
+                // Effect (optionnel)
+                Optional<String> effect = Optional.empty();
+                try {
+                    String eff = StringArgumentType.getString(context, "effect" + suf);
+                    if (!eff.equals("none")) effect = Optional.of(eff);
+                } catch (IllegalArgumentException ignored) {}
+
+                // Si un effet est présent sans background, on attribue le background par défaut
+                if (effect.isPresent() && background.isEmpty()) {
+                    background = Optional.of(com.howlite.cobblemoncards.util.CardUtil.getDefaultBackground(pokemonId));
+                }
+
+                // Vérification de l'espèce
+                String baseName = getBaseSpeciesName(pokemonId);
+                com.cobblemon.mod.common.pokemon.Species species =
+                        com.howlite.cobblemoncards.util.CardUtil.getSpecies(baseName);
+                if (species == null) {
+                    context.getSource().sendFailure(
+                            Component.translatable("command.cobblemon-cards.invalid_pokemon", pokemonId));
+                    return 0;
+                }
+
+                ItemStack cardStack = new ItemStack(com.howlite.cobblemoncards.item.ModItems.CARD);
+                com.howlite.cobblemoncards.component.CardData data =
+                        new com.howlite.cobblemoncards.component.CardData(
+                                pokemonId, isShiny, rarity,
+                                com.howlite.cobblemoncards.component.CardStat.MOVEMENT_SPEED,
+                                0.05f, 0, background, effect);
+                cardStack.set(com.howlite.cobblemoncards.component.ModDataComponents.CARD_DATA, data);
+                cards.add(cardStack);
+            }
+
+            ServerPlayNetworking.send(player, new com.howlite.cobblemoncards.network.RenderCardPayload(cards));
+            context.getSource().sendSuccess(
+                    () -> Component.translatable("command.cobblemon-cards.render.success", cardCount), false);
+            return 1;
+
+        } catch (Exception e) {
+            context.getSource().sendFailure(Component.translatable("command.cobblemon-cards.error"));
+            return 0;
+        }
     }
 
     private static int executeInternal(CommandContext<CommandSourceStack> context, boolean defaults, boolean backgroundOnly) {
