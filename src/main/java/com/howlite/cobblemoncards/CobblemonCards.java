@@ -126,7 +126,7 @@ public class CobblemonCards implements ModInitializer {
             context.server().execute(() -> {
                 net.minecraft.server.level.ServerPlayer player = context.player();
                 if (!player.hasPermissions(2)) {
-                    player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§cVous n'avez pas la permission d'utiliser le Card Workshop."));
+                    player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.cobblemon-cards.workshop.no_permission"));
                     return;
                 }
 
@@ -163,7 +163,7 @@ public class CobblemonCards implements ModInitializer {
                     player.drop(cardStack, false);
                 }
                 com.howlite.cobblemoncards.util.CardAdvancementManager.checkAdvancements(player);
-                player.sendSystemMessage(net.minecraft.network.chat.Component.literal("§a[Card Workshop] Carte générée avec succès !"));
+                player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("message.cobblemon-cards.workshop.success"));
             });
         });
         

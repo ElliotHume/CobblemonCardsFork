@@ -285,5 +285,15 @@
   "gui.cobblemon-cards.custom_booster_creator.rename_button": "§eRename Booster",
   "gui.cobblemon-cards.custom_booster_creator.rename_button_lore_1": "§7Current Name: %s",
   "gui.cobblemon-cards.custom_booster_creator.rename_button_lore_2": "§7Click to rename the booster.",
-  "gui.cobblemon-cards.custom_booster_creator.rename_gui_title": "Rename Custom Booster"
+  "gui.cobblemon-cards.custom_booster_creator.rename_gui_title": "Rename Custom Booster",
+  "message.cobblemon-cards.workshop.no_permission": "§cYou do not have permission to use the Card Workshop.",
+  "message.cobblemon-cards.workshop.success": "§a[Card Workshop] Card generated successfully!",
+  "command.cobblemon-cards.workshop.player_only": "You must be a player to open the Card Workshop.",
+  "command.cobblemon-cards.carddex.fill_success": "§a[Card Dex] Your collector album has been filled to 100%!",
+  "command.cobblemon-cards.carddex.fill_error": "Error while filling the Card Dex: %s",
+  "command.cobblemon-cards.fill_cabinet.success": "The Card Cabinet has been filled to 100%!",
+  "command.cobblemon-cards.fill_cabinet.not_looking_at": "You must be looking at a Card Cabinet.",
+  "command.cobblemon-cards.error": "Error executing command.",
+  "command.cobblemon-cards.invalid_pokemon": "Invalid Pokémon: %s",
+  "command.cobblemon-cards.give.success": "Card(s) given successfully!"
 }

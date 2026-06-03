@@ -1,6 +1,7 @@
 package com.howlite.cobblemoncards.item.custom;
 
 import com.howlite.cobblemoncards.attachment.PlayerDataAttachments;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -26,7 +27,7 @@ public class GodPackEssenceItem extends Item {
             boolean hasGuarantee = player.getAttachedOrCreate(PlayerDataAttachments.HAS_GUARANTEED_GOD_PACK, () -> false);
 
             if (hasGuarantee) {
-                player.displayClientMessage(Component.literal("§cVous avez déjà une chance légendaire en attente !"), true);
+                player.displayClientMessage(Component.translatable("message.cobblemon-cards.god_pack_ticket.already_active").withStyle(ChatFormatting.RED), true);
                 return InteractionResultHolder.fail(itemStack);
             }
 
@@ -43,7 +44,7 @@ public class GodPackEssenceItem extends Item {
                     20, 0.5, 0.5, 0.5, 0.1);
             }
 
-            player.displayClientMessage(Component.literal("§6Votre prochain booster sera légendaire..."), false);
+            player.displayClientMessage(Component.translatable("message.cobblemon-cards.god_pack_ticket.activated").withStyle(ChatFormatting.GOLD), false);
 
             if (!player.getAbilities().instabuild) {
                 itemStack.shrink(1);

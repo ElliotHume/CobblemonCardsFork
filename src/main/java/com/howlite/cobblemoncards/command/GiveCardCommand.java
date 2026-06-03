@@ -104,7 +104,7 @@ public class GiveCardCommand {
                         net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new com.howlite.cobblemoncards.network.OpenWorkshopPayload());
                         return 1;
                     } catch (Exception e) {
-                        context.getSource().sendFailure(Component.literal("Vous devez être un joueur pour ouvrir le Card Workshop."));
+                        context.getSource().sendFailure(Component.translatable("command.cobblemon-cards.workshop.player_only"));
                         return 0;
                     }
                 })
@@ -123,10 +123,10 @@ public class GiveCardCommand {
                             attachment.addAll(all);
                             player.setAttached(com.howlite.cobblemoncards.attachment.PlayerDataAttachments.DISCOVERED_CARDS, attachment);
                             net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking.send(player, new com.howlite.cobblemoncards.network.SyncDiscoveredCardsPayload(attachment));
-                            context.getSource().sendSuccess(() -> Component.literal("§a[Card Dex] Votre album de collectionneur a été rempli à 100 % !"), true);
+                            context.getSource().sendSuccess(() -> Component.translatable("command.cobblemon-cards.carddex.fill_success"), true);
                             return 1;
                         } catch (Exception e) {
-                            context.getSource().sendFailure(Component.literal("Erreur lors du remplissage du Card Dex : " + e.getMessage()));
+                            context.getSource().sendFailure(Component.translatable("command.cobblemon-cards.carddex.fill_error", e.getMessage()));
                             return 0;
                         }
                     })
@@ -149,14 +149,14 @@ public class GiveCardCommand {
                                 cabinetBE.getItems().set(i, dummyCard.copy());
                             }
                             cabinetBE.setChanged();
-                            context.getSource().sendSuccess(() -> Component.literal("Le Card Cabinet a été rempli à 100 % !"), true);
+                            context.getSource().sendSuccess(() -> Component.translatable("command.cobblemon-cards.fill_cabinet.success"), true);
                             return 1;
                         } else {
-                            context.getSource().sendFailure(Component.literal("Vous devez regarder un Card Cabinet."));
+                            context.getSource().sendFailure(Component.translatable("command.cobblemon-cards.fill_cabinet.not_looking_at"));
                             return 0;
                         }
                     } catch (Exception e) {
-                        context.getSource().sendFailure(Component.literal("Erreur lors de l'exécution de la commande."));
+                        context.getSource().sendFailure(Component.translatable("command.cobblemon-cards.error"));
                         return 0;
                     }
                 })
@@ -236,7 +236,7 @@ public class GiveCardCommand {
             String baseName = getBaseSpeciesName(pokemonId);
             Species species = com.howlite.cobblemoncards.util.CardUtil.getSpecies(baseName);
             if (species == null) {
-                context.getSource().sendFailure(Component.literal("Pokémon invalide : " + pokemonId));
+                context.getSource().sendFailure(Component.translatable("command.cobblemon-cards.invalid_pokemon", pokemonId));
                 return 0;
             }
 
@@ -251,11 +251,11 @@ public class GiveCardCommand {
                 com.howlite.cobblemoncards.util.CardAdvancementManager.checkAdvancements(player);
             }
 
-            context.getSource().sendSuccess(() -> Component.literal("Carte(s) donnée(s) avec succès !"), true);
+            context.getSource().sendSuccess(() -> Component.translatable("command.cobblemon-cards.give.success"), true);
             return 1;
 
         } catch (Exception e) {
-            context.getSource().sendFailure(Component.literal("Erreur lors de l'exécution de la commande."));
+            context.getSource().sendFailure(Component.translatable("command.cobblemon-cards.error"));
             return 0;
         }
     }
