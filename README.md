@@ -117,6 +117,36 @@ If you want to modify the source code or build the mod manually:
   <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
+## 🤫 Easter Eggs
+
+<details>
+<summary>🔍 Click here to reveal the mod's secrets! (Spoilers)</summary>
+
+### 👤 Custom Player Cards
+* Using the **Instant-Dex Scanner** on another player while having a **Card Structure Disk** in your inventory will instantly consume the disk and print a **Mythic Grade 10 Cosmetic Card** featuring that player's Minecraft skin!
+* *Note: Player cards are purely cosmetic and do not grant passive stat boosts.*
+
+### 👾 The Legendary MissingNo.
+* If you scan Pokémon during a **Full Moon** at night while affected by the **Darkness** effect, the fabric of reality glitches! 
+* You will hear a haunting glitch scream and receive the legendary **Mythic Grade 10 MissingNo.** card, featuring a custom glitched pixel art texture and special stats!
+
+### 🎵 Jukebox Holo-Music
+* Placing a **Holo Projector** or **Advanced Holo Projector** directly on top of a **Jukebox** and slotting in a card will trigger custom Pokémon music tracks!
+* The track played adapts dynamically based on the card's rarity, shiny status, or stats:
+  * **Mythic**: *Soul Heart*
+  * **Legendary & Shiny**: *Battle! Necrozma*
+  * **Legendary**: *Cynthia*
+  * **Other Shiny**: *Battle! Zinnia*
+  * **Fire or Attack stats**: *Battle! Team Plasma*
+  * **Water or Speed stats**: *Route 209*
+  * **Grass or Health stats**: *Littleroot Town*
+  * **Ice or Armor stats**: *Snowpoint City*
+</details>
+
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+</p>
+
 ## 📜 License
 
 This project is licensed under the CC0 1.0 Universal License - see the [LICENSE](LICENSE) file for details.
