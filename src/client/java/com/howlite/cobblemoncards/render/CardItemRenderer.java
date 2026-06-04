@@ -25,6 +25,7 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
     private static final ResourceLocation TEXTURE_GLINT = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/glint.png");
     private static final ResourceLocation TEXTURE_NOISE = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/noise.png");
     private static final ResourceLocation TEXTURE_FLOW = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/flow.png");
+    private static final ResourceLocation TEXTURE_WHITE = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/white.png");
 
     @Override
     public void render(ItemStack stack, ItemDisplayContext mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
@@ -32,12 +33,19 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
         // 🛑 SÉCURITÉ :
         if (Minecraft.getInstance().level == null || Minecraft.getInstance().player == null) return;
 
+        // Informe ModShaders du contexte courant :
+        // - GUI → Iris n'intercepte pas le pipeline → les custom shaders GLSL fonctionnent
+        // - Monde (main, sol, holo projector) → Iris peut intercepter → fallback CPU si actif
+        boolean isGuiContext = (mode == ItemDisplayContext.GUI);
+        ModShaders.setCurrentContext(isGuiContext);
+
         CardData data = stack.get(ModDataComponents.CARD_DATA);
         // Si la carte n'a pas de données, on affiche un modèle de "carte mystère" par défaut
         if (data == null) {
             renderDefaultCard(matrices, vertexConsumers, light, overlay, mode);
             return;
         }
+
 
         // --- 1. CHARGER LE MODÈLE BLOCKBENCH (Le cadre selon la rareté) ---
         Item frameItem = getFrameItem(data);
@@ -350,17 +358,16 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
     
     private void renderProceduralBackground(PoseStack matrices, MultiBufferSource vertexConsumers, String bgType, int light, int overlay, float w, float h) {
         Matrix4f matrix = matrices.last().pose();
-        VertexConsumer consumer = vertexConsumers.getBuffer(RenderType.entityTranslucent(TEXTURE_NOISE));
-        
+
         float time = (System.currentTimeMillis() % 10000) / 1000.0f;
         
-        // Taille de la grille pixel art (40x30)
-        int gridX = 40;
-        int gridY = 30;
-        
-        // Taille de chaque "pixel" dans l'espace du modèle
-        float pixelW = w / gridX;
-        float pixelH = h / gridY;
+        // Grille procédurale 40×30
+        int gridX = ProceduralTextureCache.WIDTH;   // 40
+        int gridY = ProceduralTextureCache.HEIGHT;  // 30
+
+        // Tableau de pixels en format ABGR (attendu par NativeImage.setPixelRGBA)
+        // indexé par (row * gridX + col), row=0 = haut de l'image texture
+        int[] bgPixels = new int[gridX * gridY];
         
         float hw = w / 2.0f;
         float hh = h / 2.0f;
@@ -1580,22 +1587,20 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
                     }
                 }
                 
-                // Dessin du "pixel" carré
-                float px0 = -hw + ix * pixelW;
-                float px1 = -hw + (ix + 1) * pixelW;
-                float py0 = -hh + iy * pixelH;
-                float py1 = -hh + (iy + 1) * pixelH;
-                
+                // Écriture du pixel dans la NativeImage (format ABGR)
+                // iy=0 = bas de la carte (py0=-hh), row NativeImage 0 = haut de la texture (UV v=0)
+                // On inverse l'axe Y : row = gridY-1-iy
                 int cr = (int)(Math.min(Math.max(r, 0), 1) * 255);
                 int cg = (int)(Math.min(Math.max(g, 0), 1) * 255);
                 int cb = (int)(Math.min(Math.max(b, 0), 1) * 255);
-
-                consumer.addVertex(matrix, px0, py0, 0).setColor(cr, cg, cb, 255).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(0, 0, 1);
-                consumer.addVertex(matrix, px1, py0, 0).setColor(cr, cg, cb, 255).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(0, 0, 1);
-                consumer.addVertex(matrix, px1, py1, 0).setColor(cr, cg, cb, 255).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(0, 0, 1);
-                consumer.addVertex(matrix, px0, py1, 0).setColor(cr, cg, cb, 255).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(0, 0, 1);
+                bgPixels[(gridY - 1 - iy) * gridX + ix] = ProceduralTextureCache.toABGR(cr, cg, cb, 255);
             }
         }
+
+        // Upload la DynamicTexture et rendu d'un seul quad opaque
+        // entityCutout = même render type que les backgrounds statiques PNG → 100% compatible Iris
+        net.minecraft.resources.ResourceLocation bgTex = ProceduralTextureCache.getBgTexture(bgType, bgPixels);
+        renderQuad(matrix, vertexConsumers.getBuffer(RenderType.entityCutout(bgTex)), light, overlay, w, h);
     }
     
     private boolean isCustomNewEffect(String effect) {
@@ -1615,17 +1620,16 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
     
     private void renderProceduralEffect(PoseStack matrices, MultiBufferSource vertexConsumers, String effectType, int light, int overlay, float w, float h) {
         Matrix4f matrix = matrices.last().pose();
-        // On utilise entityTranslucent car on veut la transparence.
-        VertexConsumer consumer = vertexConsumers.getBuffer(RenderType.entityTranslucent(TEXTURE_NOISE));
-        
+
         float time = (System.currentTimeMillis() % 10000) / 1000.0f;
         
-        // Taille de la grille pixel art (40x30)
-        int gridX = 40;
-        int gridY = 30;
-        
-        float pixelW = w / gridX;
-        float pixelH = h / gridY;
+        // Grille procédurale 40×30
+        int gridX = ProceduralTextureCache.WIDTH;   // 40
+        int gridY = ProceduralTextureCache.HEIGHT;  // 30
+
+        // Tableau de pixels ABGR — initialisé à 0 (transparent) par défaut
+        // Les pixels avec a=0 resteront transparents dans la texture finale
+        int[] fxPixels = new int[gridX * gridY];
         
         float hw = w / 2.0f;
         float hh = h / 2.0f;
@@ -2761,24 +2765,20 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
                     }
                 }
                 
-                if (a > 0.0f) {
-                    float px0 = -hw + ix * pixelW;
-                    float px1 = -hw + (ix + 1) * pixelW;
-                    float py0 = -hh + iy * pixelH;
-                    float py1 = -hh + (iy + 1) * pixelH;
-                    
-                    int cr = (int)(Math.min(Math.max(r, 0), 1) * 255);
-                    int cg = (int)(Math.min(Math.max(g, 0), 1) * 255);
-                    int cb = (int)(Math.min(Math.max(b, 0), 1) * 255);
-                    int ca = (int)(Math.min(Math.max(a, 0), 1) * 255);
-
-                    consumer.addVertex(matrix, px0, py0, 0).setColor(cr, cg, cb, ca).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(0, 0, 1);
-                    consumer.addVertex(matrix, px1, py0, 0).setColor(cr, cg, cb, ca).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(0, 0, 1);
-                    consumer.addVertex(matrix, px1, py1, 0).setColor(cr, cg, cb, ca).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(0, 0, 1);
-                    consumer.addVertex(matrix, px0, py1, 0).setColor(cr, cg, cb, ca).setUv(u, v).setOverlay(overlay).setLight(light).setNormal(0, 0, 1);
-                }
+                // Écriture dans la NativeImage — tous les pixels, même ceux avec a=0 (transparents)
+                // L'inversion Y est identique au background : row = gridY-1-iy
+                int cr = (int)(Math.min(Math.max(r, 0), 1) * 255);
+                int cg = (int)(Math.min(Math.max(g, 0), 1) * 255);
+                int cb = (int)(Math.min(Math.max(b, 0), 1) * 255);
+                int ca = (int)(Math.min(Math.max(a, 0), 1) * 255);
+                fxPixels[(gridY - 1 - iy) * gridX + ix] = ProceduralTextureCache.toABGR(cr, cg, cb, ca);
             }
         }
+
+        // Upload la DynamicTexture et rendu d'un seul quad semi-transparent
+        // entityTranslucent = même render type que foil_stars, glint, etc. → compatible Iris
+        net.minecraft.resources.ResourceLocation fxTex = ProceduralTextureCache.getEffectTexture(effectType, fxPixels);
+        renderQuad(matrix, vertexConsumers.getBuffer(RenderType.entityTranslucent(fxTex)), light, overlay, w, h);
     }
 
     private void renderHoloLayer(PoseStack matrices, MultiBufferSource vertexConsumers, String effect, int light, int overlay, float pokeWidth, float pokeHeight) {

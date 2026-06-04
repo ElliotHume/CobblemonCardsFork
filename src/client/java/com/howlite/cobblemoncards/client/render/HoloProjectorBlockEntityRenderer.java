@@ -95,5 +95,9 @@ public class HoloProjectorBlockEntityRenderer implements BlockEntityRenderer<Hol
         this.itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, light, packedOverlay, poseStack, bufferSource, blockEntity.getLevel(), 0);
 
         poseStack.popPose();
+
+        if (bufferSource instanceof MultiBufferSource.BufferSource immediateSource) {
+            immediateSource.endBatch();
+        }
     }
 }

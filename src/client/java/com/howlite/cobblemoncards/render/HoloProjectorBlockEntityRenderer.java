@@ -45,5 +45,14 @@ public class HoloProjectorBlockEntityRenderer implements BlockEntityRenderer<Hol
         this.itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, light, packedOverlay, poseStack, bufferSource, blockEntity.getLevel(), 0);
 
         poseStack.popPose();
+
+        // Avec Iris+Sodium (sans custom shaders GLSL), le fallback CPU écrit dans des
+        // RenderTypes custom (entityTranslucent, entityCutout) via le MultiBufferSource.
+        // Dans un BlockEntityRenderer, ces buffers ne sont jamais automatiquement flushés
+        // par le pipeline standard. On force le flush ici pour que la géométrie soit soumise au GPU.
+        if (bufferSource instanceof MultiBufferSource.BufferSource immediateSource) {
+            immediateSource.endBatch();
+        }
     }
 }
+

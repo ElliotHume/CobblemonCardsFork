@@ -140,5 +140,9 @@ public class AdvancedHoloProjectorBlockEntityRenderer implements BlockEntityRend
 
             poseStack.popPose();
         }
+
+        if (bufferSource instanceof MultiBufferSource.BufferSource immediateSource) {
+            immediateSource.endBatch();
+        }
     }
 }

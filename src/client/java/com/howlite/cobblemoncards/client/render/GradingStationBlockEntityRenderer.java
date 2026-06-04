@@ -38,5 +38,9 @@ public class GradingStationBlockEntityRenderer implements BlockEntityRenderer<Gr
 
             poseStack.popPose();
         }
+
+        if (buffer instanceof MultiBufferSource.BufferSource immediateSource) {
+            immediateSource.endBatch();
+        }
     }
 }

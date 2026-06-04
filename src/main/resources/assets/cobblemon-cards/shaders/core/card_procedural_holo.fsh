@@ -969,4 +969,7 @@ void main() {
     else if (effectId == 27) color = holo_prism_stars(u, v, ix, iy, time);
 
     fragColor = clamp(color, 0.0, 1.0);
+    if (fragColor.a < 0.01) {
+        discard;
+    }
 }
