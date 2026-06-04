@@ -1,13 +1,26 @@
-# 🎴 Cobblemon Cards
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/addon_cobblemon_cards.png" alt="Cobblemon Cards Addon" width="600">
+</p>
 
-[![Minecraft Version](https://img.shields.io/badge/Minecraft-1.21.1-blue.svg?style=for-the-badge&logo=minecraft&logoColor=white)](https://minecraft.net)
-[![Fabric Loader](https://img.shields.io/badge/Loader-Fabric-lightgrey.style?style=for-the-badge&logo=fabric)](https://fabricmc.net)
-[![Cobblemon Compatible](https://img.shields.io/badge/Cobblemon-Compatible-orange.svg?style=for-the-badge&logo=pokemon)](https://cobblemon.com)
-[![License](https://img.shields.io/badge/License-CC0_1.0-blue.svg?style=for-the-badge)](LICENSE)
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/icon.png" alt="Cobblemon Cards Icon" width="120" />
+</p>
 
-An immersive and feature-rich Minecraft Fabric mod that introduces the **ultimate Trading Card Game** to the **Cobblemon** universe! Collect, trade, grade, and proudly display your favorite Pokémon on gorgeous 3D cards complete with animated holographic shaders.
+<p align="center">
+  <strong>An immersive and feature-rich Minecraft Fabric mod that introduces the ultimate Trading Card Game to the Cobblemon universe!</strong><br>
+  <em>Collect, trade, grade, and proudly display your favorite Pokémon on gorgeous 3D cards complete with animated holographic shaders.</em>
+</p>
 
----
+<p align="center">
+  <a href="https://minecraft.net"><img src="https://img.shields.io/badge/Minecraft-1.21.1-blue.svg?style=for-the-badge&logo=minecraft&logoColor=white" alt="Minecraft Version"></a>
+  <a href="https://fabricmc.net"><img src="https://img.shields.io/badge/Loader-Fabric-lightgrey.style?style=for-the-badge&logo=fabric" alt="Fabric Loader"></a>
+  <a href="https://cobblemon.com"><img src="https://img.shields.io/badge/Cobblemon-Compatible-orange.svg?style=for-the-badge&logo=pokemon" alt="Cobblemon Compatible"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC0_1.0-blue.svg?style=for-the-badge" alt="License"></a>
+</p>
+
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+</p>
 
 ## 🌟 Key Features
 
@@ -46,7 +59,9 @@ Witness over **20 unique procedural holographic effects** powered by custom shad
 * **6 Display Modes**: Continuous Rotation, Face Player, Dynamic (Spin & Face), Fixed, Flat, and Simple Bobbing.
 * The advanced projector lets you slot in and sequence a moving gallery of up to **27 cards**!
 
----
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+</p>
 
 ## 🛠️ Required Dependencies
 
@@ -65,7 +80,9 @@ To run **Cobblemon Cards**, download and place the following mods inside your cl
 > [!TIP]
 > **Recipe Viewers (EMI, REI, JEI):** The mod fully integrates recipe viewers compileOnly contracts. This makes it easy for players to check custom crafting recipes for Binders, Cabinets, Recyclers, and the Grading Station in-game!
 
----
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+</p>
 
 ## 🚀 Installation Guide
 
@@ -74,7 +91,9 @@ To run **Cobblemon Cards**, download and place the following mods inside your cl
 3. Download or compile the **Cobblemon Cards** `.jar` file and drop it into the `mods` folder.
 4. Launch the game and start your ultimate collection journey!
 
----
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+</p>
 
 ## 💻 For Developers: Compiling from Source
 
@@ -94,12 +113,16 @@ If you want to modify the source code or build the mod manually:
    ./gradlew build
    ```
 
----
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+</p>
 
 ## 📜 License
 
 This project is licensed under the CC0 1.0 Universal License - see the [LICENSE](LICENSE) file for details.
 
----
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+</p>
 
 *Made with ❤️ by Pokemon card enthusiasts in Minecraft.*
