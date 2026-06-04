@@ -25,7 +25,6 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
     private static final ResourceLocation TEXTURE_GLINT = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/glint.png");
     private static final ResourceLocation TEXTURE_NOISE = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/noise.png");
     private static final ResourceLocation TEXTURE_FLOW = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/flow.png");
-    private static final ResourceLocation TEXTURE_WHITE = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/white.png");
 
     @Override
     public void render(ItemStack stack, ItemDisplayContext mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
@@ -368,9 +367,6 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
         // Tableau de pixels en format ABGR (attendu par NativeImage.setPixelRGBA)
         // indexé par (row * gridX + col), row=0 = haut de l'image texture
         int[] bgPixels = new int[gridX * gridY];
-        
-        float hw = w / 2.0f;
-        float hh = h / 2.0f;
         
         // On itère sur chaque "pixel" de la grille
         for (int ix = 0; ix < gridX; ix++) {
@@ -1630,9 +1626,6 @@ public class CardItemRenderer implements BuiltinItemRendererRegistry.DynamicItem
         // Tableau de pixels ABGR — initialisé à 0 (transparent) par défaut
         // Les pixels avec a=0 resteront transparents dans la texture finale
         int[] fxPixels = new int[gridX * gridY];
-        
-        float hw = w / 2.0f;
-        float hh = h / 2.0f;
         
         for (int ix = 0; ix < gridX; ix++) {
             for (int iy = 0; iy < gridY; iy++) {
