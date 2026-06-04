@@ -60,6 +60,30 @@ Witness over **20 unique procedural holographic effects** powered by custom shad
 * **6 Display Modes**: Continuous Rotation, Face Player, Dynamic (Spin & Face), Fixed, Flat, and Simple Bobbing.
 * The advanced projector lets you slot in and sequence a moving gallery of up to **27 cards**!
 
+## ⚙️ Configuration (MidnightConfig)
+
+Cobblemon Cards is fully configurable out of the box via **MidnightConfig**. You can access the configuration menu in-game (requires *ModMenu*) or by editing the `config/cobblemon-cards.json` file.
+
+| Config Option | Default Value | Range / Type | Description |
+| :--- | :--- | :--- | :--- |
+| `globalStatMultiplier` | `10.0` | `0.1` - `100.0` | Multiplier applied to all passive RPG statistics bonuses granted by slotted cards. |
+| `recyclerProcessTime` | `40` | `1` - `1200` | Time (in ticks) it takes for a Card Recycler to process one card. |
+| `gradingStationProcessTime` | `100` | `1` - `12000` | Time (in ticks) it takes for a Grading Station to grade a card. |
+| `gradingStationDustCost` | `5` | `0` - `64` | Amount of Cobblecard Dust required to grade a card. |
+| `godPackTicketChance` | `1.0` | `0.0` - `100.0` | Percentage chance of obtaining a God Pack Ticket when opening a Booster Pack. |
+| `cardDropChance` | `1.0` | `0.0` - `100.0` | Percentage chance for a defeated or captured Pokémon to drop a card. |
+| `enableBoosterChestSpawn` | `true` | `Boolean` | Whether classic booster packs should spawn in Minecraft structure chests. |
+| `boosterChestSpawnChance` | `2.0` | `0.0` - `100.0` | Percentage chance to find a classic booster pack inside a structure chest. |
+
+<p align="center">
+  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+</p>
+
+## 📦 Modpack Integration & Standalone Notice
+
+> [!NOTE]
+> **Designed for Modpacks:** Cobblemon Cards is primarily designed and balanced to be played as part of a larger modpack. While everything has been built to ensure it works perfectly as a standalone mod (acting as a complete addon to Cobblemon), the gameplay loop, drop rates, and RPG stat rewards shine best when integrated alongside other mods, quests, and custom progression systems.
+
 <p align="center">
   <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
