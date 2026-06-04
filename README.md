@@ -16,6 +16,7 @@
   <a href="https://fabricmc.net"><img src="https://img.shields.io/badge/Loader-Fabric-lightgrey.svg?style=for-the-badge&logo=fabric" alt="Fabric Loader"></a>
   <a href="https://cobblemon.com"><img src="https://img.shields.io/badge/Cobblemon-Compatible-orange.svg?style=for-the-badge&logo=pokemon" alt="Cobblemon Compatible"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC0_1.0-blue.svg?style=for-the-badge" alt="License"></a>
+  <a href="https://discord.gg/cmKcXaNnmy"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2.svg?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
 </p>
 
 <p align="center">
