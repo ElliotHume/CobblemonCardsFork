@@ -62,6 +62,9 @@ Witness over **20 unique procedural holographic effects** powered by custom shad
 
 ## ⚙️ Configuration (MidnightConfig)
 
+<details>
+<summary>⚙️ Click to expand configuration options</summary>
+
 Cobblemon Cards is fully configurable out of the box via **MidnightConfig**. You can access the configuration menu in-game (requires *ModMenu*) or by editing the `config/cobblemon-cards.json` file.
 
 | Config Option | Default Value | Range / Type | Description |
@@ -74,6 +77,8 @@ Cobblemon Cards is fully configurable out of the box via **MidnightConfig**. You
 | `cardDropChance` | `1.0` | `0.0` - `100.0` | Percentage chance for a defeated or captured Pokémon to drop a card. |
 | `enableBoosterChestSpawn` | `true` | `Boolean` | Whether classic booster packs should spawn in Minecraft structure chests. |
 | `boosterChestSpawnChance` | `2.0` | `0.0` - `100.0` | Percentage chance to find a classic booster pack inside a structure chest. |
+
+</details>
 
 <p align="center">
   <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
