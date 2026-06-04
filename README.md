@@ -13,7 +13,7 @@
 
 <p align="center">
   <a href="https://minecraft.net"><img src="https://img.shields.io/badge/Minecraft-1.21.1-blue.svg?style=for-the-badge&logo=minecraft&logoColor=white" alt="Minecraft Version"></a>
-  <a href="https://fabricmc.net"><img src="https://img.shields.io/badge/Loader-Fabric-lightgrey.style?style=for-the-badge&logo=fabric" alt="Fabric Loader"></a>
+  <a href="https://fabricmc.net"><img src="https://img.shields.io/badge/Loader-Fabric-lightgrey.svg?style=for-the-badge&logo=fabric" alt="Fabric Loader"></a>
   <a href="https://cobblemon.com"><img src="https://img.shields.io/badge/Cobblemon-Compatible-orange.svg?style=for-the-badge&logo=pokemon" alt="Cobblemon Compatible"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC0_1.0-blue.svg?style=for-the-badge" alt="License"></a>
 </p>
