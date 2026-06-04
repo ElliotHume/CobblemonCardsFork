@@ -339,5 +339,9 @@
   "cobblemon-cards.midnightconfig.cardDropChance": "Chance de Drop de Carte",
   "cobblemon-cards.midnightconfig.cardDropChance.tooltip": "Pourcentage de chance qu'un Pokémon vaincu/capturé fasse tomber une carte.",
   "cobblemon-cards.midnightconfig.gradingStationDustCost": "Coût de Poudre pour l'Évaluation",
-  "cobblemon-cards.midnightconfig.gradingStationDustCost.tooltip": "Quantité de Poudre de Carte requise pour évaluer une carte."
+  "cobblemon-cards.midnightconfig.gradingStationDustCost.tooltip": "Quantité de Poudre de Carte requise pour évaluer une carte.",
+  "cobblemon-cards.midnightconfig.enableBoosterChestSpawn": "Activer le spawn de boosters dans les coffres",
+  "cobblemon-cards.midnightconfig.enableBoosterChestSpawn.tooltip": "Si activé, les boosters de cartes classiques apparaîtront aléatoirement dans les coffres de structures.",
+  "cobblemon-cards.midnightconfig.boosterChestSpawnChance": "Chance de spawn de booster dans les coffres",
+  "cobblemon-cards.midnightconfig.boosterChestSpawnChance.tooltip": "Pourcentage de chance de trouver un booster classique dans un coffre de structure."
 }

@@ -321,5 +321,9 @@
   "cobblemon-cards.midnightconfig.cardDropChance": "Card Drop Chance",
   "cobblemon-cards.midnightconfig.cardDropChance.tooltip": "Percentage chance for a defeated/captured Pokémon to drop a card.",
   "cobblemon-cards.midnightconfig.gradingStationDustCost": "Grading Station Dust Cost",
-  "cobblemon-cards.midnightconfig.gradingStationDustCost.tooltip": "Amount of Card Dust required to grade a card."
+  "cobblemon-cards.midnightconfig.gradingStationDustCost.tooltip": "Amount of Card Dust required to grade a card.",
+  "cobblemon-cards.midnightconfig.enableBoosterChestSpawn": "Enable Booster Spawning in Chests",
+  "cobblemon-cards.midnightconfig.enableBoosterChestSpawn.tooltip": "If enabled, classic card boosters will randomly spawn in structure chests.",
+  "cobblemon-cards.midnightconfig.boosterChestSpawnChance": "Booster Chest Spawn Chance",
+  "cobblemon-cards.midnightconfig.boosterChestSpawnChance.tooltip": "Percentage chance to find a classic booster pack in a structure chest."
 }

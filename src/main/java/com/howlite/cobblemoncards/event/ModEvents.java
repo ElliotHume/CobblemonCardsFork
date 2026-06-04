@@ -12,11 +12,16 @@ import com.howlite.cobblemoncards.item.ModItems;
 import com.howlite.cobblemoncards.item.custom.loot.BoosterLootTable;
 import com.howlite.cobblemoncards.util.CardStatUtil;
 import kotlin.Unit;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
+import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 
 import java.lang.reflect.Method;
 import java.util.Optional;
@@ -44,6 +49,22 @@ public class ModEvents {
                 }
             }
             return Unit.INSTANCE;
+        });
+
+        LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
+            if (source.isBuiltin() && CobblemonCardsConfig.enableBoosterChestSpawn) {
+                String path = key.location().getPath();
+                if (key.location().getNamespace().equals("minecraft") && path.startsWith("chests/") && !path.startsWith("chests/village/")) {
+                    float chance = CobblemonCardsConfig.boosterChestSpawnChance / 100.0f;
+                    if (chance > 0.0f) {
+                        LootPool.Builder poolBuilder = LootPool.lootPool()
+                                .setRolls(ConstantValue.exactly(1))
+                                .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK))
+                                .conditionally(LootItemRandomChanceCondition.randomChance(chance).build());
+                        tableBuilder.pool(poolBuilder.build());
+                    }
+                }
+            }
         });
     }
 
