@@ -28,6 +28,7 @@ public class FabricMasterAlbumItem extends MasterAlbumItem implements Trinket {
 
     @Override
     public Multimap<Holder<Attribute>, AttributeModifier> getModifiers(ItemStack stack, SlotReference slot, LivingEntity entity, ResourceLocation id) {
+        com.howlite.cobblemoncards.CobblemonCards.LOGGER.info("CobblemonCards: FabricMasterAlbumItem.getModifiers called for " + stack.getItem() + " in slot " + slot.inventory().getSlotType().getName());
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
 
         ItemContainerContents contents = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);

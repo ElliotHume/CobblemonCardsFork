@@ -5,6 +5,7 @@ import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.item.custom.CardItem;
 import com.howlite.cobblemoncards.item.custom.BinderItem;
 import com.howlite.cobblemoncards.item.custom.BinderTier;
+import com.howlite.cobblemoncards.util.PlatformHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.Container;
@@ -135,6 +136,7 @@ public class BinderMenu extends AbstractContainerMenu {
                 items.add(this.binderContainer.getItem(i));
             }
             binderStack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items));
+            PlatformHelper.INSTANCE.refreshEquippedModifiers(player);
         }
     }
 

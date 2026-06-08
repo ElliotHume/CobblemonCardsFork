@@ -84,6 +84,16 @@ public class NeoForgeCobblemonCards {
             eu.midnightdust.lib.config.MidnightConfig.init(CobblemonCards.MOD_ID, CobblemonCardsConfig.class);
             // Enregistrer les événements communs (ex: capture de Pokémon)
             ModEvents.registerEvents();
+
+            // Register Accessories
+            if (net.neoforged.fml.ModList.get().isLoaded("accessories")) {
+                io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.LEATHER_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.LEATHER_BINDER);
+                io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.IRON_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.IRON_BINDER);
+                io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.GOLD_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.GOLD_BINDER);
+                io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.DIAMOND_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.DIAMOND_BINDER);
+                io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.NETHERITE_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.NETHERITE_BINDER);
+                io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.MASTER_ALBUM, (io.wispforest.accessories.api.Accessory) ModItems.MASTER_ALBUM);
+            }
         });
     }
 

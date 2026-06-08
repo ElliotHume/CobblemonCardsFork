@@ -34,6 +34,7 @@ public interface PlatformHelper {
 
     List<EquippedAccessory> getEquippedAccessories(LivingEntity entity);
     boolean equipItem(Player player, ItemStack stack);
+    void refreshEquippedModifiers(LivingEntity entity);
 
     boolean hasGuaranteedGodPack(Player player);
     void setGuaranteedGodPack(Player player, boolean value);

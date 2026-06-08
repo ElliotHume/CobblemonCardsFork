@@ -137,4 +137,16 @@ public class NeoForgePlatformHelper implements PlatformHelper {
     public boolean isNeoForge() {
         return true;
     }
+
+    @Override
+    public void refreshEquippedModifiers(LivingEntity entity) {
+        var capability = io.wispforest.accessories.api.AccessoriesCapability.get(entity);
+        if (capability != null) {
+            capability.clearCachedSlotModifiers();
+            capability.getContainers().values().forEach(container -> {
+                container.markChanged();
+                container.update();
+            });
+        }
+    }
 }

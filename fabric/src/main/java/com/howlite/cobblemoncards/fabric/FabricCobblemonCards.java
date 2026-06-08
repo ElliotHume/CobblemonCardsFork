@@ -49,6 +49,17 @@ public class FabricCobblemonCards implements ModInitializer {
         // 2. Initialiser le mod commun
         CobblemonCards.init();
 
+        // Enregistrer les Trinkets Fabric pour les Binders et Albums
+        if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("trinkets")) {
+            CobblemonCards.LOGGER.info("CobblemonCards: Registering binders and master album as Trinkets!");
+            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.LEATHER_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.LEATHER_BINDER);
+            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.IRON_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.IRON_BINDER);
+            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.GOLD_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.GOLD_BINDER);
+            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.DIAMOND_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.DIAMOND_BINDER);
+            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.NETHERITE_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.NETHERITE_BINDER);
+            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.MASTER_ALBUM, (dev.emi.trinkets.api.Trinket) ModItems.MASTER_ALBUM);
+        }
+
         // 3. Enregistrer les attachements Fabric
         PlayerDataAttachments.register();
 

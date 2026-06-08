@@ -42,6 +42,15 @@ public class FabricPlatformHelper implements PlatformHelper {
     }
 
     @Override
+    public void refreshEquippedModifiers(LivingEntity entity) {
+        com.howlite.cobblemoncards.CobblemonCards.LOGGER.info("CobblemonCards: FabricPlatformHelper.refreshEquippedModifiers called for " + entity.getName().getString());
+        dev.emi.trinkets.api.TrinketsApi.getTrinketComponent(entity).ifPresent(component -> {
+            component.clearCachedModifiers();
+            component.update();
+        });
+    }
+
+    @Override
     public boolean hasGuaranteedGodPack(Player player) {
         return player.getAttachedOrCreate(PlayerDataAttachments.HAS_GUARANTEED_GOD_PACK, () -> false);
     }
