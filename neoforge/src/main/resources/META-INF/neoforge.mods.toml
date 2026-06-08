@@ -1,0 +1,43 @@
+# The standard mod file for NeoForge
+modLoader="javafml"
+loaderVersion="[2,)"
+license="CC0-1.0"
+
+[[mods]]
+modId="cobblemon_cards"
+version="${version}"
+displayName="Cobblemon Cards"
+displayURL="https://github.com/Howlite-UI/CobblemonCards"
+logoFile="logo.png"
+authors="Howlite"
+description='''
+An immersive and feature-rich Minecraft mod that introduces the ultimate Trading Card Game to the Cobblemon universe! Collect, trade, grade, and display your favorite Pokémon on gorgeous 3D cards with animated holographic shaders.
+'''
+
+[[dependencies.cobblemon_cards]]
+modId="neoforge"
+mandatory=true
+versionRange="[21.1,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.cobblemon_cards]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.21.1,1.21.2)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.cobblemon_cards]]
+modId="cobblemon"
+mandatory=true
+versionRange="[1.6.0,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.cobblemon_cards]]
+modId="accessories"
+mandatory=true
+versionRange="[1.1.0-beta.53,)"
+ordering="NONE"
+side="BOTH"

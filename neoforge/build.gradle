@@ -1,0 +1,73 @@
+plugins {
+    id 'net.neoforged.moddev' version '1.0.21'
+    id 'maven-publish'
+    id 'org.jetbrains.kotlin.jvm'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+evaluationDependsOn(':common')
+
+neoForge {
+    version = project.neoforge_version
+
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'cobblemon_cards'
+        }
+        server {
+            server()
+            programArgument '--nogui'
+        }
+    }
+
+    mods {
+        "cobblemon_cards" {
+            sourceSet sourceSets.main
+            sourceSet project(':common').sourceSets.main
+            sourceSet project(':common').sourceSets.client
+        }
+    }
+}
+
+dependencies {
+    implementation(project(":common")) {
+        exclude group: "net.fabricmc"
+        exclude group: "net.fabricmc.fabric-api"
+    }
+    implementation project(':common').sourceSets.client.output
+    implementation "thedarkcolour:kotlinforforge-neoforge:5.11.0"
+
+    // Cobblemon NeoForge
+    implementation "maven.modrinth:cobblemon:${project.neoforge_cobblemon_version}"
+    implementation "dev.architectury:architectury-neoforge:${project.architectury_version}"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${project.cloth_config_version}"
+
+    // Accessories API (NeoForge version)
+    implementation "io.wispforest:accessories-neoforge:${project.accessories_version}"
+
+    // MidnightLib (NeoForge version)
+    implementation "maven.modrinth:midnightlib:${project.neoforge_midnightlib_version}"
+
+    // Recipe Viewers
+    compileOnly "mezz.jei:jei-1.21.1-neoforge-api:${project.jei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${project.rei_version}"
+    compileOnly "dev.emi:emi-neoforge:${project.emi_version}:api"
+}
+
+processResources {
+    var replaceProperties = [
+            version: project.version
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching("META-INF/neoforge.mods.toml") {
+        expand replaceProperties
+    }
+
+    // Copy resources from common
+    from project(':common').sourceSets.main.resources
+    from project(':common').sourceSets.client.resources
+}
