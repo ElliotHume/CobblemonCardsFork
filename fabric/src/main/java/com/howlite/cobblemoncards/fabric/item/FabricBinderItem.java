@@ -32,30 +32,30 @@ public class FabricBinderItem extends BinderItem implements Trinket {
         Multimap<Holder<Attribute>, AttributeModifier> modifiers = HashMultimap.create();
         
         ItemContainerContents contents = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-        int index = 0;
+        java.util.Map<CardStat, Float> statTotals = new java.util.EnumMap<>(CardStat.class);
         for (ItemStack contentStack : contents.nonEmptyItems()) {
             CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
             if (cardData != null && !cardData.pokemonId().startsWith("player_")) {
-                CardStat stat = cardData.stat();
-                Holder<Attribute> attribute = getVanillaAttribute(stat);
-                if (attribute != null) {
-                    float val = cardData.statValue() * CobblemonCardsConfig.globalStatMultiplier;
-                    if (val != 0) {
-                        AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
-                        // Pour la vie et l'armure, on utilise l'addition directe
-                        if (stat == CardStat.MAX_HEALTH || stat == CardStat.ARMOR) {
-                            operation = AttributeModifier.Operation.ADD_VALUE;
-                        }
-                        
-                        AttributeModifier modifier = new AttributeModifier(
-                            ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "binder_modifier_" + stat.getSerializedName() + "_" + index),
-                            val,
-                            operation
-                        );
-                        modifiers.put(attribute, modifier);
-                        index++;
-                    }
+                statTotals.merge(cardData.stat(), cardData.statValue(), Float::sum);
+            }
+        }
+        
+        for (java.util.Map.Entry<CardStat, Float> entry : statTotals.entrySet()) {
+            CardStat stat = entry.getKey();
+            float totalValue = entry.getValue();
+            Holder<Attribute> attribute = getVanillaAttribute(stat);
+            if (attribute != null && totalValue != 0) {
+                float val = totalValue * CobblemonCardsConfig.globalStatMultiplier;
+                AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
+                if (stat == CardStat.MAX_HEALTH || stat == CardStat.ARMOR || stat == CardStat.LUCK) {
+                    operation = AttributeModifier.Operation.ADD_VALUE;
+                } else {
+                    val /= 100.0f;
                 }
+                
+                ResourceLocation modifierId = ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + "_" + stat.getSerializedName());
+                AttributeModifier modifier = new AttributeModifier(modifierId, val, operation);
+                modifiers.put(attribute, modifier);
             }
         }
         

@@ -25,29 +25,34 @@ public class NeoForgeMasterAlbumItem extends MasterAlbumItem implements Accessor
     @Override
     public void getDynamicModifiers(ItemStack stack, SlotReference reference, AccessoryAttributeBuilder builder) {
         ItemContainerContents contents = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
-        int index = 0;
+        java.util.Map<CardStat, Float> statTotals = new java.util.EnumMap<>(CardStat.class);
         for (ItemStack contentStack : contents.nonEmptyItems()) {
             CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
             if (cardData != null && !cardData.pokemonId().startsWith("player_")) {
-                CardStat stat = cardData.stat();
-                Holder<Attribute> attribute = getVanillaAttribute(stat);
-                if (attribute != null) {
-                    float val = cardData.statValue() * CobblemonCardsConfig.globalStatMultiplier;
-                    if (val != 0) {
-                        AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
-                        if (stat == CardStat.MAX_HEALTH || stat == CardStat.ARMOR) {
-                            operation = AttributeModifier.Operation.ADD_VALUE;
-                        }
+                statTotals.merge(cardData.stat(), cardData.statValue(), Float::sum);
+            }
+        }
 
-                        builder.addExclusive(
-                            attribute,
-                            ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "album_modifier_" + stat.getSerializedName() + "_" + index),
-                            val,
-                            operation
-                        );
-                        index++;
-                    }
+        for (java.util.Map.Entry<CardStat, Float> entry : statTotals.entrySet()) {
+            CardStat stat = entry.getKey();
+            float totalValue = entry.getValue();
+            Holder<Attribute> attribute = getVanillaAttribute(stat);
+            if (attribute != null && totalValue != 0) {
+                float val = totalValue * CobblemonCardsConfig.globalStatMultiplier;
+                AttributeModifier.Operation operation = AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
+                if (stat == CardStat.MAX_HEALTH || stat == CardStat.ARMOR || stat == CardStat.LUCK) {
+                    operation = AttributeModifier.Operation.ADD_VALUE;
+                } else {
+                    val /= 100.0f;
                 }
+
+                String path = "album_modifier_" + reference.slotName() + "_" + reference.slot() + "_" + stat.getSerializedName();
+                builder.addExclusive(
+                    attribute,
+                    ResourceLocation.fromNamespaceAndPath("cobblemon-cards", path),
+                    val,
+                    operation
+                );
             }
         }
     }

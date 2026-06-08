@@ -174,9 +174,9 @@ public class ModShaders extends RenderType {
             }
         } catch (Exception ignored) {}
 
-        // Iris présent mais API introuvable/erreur de lecture → supposer actif par prudence
-        irisActiveCache = true;
-        return true;
+        // Iris présent mais API introuvable/erreur de lecture → supposer inactif par prudence (évite le CPU fallback sur Oculus si inactif)
+        irisActiveCache = false;
+        return false;
     }
 
     /**

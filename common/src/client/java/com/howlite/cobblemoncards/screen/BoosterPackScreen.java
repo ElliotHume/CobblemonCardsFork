@@ -29,14 +29,15 @@ public class BoosterPackScreen extends Screen {
 
     private List<ItemStack> rewards = List.of();
     private boolean[] clicked = new boolean[5]; // Si le joueur a cliqué
-    private int[] shakeTicks = new int[5]; // Temps de tremblement restant (en ticks)
+    private float[] shakeTicks = new float[5]; // Temps de tremblement restant (en ticks)
     private float[] flipProgress = new float[5]; // De 0.0 (dos) à 1.0 (face)
     private float[] hoverAlpha = new float[5]; // Opacité du texte (0.0 à 1.0)
     private boolean[] introSoundPlayed = new boolean[5]; // Si le son d'intro a été joué
     private Button[] cardButtons = new Button[5];
     private float ticks = 0;
 
-    private int cameraShakeTicks = 0;
+    private float cameraShakeTicks = 0f;
+    private long lastTime = 0L;
 
     private final List<ScreenParticle> screenParticles = new ArrayList<>();
     private final Random random = new Random();
@@ -310,13 +311,21 @@ public class BoosterPackScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+        long now = System.currentTimeMillis();
+        if (this.lastTime == 0L) {
+            this.lastTime = now;
+        }
+        float deltaTime = (now - this.lastTime) / 50.0f; // 1.0 per tick (50ms)
+        this.lastTime = now;
+
         this.renderBackground(graphics, mouseX, mouseY, delta);
-        this.ticks += delta;
+        this.ticks += deltaTime;
 
         // Effet de tremblement de caméra global (Cam Shake)
-        if (cameraShakeTicks > 0) {
-            cameraShakeTicks--;
-            float intensity = 3.5f * ((float) cameraShakeTicks / 14.0f);
+        if (cameraShakeTicks > 0f) {
+            cameraShakeTicks -= deltaTime;
+            float intensity = 3.5f * (cameraShakeTicks / 14.0f);
+            if (intensity < 0f) intensity = 0f;
             float shakeX = (random.nextFloat() - 0.5f) * intensity;
             float shakeY = (random.nextFloat() - 0.5f) * intensity;
             graphics.pose().translate(shakeX, shakeY, 0);
@@ -348,21 +357,21 @@ public class BoosterPackScreen extends Screen {
             }
 
             if (clicked[i]) {
-                if (shakeTicks[i] > 0) {
-                    shakeTicks[i]--;
+                if (shakeTicks[i] > 0f) {
+                    shakeTicks[i] -= deltaTime;
                     
                     // Fait jaillir des étincelles pendant la vibration !
-                    if (random.nextFloat() < 0.25f) {
+                    if (random.nextFloat() < 0.25f * deltaTime) {
                         int xCenter = startX + (i * (cardWidth + spacing)) + (cardWidth / 2);
                         spawnShakingParticles(i, xCenter, yCenter);
                     }
 
-                    if (shakeTicks[i] == 0) {
+                    if (shakeTicks[i] <= 0f) {
                         int xCenter = startX + (i * (cardWidth + spacing)) + (cardWidth / 2);
                         triggerDopamineEffects(i, xCenter, yCenter);
                     }
                 } else if (flipProgress[i] < 1.0f) {
-                    flipProgress[i] += getFlipSpeed(i) * delta;
+                    flipProgress[i] += getFlipSpeed(i) * deltaTime;
                     if (flipProgress[i] > 1.0f) flipProgress[i] = 1.0f;
                 }
             }
@@ -370,9 +379,9 @@ public class BoosterPackScreen extends Screen {
             // Gestion du Fade du texte et de l'état survolé
             boolean isHovered = flipProgress[i] >= 1.0f && i < rewards.size() && isHoveringCard(i, mouseX, mouseY);
             if (isHovered) {
-                hoverAlpha[i] = Math.min(1.0f, hoverAlpha[i] + 0.15f * delta);
+                hoverAlpha[i] = Math.min(1.0f, hoverAlpha[i] + 0.15f * deltaTime);
             } else {
-                hoverAlpha[i] = Math.max(0.0f, hoverAlpha[i] - 0.15f * delta);
+                hoverAlpha[i] = Math.max(0.0f, hoverAlpha[i] - 0.15f * deltaTime);
             }
 
             int xCenter = startX + (i * (cardWidth + spacing)) + (cardWidth / 2);
@@ -418,8 +427,8 @@ public class BoosterPackScreen extends Screen {
             }
 
             // Physique de tremblement si en cours avec intensité crescendo !
-            if (clicked[i] && shakeTicks[i] > 0) {
-                float progress = 1.0f - ((float) shakeTicks[i] / getShakeDuration(i));
+            if (clicked[i] && shakeTicks[i] > 0f) {
+                float progress = 1.0f - (shakeTicks[i] / getShakeDuration(i));
                 float intensity = 1.5f + progress * 2.0f;
                 float shakeX = (random.nextFloat() - 0.5f) * intensity;
                 float shakeY = (random.nextFloat() - 0.5f) * intensity;
@@ -448,7 +457,7 @@ public class BoosterPackScreen extends Screen {
             graphics.pose().popPose();
 
             // Particules d'ambiance post-révélation pour les cartes rares
-            if (flipProgress[i] == 1.0f && i < rewards.size() && random.nextFloat() < 0.05f * delta) {
+            if (flipProgress[i] == 1.0f && i < rewards.size() && random.nextFloat() < 0.05f * deltaTime) {
                 ItemStack stack = rewards.get(i);
                 CardData data = stack.get(ModDataComponents.CARD_DATA);
                 if (data != null) {
@@ -513,7 +522,7 @@ public class BoosterPackScreen extends Screen {
         // Rendu et mise à jour des particules 2D
         for (int p = screenParticles.size() - 1; p >= 0; p--) {
             ScreenParticle sp = screenParticles.get(p);
-            if (sp.update(delta)) {
+            if (sp.update(deltaTime)) {
                 screenParticles.remove(p);
             } else {
                 sp.render(graphics);
@@ -562,11 +571,11 @@ public class BoosterPackScreen extends Screen {
         float dx, dy;
         int color;
         float scale;
-        int life;
-        int maxLife;
+        float life;
+        float maxLife;
         boolean isSparkle;
 
-        public ScreenParticle(float x, float y, float dx, float dy, int color, float scale, int maxLife, boolean isSparkle) {
+        public ScreenParticle(float x, float y, float dx, float dy, int color, float scale, float maxLife, boolean isSparkle) {
             this.x = x;
             this.y = y;
             this.dx = dx;
@@ -583,14 +592,16 @@ public class BoosterPackScreen extends Screen {
             this.y += this.dy * delta;
             // Gravité et frottements légers
             this.dy += 0.08f * delta;
-            this.dx *= 0.98f;
-            this.dy *= 0.98f;
-            this.life--;
-            return this.life <= 0;
+            this.dx *= (float) Math.pow(0.98, delta);
+            this.dy *= (float) Math.pow(0.98, delta);
+            this.life -= delta;
+            return this.life <= 0f;
         }
 
         public void render(GuiGraphics graphics) {
-            float alpha = (float) this.life / this.maxLife;
+            float alpha = this.life / this.maxLife;
+            if (alpha < 0f) alpha = 0f;
+            if (alpha > 1f) alpha = 1f;
             int r = (color >> 16) & 0xFF;
             int g = (color >> 8) & 0xFF;
             int b = color & 0xFF;
@@ -600,6 +611,7 @@ public class BoosterPackScreen extends Screen {
             int rx = Math.round(x);
             int ry = Math.round(y);
             int s = Math.round(size);
+            if (s < 1) s = 1;
             
             if (isSparkle) {
                 // Rendu en croix étincelante (sparkle) style diamant

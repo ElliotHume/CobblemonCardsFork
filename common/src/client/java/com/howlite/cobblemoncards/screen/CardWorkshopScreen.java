@@ -77,6 +77,7 @@ public class CardWorkshopScreen extends Screen {
     private int leftPanelMode = 0; // 0 = POKEMON, 1 = BACKGROUND, 2 = HOLO, 3 = STAT
     private int scrollOffset = 0;
     private float ticks = 0;
+    private long lastTime = 0L;
     private String lastQuery = "";
     
     // États pour le drag de la scrollbar
@@ -588,7 +589,14 @@ public class CardWorkshopScreen extends Screen {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
-        this.ticks += delta;
+        long now = System.currentTimeMillis();
+        if (this.lastTime == 0L) {
+            this.lastTime = now;
+        }
+        float deltaTime = (now - this.lastTime) / 50.0f;
+        this.lastTime = now;
+
+        this.ticks += deltaTime;
         
         // Mettre à jour l'autocomplétion si la saisie change
         String query = this.searchBox.getValue();

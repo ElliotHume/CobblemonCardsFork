@@ -58,6 +58,7 @@ public class CardShowcaseScreen extends Screen {
     // ─── Temps ──────────────────────────────────────────────────────────────
     private float ticks          = 0f;
     private float introStartTick = 0f;
+    private long lastTime        = 0L;
 
     // ─── Particules ─────────────────────────────────────────────────────────
     private final List<StarParticle>  stars  = new ArrayList<>();
@@ -93,6 +94,7 @@ public class CardShowcaseScreen extends Screen {
         layoutCards();
         ticks          = 0f;
         introStartTick = 0f;
+        lastTime       = 0L;
         Arrays.fill(introP, 0f);
         drifts.clear();
         // Réinitialise les scales seulement à la première ouverture (pas sur resize fenêtre)
@@ -137,13 +139,20 @@ public class CardShowcaseScreen extends Screen {
     // ════════════════════════════════════════════════════════════════════════
     @Override
     public void render(GuiGraphics g, int mx, int my, float delta) {
-        ticks += delta;
+        long now = System.currentTimeMillis();
+        if (this.lastTime == 0L) {
+            this.lastTime = now;
+        }
+        float deltaTime = (now - this.lastTime) / 50.0f;
+        this.lastTime = now;
+
+        ticks += deltaTime;
 
         // Mise à jour des progressions d'entrée (décalées par carte)
         for (int i = 0; i < cards.size(); i++) {
             float elapsed = (ticks - introStartTick) - i * 7f;
             if (elapsed > 0f) {
-                introP[i] = Math.min(1f, introP[i] + delta * 0.065f);
+                introP[i] = Math.min(1f, introP[i] + deltaTime * 0.065f);
             }
         }
 
@@ -161,7 +170,7 @@ public class CardShowcaseScreen extends Screen {
         }
 
         // Particules ambiantes
-        spawnAndRenderDrifts(g, delta);
+        spawnAndRenderDrifts(g, deltaTime);
 
         // HUD (masquable avec H)
         if (showText) renderHUD(g);
@@ -590,11 +599,11 @@ public class CardShowcaseScreen extends Screen {
         float x, y, dx, dy;
         final int   color;
         final float size;
-        int       life;
-        final int   maxLife;
+        float     life;
+        final float   maxLife;
 
         DriftParticle(float x, float y, float dx, float dy,
-                      int color, float size, int maxLife) {
+                      int color, float size, float maxLife) {
             this.x = x; this.y = y; this.dx = dx; this.dy = dy;
             this.color = color; this.size = size;
             this.life = maxLife; this.maxLife = maxLife;
@@ -604,12 +613,15 @@ public class CardShowcaseScreen extends Screen {
             x  += dx * delta;
             y  += dy * delta;
             dy -= 0.008f * delta;
-            dx *= 0.992f;
-            return --life <= 0;
+            dx *= (float) Math.pow(0.992, delta);
+            life -= delta;
+            return life <= 0f;
         }
 
         void render(GuiGraphics g) {
-            float t    = (float)life / maxLife;
+            float t    = this.life / this.maxLife;
+            if (t < 0f) t = 0f;
+            if (t > 1f) t = 1f;
             float fade = t < 0.2f ? t / 0.2f : (t > 0.85f ? (1f - t) / 0.15f : 1f);
             int r      = (color >> 16) & 0xFF;
             int gr     = (color >> 8)  & 0xFF;
