@@ -57,6 +57,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import java.util.List;
 
 @Mod("cobblemon_cards")
+@SuppressWarnings("null")
 public class NeoForgeCobblemonCards {
 
     public NeoForgeCobblemonCards(IEventBus modEventBus) {

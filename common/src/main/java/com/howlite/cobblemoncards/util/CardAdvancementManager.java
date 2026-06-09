@@ -3,7 +3,6 @@ package com.howlite.cobblemoncards.util;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.item.ModItems;
-import com.howlite.cobblemoncards.util.PlatformHelper;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.resources.ResourceLocation;

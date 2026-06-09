@@ -9,9 +9,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
-
-import java.util.List;
-
 public class CardStatUtil {
     
     public static float getPlayerDropBonus(ServerPlayer player) {

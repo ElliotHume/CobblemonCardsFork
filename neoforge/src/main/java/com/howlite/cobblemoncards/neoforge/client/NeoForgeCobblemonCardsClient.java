@@ -29,6 +29,7 @@ import org.lwjgl.glfw.GLFW;
 import java.io.IOException;
 
 @EventBusSubscriber(modid = "cobblemon_cards", bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+@SuppressWarnings("null")
 public class NeoForgeCobblemonCardsClient {
     private static KeyMapping openBinderKey;
     private static KeyMapping openShowcaseKey;

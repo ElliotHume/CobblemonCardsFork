@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+@SuppressWarnings("null")
 public class NeoForgePlatformHelper implements PlatformHelper {
 
     @Override

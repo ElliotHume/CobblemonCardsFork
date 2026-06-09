@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import java.util.function.Consumer;
 
+@SuppressWarnings("null")
 public class NeoForgeCardItem extends CardItem {
     public NeoForgeCardItem(Properties properties) {
         super(properties);

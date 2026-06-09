@@ -7,6 +7,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import java.util.List;
 import java.util.function.Supplier;
 
+@SuppressWarnings("null")
 public class NeoForgePlayerDataAttachments {
     public static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES =
             DeferredRegister.create(NeoForgeRegistries.ATTACHMENT_TYPES, CobblemonCards.MOD_ID);
@@ -21,7 +22,6 @@ public class NeoForgePlayerDataAttachments {
             () -> AttachmentType.builder(() -> 0).serialize(com.mojang.serialization.Codec.INT).copyOnDeath().build()
     );
 
-    @SuppressWarnings("unchecked")
     public static final Supplier<AttachmentType<List<String>>> DISCOVERED_CARDS = ATTACHMENT_TYPES.register(
             "discovered_cards",
             () -> AttachmentType.builder(() -> (List<String>) new java.util.ArrayList<String>())
