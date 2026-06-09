@@ -47,6 +47,10 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.minecraft.server.level.ServerLevel;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -316,6 +320,15 @@ public class NeoForgeCobblemonCards {
                             .build();
                     event.getTable().addPool(pool);
                 }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onEntityJoinLevel(EntityJoinLevelEvent event) {
+        if (event.getLevel() instanceof ServerLevel serverLevel) {
+            if (event.getEntity() instanceof PokemonEntity pokemonEntity) {
+                BinderSpawnModifier.onEntityLoad(pokemonEntity, serverLevel);
             }
         }
     }

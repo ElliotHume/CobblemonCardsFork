@@ -23,6 +23,9 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
+import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -92,6 +95,13 @@ public class FabricCobblemonCards implements ModInitializer {
                         tableBuilder.pool(poolBuilder.build());
                     }
                 }
+            }
+        });
+
+        // 9. Enregistrer le modificateur de spawn
+        ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            if (entity instanceof PokemonEntity pokemonEntity) {
+                BinderSpawnModifier.onEntityLoad(pokemonEntity, world);
             }
         });
     }
