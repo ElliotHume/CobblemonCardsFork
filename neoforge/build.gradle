@@ -71,3 +71,12 @@ processResources {
     from project(':common').sourceSets.main.resources
     from project(':common').sourceSets.client.resources
 }
+
+
+
+
+
+
+
+
+

@@ -62,4 +62,9 @@ public class FabricBinderItem extends BinderItem implements Trinket {
         
         return modifiers;
     }
+
+    @Override
+    public boolean canEquipFromUse(ItemStack stack, LivingEntity entity) {
+        return false;
+    }
 }

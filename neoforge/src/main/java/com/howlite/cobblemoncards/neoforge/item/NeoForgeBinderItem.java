@@ -57,4 +57,14 @@ public class NeoForgeBinderItem extends BinderItem implements Accessory {
             }
         }
     }
+
+    @Override
+    public boolean canEquipFromUse(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean canEquip(ItemStack stack, SlotReference reference) {
+        return reference.slotName().equals("belt");
+    }
 }

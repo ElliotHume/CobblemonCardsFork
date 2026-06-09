@@ -61,4 +61,9 @@ public class FabricMasterAlbumItem extends MasterAlbumItem implements Trinket {
 
         return modifiers;
     }
+
+    @Override
+    public boolean canEquipFromUse(ItemStack stack, LivingEntity entity) {
+        return false;
+    }
 }

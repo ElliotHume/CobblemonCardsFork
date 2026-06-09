@@ -56,4 +56,14 @@ public class NeoForgeMasterAlbumItem extends MasterAlbumItem implements Accessor
             }
         }
     }
+
+    @Override
+    public boolean canEquipFromUse(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public boolean canEquip(ItemStack stack, SlotReference reference) {
+        return reference.slotName().equals("belt");
+    }
 }

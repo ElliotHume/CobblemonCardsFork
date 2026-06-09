@@ -43,16 +43,9 @@ public class NeoForgePlatformHelper implements PlatformHelper {
     public boolean equipItem(Player player, ItemStack stack) {
         var capability = io.wispforest.accessories.api.AccessoriesCapability.get(player);
         if (capability != null) {
-            for (var containerEntry : capability.getContainers().entrySet()) {
-                var container = containerEntry.getValue();
-                var inventory = container.getAccessories();
-                for (int i = 0; i < inventory.getContainerSize(); i++) {
-                    if (inventory.getItem(i).isEmpty()) {
-                        inventory.setItem(i, stack.copy());
-                        stack.setCount(0);
-                        return true;
-                    }
-                }
+            var ref = capability.attemptToEquipAccessory(stack);
+            if (ref != null && ref.isValid()) {
+                return true;
             }
         }
         return false;
