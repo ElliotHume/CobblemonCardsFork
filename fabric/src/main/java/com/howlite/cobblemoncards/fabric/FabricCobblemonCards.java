@@ -28,7 +28,6 @@ import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;

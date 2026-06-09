@@ -18,8 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.UUID;
-
 public class FabricMasterAlbumItem extends MasterAlbumItem implements Trinket {
 
     public FabricMasterAlbumItem(Properties properties) {

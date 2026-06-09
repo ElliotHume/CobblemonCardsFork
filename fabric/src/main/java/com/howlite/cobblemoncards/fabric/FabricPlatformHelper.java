@@ -16,7 +16,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.function.Supplier;
 
 public class FabricPlatformHelper implements PlatformHelper {

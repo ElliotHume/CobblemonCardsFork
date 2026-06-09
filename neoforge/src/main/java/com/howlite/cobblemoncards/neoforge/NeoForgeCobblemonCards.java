@@ -24,8 +24,6 @@ import com.howlite.cobblemoncards.neoforge.attachment.NeoForgePlayerDataAttachme
 import com.howlite.cobblemoncards.neoforge.client.NeoForgeCobblemonCardsClient;
 import com.howlite.cobblemoncards.neoforge.client.NeoForgePacketHandlerClient;
 import com.howlite.cobblemoncards.util.PlatformHelper;
-import net.minecraft.core.Registry;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
