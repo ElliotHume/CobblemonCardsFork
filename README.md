@@ -1,26 +1,26 @@
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/addon_cobblemon_cards.png" alt="Cobblemon Cards Addon" width="600">
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/addon_cobblemon_cards.png" alt="Cobblemon Cards Addon" width="600">
 </p>
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/icon.png" alt="Cobblemon Cards Icon" width="120" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/icon.png" alt="Cobblemon Cards Icon" width="120" />
 </p>
 
 <p align="center">
-  <strong>An immersive and feature-rich Minecraft Fabric mod that introduces the ultimate Trading Card Game to the Cobblemon universe!</strong><br>
+  <strong>An immersive and feature-rich Minecraft mod (Fabric & NeoForge) that introduces the ultimate Trading Card Game to the Cobblemon universe!</strong><br>
   <em>Collect, trade, grade, and proudly display your favorite Pokémon on gorgeous 3D cards complete with animated holographic shaders.</em>
 </p>
 
 <p align="center">
   <a href="https://minecraft.net"><img src="https://img.shields.io/badge/Minecraft-1.21.1-blue.svg?style=for-the-badge&logo=minecraft&logoColor=white" alt="Minecraft Version"></a>
-  <a href="https://fabricmc.net"><img src="https://img.shields.io/badge/Loader-Fabric-lightgrey.svg?style=for-the-badge&logo=fabric" alt="Fabric Loader"></a>
+  <a href="https://fabricmc.net"><img src="https://img.shields.io/badge/Loader-Fabric%20%2F%20NeoForge-lightgrey.svg?style=for-the-badge" alt="Fabric & NeoForge Loaders"></a>
   <a href="https://cobblemon.com"><img src="https://img.shields.io/badge/Cobblemon-Compatible-orange.svg?style=for-the-badge&logo=pokemon" alt="Cobblemon Compatible"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-CC0_1.0-blue.svg?style=for-the-badge" alt="License"></a>
   <a href="https://discord.gg/cmKcXaNnmy"><img src="https://img.shields.io/badge/Discord-Join%20Server-5865F2.svg?style=for-the-badge&logo=discord&logoColor=white" alt="Discord"></a>
 </p>
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
 ## 🌟 Key Features
@@ -81,7 +81,7 @@ Cobblemon Cards is fully configurable out of the box via **MidnightConfig**. You
 </details>
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
 ## 📦 Modpack Integration & Standalone Notice
@@ -90,28 +90,38 @@ Cobblemon Cards is fully configurable out of the box via **MidnightConfig**. You
 > **Designed for Modpacks:** Cobblemon Cards is primarily designed and balanced to be played as part of a larger modpack. While everything has been built to ensure it works perfectly as a standalone mod (acting as a complete addon to Cobblemon), the gameplay loop, drop rates, and RPG stat rewards shine best when integrated alongside other mods, quests, and custom progression systems.
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
 ## 🛠️ Required Dependencies
 
-To run **Cobblemon Cards**, download and place the following mods inside your client or server `mods` directory:
+To run **Cobblemon Cards**, download and place the correct versions of the dependencies according to your mod loader:
 
+### 🪶 For Fabric Users
 | Mod | Required Version | Purpose |
 | :--- | :--- | :--- |
 | **Fabric API** | `0.116.10+1.21.1` | Core Fabric library |
-| **Cobblemon** | Compatible 1.21.1 | Core Pokémon mod |
-| **Architectury API** | `13.0.6` | Cross-platform compatibility helper |
-| **Cloth Config** | `15.0.140` | Mod configuration and UI systems |
-| **Trinkets** | `3.10.0` | Enables accessory slots to equip binders for RPG stats |
+| **Cobblemon** | `1.6.0+` | Core Pokémon mod |
+| **Architectury API** | `13.0.6+` | Cross-platform compatibility helper |
+| **Cloth Config** | `15.0.140+` | Mod configuration and UI systems |
+| **Trinkets** | `3.10.0+` | Enables accessory slots to equip binders for RPG stats |
 | **MidnightLib** | `1.9.2+1.21.1` | Lightweight config library |
-| **Cardinal Components** | `6.1.3` | Entity data attachment system |
+| **Cardinal Components** | `6.1.3+` | Entity data attachment system |
+
+### 🛠️ For NeoForge Users
+| Mod | Required Version | Purpose |
+| :--- | :--- | :--- |
+| **Cobblemon** | `1.6.0+` | Core Pokémon mod |
+| **Architectury API** | `13.0.6+` | Cross-platform compatibility helper |
+| **Cloth Config** | `15.0.140+` | Mod configuration and UI systems |
+| **Accessories** | `1.1.0-beta.53+` | Enables accessory slots to equip binders for RPG stats |
+| **MidnightLib** | `1.9.2+` | Lightweight config library |
 
 > [!TIP]
 > **Recipe Viewers (EMI, REI, JEI):** The mod fully integrates recipe viewers compileOnly contracts. This makes it easy for players to check custom crafting recipes for Binders, Cabinets, Recyclers, and the Grading Station in-game!
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
 ## 🚀 Installation Guide
@@ -122,7 +132,7 @@ To run **Cobblemon Cards**, download and place the following mods inside your cl
 4. Launch the game and start your ultimate collection journey!
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
 ## 💻 For Developers: Compiling from Source
@@ -144,7 +154,7 @@ If you want to modify the source code or build the mod manually:
    ```
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
 ## 🤫 Easter Eggs
@@ -160,6 +170,30 @@ If you want to modify the source code or build the mod manually:
 * If you scan Pokémon during a **Full Moon** at night while affected by the **Darkness** effect, the fabric of reality glitches! 
 * You will hear a haunting glitch scream and receive the legendary **Mythic Grade 10 MissingNo.** card, featuring a custom glitched pixel art texture and special stats!
 
+### 👻 Ghost of Lavender Town
+* Scan Gastly, Haunter, Gengar, Cubone, or Marowak near midnight (world time ticks 16000 to 20000) while standing on Soul Sand or Soul Soil.
+* Yields a **Mythic Grade 10 Cosmetic Card** featuring the spooky Lavender Town Ghost!
+
+### 🌟 Divine Bidoof
+* Scan a wild Bidoof while holding a Golden Apple or an Enchanted Golden Apple in your off-hand.
+* Yields the legendary **Mythic Grade 10 Cosmetic Card** of Divine Bidoof!
+
+### 💎 Crystal Onix
+* Scan a wild Onix while holding an Amethyst Shard in your off-hand.
+* Yields a **Mythic Grade 10 Cosmetic Card** featuring the stunning Crystal Onix!
+
+### 🖤 Shadow Lugia
+* Scan a wild Lugia during a Thunderstorm while affected by the Wither status effect.
+* Yields a **Mythic Grade 10 Cosmetic Card** featuring the corrupted Shadow Lugia!
+
+### 🏳️‍⚧️ Pride Sylveon
+* Scan a wild Sylveon while holding Pink Dye, Light Blue Dye, or White Dye (the colors of the Trans pride flag) in your off-hand.
+* Yields a **Mythic Grade 10 Cosmetic Card** of Pride Sylveon!
+
+### 💝 You & Mew
+* Scan a wild Mew while carrying a custom Player Card (obtained from scanning another player) in your inventory.
+* Consumes both the Player Card and the structure disk, and yields the ultimate **Mythic Grade 10 Cosmetic Card** representing you and Mew!
+
 ### 🎵 Jukebox Holo-Music
 * Placing a **Holo Projector** or **Advanced Holo Projector** directly on top of a **Jukebox** and slotting in a card will trigger custom Pokémon music tracks!
 * The track played adapts dynamically based on the card's rarity, shiny status, or stats:
@@ -174,7 +208,7 @@ If you want to modify the source code or build the mod manually:
 </details>
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
 ## 📜 License
@@ -182,7 +216,7 @@ If you want to modify the source code or build the mod manually:
 This project is licensed under the CC0 1.0 Universal License - see the [LICENSE](LICENSE) file for details.
 
 <p align="center">
-  <img src="src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
+  <img src="common/src/main/resources/assets/cobblemon-cards/textures/graphics/cobblemon_divider.png" alt="Divider" />
 </p>
 
 *Made with ❤️ by Pokemon card enthusiasts in Minecraft.*
