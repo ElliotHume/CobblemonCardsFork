@@ -72,6 +72,18 @@ processResources {
     from project(':common').sourceSets.client.resources
 }
 
+tasks.named('jar', Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from project(':common').sourceSets.main.output
+    from project(':common').sourceSets.client.output
+}
+
+tasks.named('sourcesJar', Jar) {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from project(':common').sourceSets.main.allSource
+    from project(':common').sourceSets.client.allSource
+}
+
 
 
 
