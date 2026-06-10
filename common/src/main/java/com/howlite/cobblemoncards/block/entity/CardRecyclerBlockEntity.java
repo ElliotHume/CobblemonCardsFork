@@ -142,7 +142,7 @@ public class CardRecyclerBlockEntity extends BlockEntity implements ImplementedI
 
     private int calculateDustAmount(CardData data) {
         // Les cartes cosmétiques / de joueur ne donnent pas de card dust
-        if (data.pokemonId().startsWith("player_")) {
+        if (com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(data.pokemonId())) {
             return 0;
         }
 

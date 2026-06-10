@@ -33,7 +33,7 @@ public class CardStatUtil {
             ItemContainerContents contents = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
             for (ItemStack contentStack : contents.nonEmptyItems()) {
                 CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
-                if (cardData != null && !cardData.pokemonId().startsWith("player_") && cardData.stat() == CardStat.CARD_DROP_CHANCE) {
+                if (cardData != null && !CardUtil.isCosmeticCard(cardData.pokemonId()) && cardData.stat() == CardStat.CARD_DROP_CHANCE) {
                     bonus += cardData.statValue();
                 }
             }

@@ -25,7 +25,13 @@ public class CardItem extends Item {
 
         if (data != null) {
             String key = data.isShiny() ? "item.cobblemon-cards.card.shiny" : "item.cobblemon-cards.card.normal";
-            return Component.translatable(key, getFormattedName(data.pokemonId()))
+            Object nameArg;
+            if (com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(data.pokemonId()) && !data.pokemonId().startsWith("player_")) {
+                nameArg = Component.translatable("cobblemon.species." + data.pokemonId());
+            } else {
+                nameArg = getFormattedName(data.pokemonId());
+            }
+            return Component.translatable(key, nameArg)
                     .withStyle(data.isShiny() ? ChatFormatting.GOLD : ChatFormatting.YELLOW);
         }
 
@@ -40,7 +46,7 @@ public class CardItem extends Item {
             if (ClientAccess.isShiftDown()) {
                 ChatFormatting rarityColor = getRarityColor(data);
 
-                if (data.pokemonId().startsWith("player_")) {
+                if (com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(data.pokemonId())) {
                     // Séparateur décoratif
                     tooltipComponents.add(Component.literal("─────────────────").withStyle(ChatFormatting.DARK_GRAY));
                     tooltipComponents.add(Component.translatable("tooltip.cobblemon-cards.cosmetic_card")

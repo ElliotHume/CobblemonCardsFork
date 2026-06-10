@@ -184,4 +184,16 @@ public class CardUtil {
         }
         return true;
     }
+
+    public static boolean isCosmeticCard(String pokemonId) {
+        if (pokemonId == null) return false;
+        String id = pokemonId.toLowerCase();
+        return id.startsWith("player_") 
+            || id.equals("you_and_mew")
+            || id.equals("ghost")
+            || id.equals("god_bidoof")
+            || id.equals("crystal_onix")
+            || id.equals("shadow_lugia")
+            || id.equals("pride_sylveon");
+    }
 }

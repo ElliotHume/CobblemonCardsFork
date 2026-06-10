@@ -67,7 +67,7 @@ public class ModItems {
     public static final Item FRAME_LEGENDARY = new Item(new Item.Properties());
     public static final Item FRAME_SHINY = new Item(new Item.Properties());
 
-    public static final Item CARD_STRUCTURE_DISK = new CardStructureDiskItem(new Item.Properties().stacksTo(64));
+    public static final Item CARD_STRUCTURE_DISK = new CardStructureDiskItem(new Item.Properties().stacksTo(1));
     public static final Item INSTANT_DEX = new InstantDexItem(new Item.Properties().stacksTo(1));
     public static final Item CARD_DEX = new CardDexItem(new Item.Properties().stacksTo(1));
 

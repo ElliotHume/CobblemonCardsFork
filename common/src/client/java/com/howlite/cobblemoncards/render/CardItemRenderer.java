@@ -79,6 +79,18 @@ public class CardItemRenderer {
             // Player skin textures are resolved dynamically
         } else if (resolvedPokemonId.equalsIgnoreCase("missingno")) {
             pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/easter_egg/missingno.png");
+        } else if (resolvedPokemonId.equalsIgnoreCase("you_and_mew")) {
+            pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/easter_egg/you_and_mew.png");
+        } else if (resolvedPokemonId.equalsIgnoreCase("ghost")) {
+            pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/easter_egg/ghost.png");
+        } else if (resolvedPokemonId.equalsIgnoreCase("god_bidoof")) {
+            pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/easter_egg/god_bidoof.png");
+        } else if (resolvedPokemonId.equalsIgnoreCase("crystal_onix")) {
+            pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/easter_egg/crystal_onix.png");
+        } else if (resolvedPokemonId.equalsIgnoreCase("shadow_lugia")) {
+            pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/easter_egg/shadow_lugia.png");
+        } else if (resolvedPokemonId.equalsIgnoreCase("pride_sylveon")) {
+            pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/easter_egg/pride_sylveon.png");
         } else {
             String folder = data.isShiny() ? "shiny" : "regular";
             String sanitizedName = sanitizeStandardPath(resolvedPokemonId);

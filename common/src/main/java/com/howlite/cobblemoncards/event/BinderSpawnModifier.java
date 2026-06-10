@@ -56,7 +56,7 @@ public class BinderSpawnModifier {
         // On calcule les totaux pour les stats de spawn uniquement
         for (ItemStack contentStack : contents.nonEmptyItems()) {
             CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
-            if (cardData != null && !cardData.pokemonId().startsWith("player_") && cardData.stat().getSerializedName().endsWith("_spawn")) {
+            if (cardData != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(cardData.pokemonId()) && cardData.stat().getSerializedName().endsWith("_spawn")) {
                 spawnStats.merge(cardData.stat(), cardData.statValue(), Float::sum);
             }
         }

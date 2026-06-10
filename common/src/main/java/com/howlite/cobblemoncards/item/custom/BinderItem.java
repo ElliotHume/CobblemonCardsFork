@@ -88,7 +88,7 @@ public class BinderItem extends Item {
 
         for (ItemStack contentStack : contents.nonEmptyItems()) {
             CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
-            if (cardData != null && !cardData.pokemonId().startsWith("player_")) {
+            if (cardData != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(cardData.pokemonId())) {
                 statTotals.merge(cardData.stat(), cardData.statValue(), Float::sum);
             }
         }

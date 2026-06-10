@@ -34,7 +34,7 @@ public class FabricBinderItem extends BinderItem implements Trinket {
         java.util.Map<CardStat, Float> statTotals = new java.util.EnumMap<>(CardStat.class);
         for (ItemStack contentStack : contents.nonEmptyItems()) {
             CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
-            if (cardData != null && !cardData.pokemonId().startsWith("player_")) {
+            if (cardData != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(cardData.pokemonId())) {
                 statTotals.merge(cardData.stat(), cardData.statValue(), Float::sum);
             }
         }

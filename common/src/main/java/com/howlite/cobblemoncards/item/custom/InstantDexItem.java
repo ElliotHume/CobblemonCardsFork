@@ -18,6 +18,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 
 import java.util.ArrayList;
@@ -57,6 +58,48 @@ public class InstantDexItem extends Item {
             DiskData diskData = diskStack.getOrDefault(ModDataComponents.DISK_DATA, DiskData.empty());
             List<UUID> scannedPokemon = new ArrayList<>(diskData.scannedPokemon());
             String speciesName = pokemon.getSpecies().getName().toLowerCase();
+
+            if (speciesName.equals("mew")) {
+                ItemStack playerCardStack = ItemStack.EMPTY;
+                String expectedPrefix = "player_" + player.getUUID().toString() + "_";
+                for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+                    ItemStack s = player.getInventory().getItem(slot);
+                    if (s.is(ModItems.CARD)) {
+                        CardData data = s.get(ModDataComponents.CARD_DATA);
+                        if (data != null && data.pokemonId().startsWith(expectedPrefix)) {
+                            playerCardStack = s;
+                            break;
+                        }
+                    }
+                }
+                
+                if (!playerCardStack.isEmpty()) {
+                    playerCardStack.shrink(1);
+                    diskStack.shrink(1);
+                    
+                    ItemStack card = new ItemStack(ModItems.CARD);
+                    CardData data = new CardData(
+                            "you_and_mew",
+                            true,
+                            "mythic",
+                            CardStat.MOVEMENT_SPEED,
+                            0.0f,
+                            10,
+                            Optional.empty(),
+                            Optional.empty()
+                    );
+                    card.set(ModDataComponents.CARD_DATA, data);
+                    
+                    if (!player.getInventory().add(card)) {
+                        player.drop(card, false);
+                    }
+                    
+                    player.displayClientMessage(Component.translatable("message.cobblemon-cards.instant_dex.capture_complete").withStyle(ChatFormatting.AQUA, ChatFormatting.BOLD), true);
+                    player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 1.0F, 1.0F);
+                    player.level().addParticle(ParticleTypes.FLASH, interactionTarget.getX(), interactionTarget.getY() + interactionTarget.getBbHeight() / 2.0, interactionTarget.getZ(), 0, 0, 0);
+                    return InteractionResult.SUCCESS;
+                }
+            }
 
             // Vérifier si c'est la même espèce
             if (diskData.targetSpecies().isPresent() && !diskData.targetSpecies().get().equals(speciesName)) {
@@ -136,6 +179,8 @@ public class InstantDexItem extends Item {
         boolean isFullMoon = player.level().getMoonPhase() == 0 && player.level().isNight();
         boolean hasDarkness = player.hasEffect(net.minecraft.world.effect.MobEffects.DARKNESS);
         
+        String baseSpecies = pokemon.getSpecies().getName().toLowerCase();
+        
         String species;
         boolean isShiny;
         String rarity;
@@ -153,8 +198,67 @@ public class InstantDexItem extends Item {
             
             // Play a scary glitch sound at a lower pitch to reward the player!
             player.level().playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_SCREAM, SoundSource.PLAYERS, 1.0F, 0.5F);
+        } else if ((baseSpecies.equals("gastly") || baseSpecies.equals("haunter") || baseSpecies.equals("gengar") || baseSpecies.equals("cubone") || baseSpecies.equals("marowak"))
+                && (Math.floorMod(player.level().getDayTime(), 24000) >= 16000 && Math.floorMod(player.level().getDayTime(), 24000) <= 20000)
+                && (player.level().getBlockState(player.blockPosition()).is(net.minecraft.world.level.block.Blocks.SOUL_SAND)
+                    || player.level().getBlockState(player.blockPosition()).is(net.minecraft.world.level.block.Blocks.SOUL_SOIL)
+                    || player.level().getBlockState(player.blockPosition().below()).is(net.minecraft.world.level.block.Blocks.SOUL_SAND)
+                    || player.level().getBlockState(player.blockPosition().below()).is(net.minecraft.world.level.block.Blocks.SOUL_SOIL))) {
+            
+            species = "ghost";
+            isShiny = true;
+            rarity = "mythic";
+            stat = CardStat.MOVEMENT_SPEED;
+            statValue = 0.0f;
+            grade = 10;
+            
+            player.level().playSound(null, player.blockPosition(), SoundEvents.AMBIENT_CAVE.value(), SoundSource.PLAYERS, 1.0F, 0.8F);
+        } else if (baseSpecies.equals("bidoof") && (
+                player.getOffhandItem().is(Items.GOLDEN_APPLE) || player.getOffhandItem().is(Items.ENCHANTED_GOLDEN_APPLE))) {
+            
+            species = "god_bidoof";
+            isShiny = true;
+            rarity = "mythic";
+            stat = CardStat.MOVEMENT_SPEED;
+            statValue = 0.0f;
+            grade = 10;
+            
+            player.level().playSound(null, player.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.PLAYERS, 1.0F, 1.0F);
+        } else if (baseSpecies.equals("onix") && player.getOffhandItem().is(Items.AMETHYST_SHARD)) {
+            
+            species = "crystal_onix";
+            isShiny = true;
+            rarity = "mythic";
+            stat = CardStat.MOVEMENT_SPEED;
+            statValue = 0.0f;
+            grade = 10;
+            
+            player.level().playSound(null, player.blockPosition(), SoundEvents.AMETHYST_BLOCK_CHIME, SoundSource.PLAYERS, 1.0F, 1.0F);
+        } else if (baseSpecies.equals("lugia") && player.level().isThundering() && player.hasEffect(net.minecraft.world.effect.MobEffects.WITHER)) {
+            
+            species = "shadow_lugia";
+            isShiny = true;
+            rarity = "mythic";
+            stat = CardStat.MOVEMENT_SPEED;
+            statValue = 0.0f;
+            grade = 10;
+            
+            player.level().playSound(null, player.blockPosition(), SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 0.8F, 0.5F);
+        } else if (baseSpecies.equals("sylveon") && (
+                player.getOffhandItem().is(Items.PINK_DYE)
+                || player.getOffhandItem().is(Items.LIGHT_BLUE_DYE)
+                || player.getOffhandItem().is(Items.WHITE_DYE))) {
+            
+            species = "pride_sylveon";
+            isShiny = true;
+            rarity = "mythic";
+            stat = CardStat.MOVEMENT_SPEED;
+            statValue = 0.0f;
+            grade = 10;
+            
+            player.level().playSound(null, player.blockPosition(), SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.8F, 1.5F);
         } else {
-            species = pokemon.getSpecies().getName().toLowerCase();
+            species = baseSpecies;
             isShiny = pokemon.getShiny();
             
             rarity = "common";

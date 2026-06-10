@@ -3,6 +3,7 @@ package com.howlite.cobblemoncards.item.custom;
 import com.howlite.cobblemoncards.component.DiskData;
 import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.item.ModItems;
+import com.howlite.cobblemoncards.block.ModBlocks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -37,22 +38,86 @@ public class CardStructureDiskItem extends Item {
                 return InteractionResultHolder.fail(heldStack);
             }
 
-            int dustSlot = findDustSlot(player);
+            int spaceLeft = MAX_DUST - data.dust();
+            int totalAdded = 0;
 
-            if (dustSlot != -1) {
-                ItemStack dustStack = player.getInventory().getItem(dustSlot);
+            if (!player.isShiftKeyDown()) {
+                // Single action: prioritize 1 single dust, then 1 pouch (9), then 1 sack (81).
+                int singleDustSlot = findItemSlot(player, ModItems.CARD_DUST);
+                if (singleDustSlot != -1) {
+                    player.getInventory().getItem(singleDustSlot).shrink(1);
+                    totalAdded = 1;
+                } else {
+                    int pouchSlot = findItemSlot(player, ModItems.CARD_DUST_POUCH);
+                    if (pouchSlot != -1) {
+                        player.getInventory().getItem(pouchSlot).shrink(1);
+                        totalAdded = 9;
+                    } else {
+                        int sackSlot = findItemSlot(player, ModBlocks.CARD_DUST_SACK.asItem());
+                        if (sackSlot != -1) {
+                            player.getInventory().getItem(sackSlot).shrink(1);
+                            totalAdded = 81;
+                        }
+                    }
+                }
+            } else {
+                // Sneaking: consume as much as possible up to spaceLeft
+                // First sacks (81)
+                int sackSlot;
+                while (spaceLeft >= 81 && (sackSlot = findItemSlot(player, ModBlocks.CARD_DUST_SACK.asItem())) != -1) {
+                    ItemStack stack = player.getInventory().getItem(sackSlot);
+                    int countToConsume = Math.min(stack.getCount(), spaceLeft / 81);
+                    if (countToConsume == 0) break;
+                    stack.shrink(countToConsume);
+                    int added = countToConsume * 81;
+                    totalAdded += added;
+                    spaceLeft -= added;
+                }
                 
-                int dustToConsume = 1;
-                // Si le joueur accroupi (sneak), on essaie de consommer tout le stack d'un coup (jusqu'à la limite du disque)
-                if (player.isShiftKeyDown()) {
-                    int spaceLeft = MAX_DUST - data.dust();
-                    dustToConsume = Math.min(dustStack.getCount(), spaceLeft);
+                // Then pouches (9)
+                int pouchSlot;
+                while (spaceLeft >= 9 && (pouchSlot = findItemSlot(player, ModItems.CARD_DUST_POUCH)) != -1) {
+                    ItemStack stack = player.getInventory().getItem(pouchSlot);
+                    int countToConsume = Math.min(stack.getCount(), spaceLeft / 9);
+                    if (countToConsume == 0) break;
+                    stack.shrink(countToConsume);
+                    int added = countToConsume * 9;
+                    totalAdded += added;
+                    spaceLeft -= added;
+                }
+                
+                // Then single dust (1)
+                int dustSlot;
+                while (spaceLeft >= 1 && (dustSlot = findItemSlot(player, ModItems.CARD_DUST)) != -1) {
+                    ItemStack stack = player.getInventory().getItem(dustSlot);
+                    int countToConsume = Math.min(stack.getCount(), spaceLeft);
+                    if (countToConsume == 0) break;
+                    stack.shrink(countToConsume);
+                    int added = countToConsume;
+                    totalAdded += added;
+                    spaceLeft -= added;
                 }
 
-                dustStack.shrink(dustToConsume);
+                // Friendly overfill/top-up logic if they have no smaller units
+                if (spaceLeft > 0 && totalAdded == 0) {
+                    int pouchSlotIdx = findItemSlot(player, ModItems.CARD_DUST_POUCH);
+                    if (pouchSlotIdx != -1) {
+                        player.getInventory().getItem(pouchSlotIdx).shrink(1);
+                        totalAdded = spaceLeft;
+                    } else {
+                        int sackSlotIdx = findItemSlot(player, ModBlocks.CARD_DUST_SACK.asItem());
+                        if (sackSlotIdx != -1) {
+                            player.getInventory().getItem(sackSlotIdx).shrink(1);
+                            totalAdded = spaceLeft;
+                        }
+                    }
+                }
+            }
 
+            if (totalAdded > 0) {
+                int newDust = Math.min(data.dust() + totalAdded, MAX_DUST);
                 heldStack.set(ModDataComponents.DISK_DATA, new DiskData(
-                        data.dust() + dustToConsume,
+                        newDust,
                         data.scanCount(),
                         data.scannedPokemon(),
                         data.targetSpecies()
@@ -68,9 +133,9 @@ public class CardStructureDiskItem extends Item {
         return InteractionResultHolder.pass(heldStack);
     }
 
-    private int findDustSlot(Player player) {
+    private int findItemSlot(Player player, Item item) {
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            if (player.getInventory().getItem(i).is(ModItems.CARD_DUST)) {
+            if (player.getInventory().getItem(i).is(item)) {
                 return i;
             }
         }
