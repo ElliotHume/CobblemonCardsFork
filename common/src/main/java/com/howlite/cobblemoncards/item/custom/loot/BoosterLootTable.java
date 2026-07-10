@@ -1,9 +1,11 @@
 package com.howlite.cobblemoncards.item.custom.loot;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.pokemon.Species;
 import com.howlite.cobblemoncards.CobblemonCards;
 import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import com.howlite.cobblemoncards.util.FakemonCardRegistry;
+import com.howlite.cobblemoncards.util.SpeciesRarityManager;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
@@ -80,6 +82,7 @@ public class BoosterLootTable {
     public static void invalidateCache() {
         cachedPokemonIds = null;
         FILTERED_POKEMON_CACHE.clear();
+        SpeciesRarityManager.invalidateCaches();
         CobblemonCards.LOGGER.info("[CobblemonCards] Cache des espèces Pokémon invalidé, rechargement au prochain appel.");
     }
 
@@ -151,13 +154,37 @@ public class BoosterLootTable {
         return createCard(rarity, false, boosterType);
     }
 
-    // Fonction interne pour créer le stack de carte
+    /**
+     * Rolls a random card rarity based on standard probability tiers.
+     */
+    public static String getRandomRarity() {
+        int roll = RANDOM.nextInt(10000);
+        if (roll < 10) return "mythic";       // 0.1%
+        if (roll < 110) return "legendary";    // 1%
+        if (roll < 610) return "epic";         // 5%
+        if (roll < 2110) return "rare";        // 15%
+        if (roll < 5110) return "uncommon";    // 30%
+        return "common";                       // ~49%
+    }
+
+    /**
+     * Species-aware overload for capture/faint drops.
+     * When the captured species is known, the rarity roll is influenced by
+     * SpeciesRarityManager so that, for example, catching a legendary leans
+     * toward a higher-rarity card drop.
+     */
+    public static String getRandomRarity(Species species) {
+        String weightedRarity = SpeciesRarityManager.rollCaptureRarity(species, RANDOM);
+        return weightedRarity != null ? weightedRarity : getRandomRarity();
+    }
+
     private static ItemStack createCard(String rarity, boolean forceGodPack, String boosterType) {
         List<String> pokemonIds = getFilteredPokemonIds(boosterType);
         if (pokemonIds.isEmpty()) {
             pokemonIds = getPokemonIds();
         }
-        String basePokemonId = pokemonIds.get(RANDOM.nextInt(pokemonIds.size()));
+        // Use species-aware weighted selection instead of uniform random
+        String basePokemonId = SpeciesRarityManager.selectSpecies(pokemonIds, rarity, RANDOM);
         boolean isShiny = forceGodPack || RANDOM.nextInt(64) == 0; // 1 chance sur 64 d'être shiny, ou forcé si God Pack
 
         // Détection et surclassement Régional / Méga

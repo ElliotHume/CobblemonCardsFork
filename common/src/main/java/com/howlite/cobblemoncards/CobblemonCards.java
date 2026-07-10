@@ -6,6 +6,7 @@ import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.event.ModEvents;
 import com.howlite.cobblemoncards.item.ModCreativeTabs;
 import com.howlite.cobblemoncards.item.ModItems;
+import com.howlite.cobblemoncards.util.SpeciesRarityManager;
 import eu.midnightdust.lib.config.MidnightConfig;
 import org.slf4j.Logger;
 import com.howlite.cobblemoncards.sound.ModSounds;
@@ -19,6 +20,8 @@ public class CobblemonCards {
     public static void init() {
         // Initialisation de la configuration MidnightLib
         MidnightConfig.init(MOD_ID, CobblemonCardsConfig.class);
+        // Initialize species-aware card rarity weighting
+        SpeciesRarityManager.initialize();
 
         ModDataComponents.register();
         ModItems.register();

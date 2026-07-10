@@ -18,7 +18,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.Random;
 
@@ -77,15 +76,8 @@ public class ModEvents {
             
             String pokemonId = pokemon.getSpecies().getName().toLowerCase();
             boolean isShiny = pokemon.getShiny();
-            String rarity = "common";
-            
-            try {
-                Method method = BoosterLootTable.class.getDeclaredMethod("getRandomRarity");
-                method.setAccessible(true);
-                rarity = (String) method.invoke(null);
-            } catch (Exception e) {
-                // Ignore and use common
-            }
+            // Species-aware rarity: catching a legendary leans toward higher-rarity drops
+            String rarity = BoosterLootTable.getRandomRarity(pokemon.getSpecies());
             
             CardStat randomStat = CardStat.values()[RANDOM.nextInt(CardStat.values().length)];
             
