@@ -74,6 +74,11 @@ processResources {
 
 tasks.named('jar', Jar) {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    manifest {
+        attributes([
+            "MixinConfigs": "cobblemon-cards.mixins.json"
+        ])
+    }
     from project(':common').sourceSets.main.output
     from project(':common').sourceSets.client.output
 }

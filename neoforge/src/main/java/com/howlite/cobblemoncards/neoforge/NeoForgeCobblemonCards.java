@@ -43,12 +43,15 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.howlite.cobblemoncards.event.BinderSpawnModifier;
+import com.howlite.cobblemoncards.util.FakemonWhitelistReloader;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
@@ -330,5 +333,12 @@ public class NeoForgeCobblemonCards {
                 BinderSpawnModifier.onEntityLoad(pokemonEntity, serverLevel);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onAddReloadListeners(AddReloadListenerEvent event) {
+        // Register the Fakemon whitelist datapack reload listener.
+        // Fires on server start and on every /reload command.
+        event.addListener((ResourceManagerReloadListener) FakemonWhitelistReloader::loadFrom);
     }
 }

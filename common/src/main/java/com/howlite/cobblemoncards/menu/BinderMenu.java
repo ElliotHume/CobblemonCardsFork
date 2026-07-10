@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -38,13 +39,19 @@ public class BinderMenu extends AbstractContainerMenu {
         this.tier = (binderStack.getItem() instanceof BinderItem binder) ? binder.getTier() : BinderTier.LEATHER;
         
         int totalSlots = tier.getMaxSlots(SLOTS_PER_PAGE);
-        ItemContainerContents contents = binderStack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
         this.binderContainer = new SimpleContainer(totalSlots);
-        
-        NonNullList<ItemStack> stacks = NonNullList.withSize(totalSlots, ItemStack.EMPTY);
-        contents.copyInto(stacks);
-        for (int i = 0; i < totalSlots; i++) {
-            this.binderContainer.setItem(i, stacks.get(i));
+
+        // Read from BINDER_CONTENTS (new, unlimited). Fall back to vanilla CONTAINER for
+        // backward-compatibility with saves created before the 256-item fix.
+        List<ItemStack> savedItems = binderStack.get(ModDataComponents.BINDER_CONTENTS);
+        if (savedItems == null) {
+            // Migration path: old binders stored data in DataComponents.CONTAINER (max 256).
+            NonNullList<ItemStack> legacy = NonNullList.withSize(Math.min(totalSlots, 256), ItemStack.EMPTY);
+            binderStack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).copyInto(legacy);
+            savedItems = legacy;
+        }
+        for (int i = 0; i < Math.min(savedItems.size(), totalSlots); i++) {
+            this.binderContainer.setItem(i, savedItems.get(i));
         }
 
         for (int p = 0; p < tier.getPages(); p++) {
@@ -135,7 +142,10 @@ public class BinderMenu extends AbstractContainerMenu {
             for (int i = 0; i < binderContainer.getContainerSize(); i++) {
                 items.add(this.binderContainer.getItem(i));
             }
-            binderStack.set(DataComponents.CONTAINER, ItemContainerContents.fromItems(items));
+            // Save to the unlimited BINDER_CONTENTS component.
+            binderStack.set(ModDataComponents.BINDER_CONTENTS, Collections.unmodifiableList(items));
+            // Clear the old vanilla CONTAINER key to avoid confusion on legacy reads.
+            binderStack.remove(DataComponents.CONTAINER);
             PlatformHelper.INSTANCE.refreshEquippedModifiers(player);
         }
     }

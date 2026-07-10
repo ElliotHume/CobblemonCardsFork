@@ -17,6 +17,7 @@ import com.howlite.cobblemoncards.menu.AdvancedHoloProjectorMenu;
 import com.howlite.cobblemoncards.menu.BinderMenu;
 import com.howlite.cobblemoncards.menu.CardCabinetMenu;
 import com.howlite.cobblemoncards.network.*;
+import com.howlite.cobblemoncards.util.FakemonWhitelistReloader;
 import com.howlite.cobblemoncards.util.PlatformHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -24,10 +25,15 @@ import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.VillagerTrades;
@@ -103,6 +109,21 @@ public class FabricCobblemonCards implements ModInitializer {
                 BinderSpawnModifier.onEntityLoad(pokemonEntity, world);
             }
         });
+
+        // 10. Enregistrer le reload listener datapack pour la whitelist Fakemon
+        ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(
+            new SimpleSynchronousResourceReloadListener() {
+                @Override
+                public ResourceLocation getFabricId() {
+                    return ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, "fakemon_whitelist");
+                }
+
+                @Override
+                public void onResourceManagerReload(ResourceManager manager) {
+                    FakemonWhitelistReloader.loadFrom(manager);
+                }
+            }
+        );
     }
 
     private void registerPackets() {

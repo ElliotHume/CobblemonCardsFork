@@ -98,6 +98,8 @@ public class CardWorkshopScreen extends Screen {
         java.util.Set<String> galarian = java.util.Set.of("zigzagoon", "linoone", "ponyta", "rapidash", "farfetchd", "weezing", "mr_mime", "corsola", "darumaka", "darmanitan", "yamask", "stunfisk", "slowpoke", "slowbro", "slowking", "articuno", "zapdos", "moltres");
         java.util.Set<String> hisuian = java.util.Set.of("growlithe", "arcanine", "voltorb", "electrode", "typhlosion", "qwilfish", "sneasel", "zorua", "zoroark", "braviary", "sliggoo", "goodra", "avalugg", "decidueye", "samurott", "lilligant", "basculin");
         java.util.Set<String> mega = java.util.Set.of("venusaur", "charizard", "blastoise", "alakazam", "gengar", "kangaskhan", "pinsir", "gyarados", "aerodactyl", "mewtwo", "ampharos", "scizor", "heracross", "tyranitar", "blaziken", "gardevoir", "mawile", "aggron", "medicham", "manectric", "banette", "absol", "garchomp", "lucario", "abomasnow", "beedrill", "pidgeot", "steelix", "sceptile", "swampert", "sableye", "sharpedo", "camerupt", "altaria", "glalie", "salamence", "metagross", "latias", "latios", "rayquaza", "lopunny", "gallade", "audino", "diancie");
+        java.util.Set<String> gmax = java.util.Set.of("venusaur", "butterfree", "meowth", "machamp", "gengar", "corviknight", "alcremie", "urshifu");
+        java.util.Set<String> gigantamax = java.util.Set.of("charizard", "blastoise", "pikachu", "eevee", "snorlax", "melmetal", "rillaboom", "cinderace", "sandaconda", "toxtricity");
 
         List<String> baseNames = PokemonSpecies.getImplemented().stream()
                 .map(s -> s.getName().toLowerCase())
@@ -118,6 +120,18 @@ public class CardWorkshopScreen extends Screen {
                 } else {
                     populatedList.add(base + "_mega");
                 }
+            }
+            if (gmax.contains(base)) {
+                populatedList.add(base + "_gmax");
+                if (base.equals("urshifu")) {
+                    populatedList.add("urshifu_rapidstrike_gmax");
+                }
+            }
+            if (gigantamax.contains(base)) {
+                populatedList.add(base + "_gigantamax");
+            }
+            if (base.equals("eternatus")) {
+                populatedList.add("eternamax_eternatus");
             }
         }
         populatedList.sort(String::compareTo);

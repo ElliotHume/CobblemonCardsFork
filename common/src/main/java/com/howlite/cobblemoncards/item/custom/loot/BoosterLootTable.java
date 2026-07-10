@@ -2,6 +2,8 @@ package com.howlite.cobblemoncards.item.custom.loot;
 
 import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
 import com.howlite.cobblemoncards.CobblemonCards;
+import com.howlite.cobblemoncards.CobblemonCardsConfig;
+import com.howlite.cobblemoncards.util.FakemonCardRegistry;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
@@ -16,8 +18,14 @@ import java.util.stream.Collectors;
 
 public class BoosterLootTable {
 
-    // Liste dynamique générée à partir du registre Cobblemon
+    // Lista dinamica generada a partir del registro Cobblemon
     private static List<String> cachedPokemonIds = null;
+    // Tracks the last allowFakemonCards value used to build the cache.
+    // If the config changes, the cache is automatically invalidated.
+    private static boolean cachedAllowFakemon = false;
+    // Tracks the whitelist size at cache build time. If the whitelist changes
+    // (datapack reload), the cache is also invalidated automatically.
+    private static int cachedWhitelistSize = -1;
 
     /**
      * Récupère la liste des IDs de Pokémon disponibles.
@@ -25,14 +33,36 @@ public class BoosterLootTable {
      * Le résultat est mis en cache après le premier appel.
      */
     public static List<String> getPokemonIds() {
+        // Auto-invalidate if the config option or the datapack whitelist changed.
+        int currentWhitelistSize = FakemonCardRegistry.getWhitelistedIds().size();
+        if (cachedPokemonIds != null
+                && (cachedAllowFakemon != CobblemonCardsConfig.allowFakemonCards
+                    || cachedWhitelistSize != currentWhitelistSize)) {
+            CobblemonCards.LOGGER.info(
+                    "[CobblemonCards] Species cache invalidated (allowFakemon={}, whitelistSize={}).",
+                    CobblemonCardsConfig.allowFakemonCards, currentWhitelistSize);
+            invalidateCache();
+        }
+
         if (cachedPokemonIds == null) {
+            cachedAllowFakemon = CobblemonCardsConfig.allowFakemonCards;
+            cachedWhitelistSize = FakemonCardRegistry.getWhitelistedIds().size();
             try {
                 cachedPokemonIds = PokemonSpecies.getImplemented().stream()
+                        .filter(species -> {
+                            if (CobblemonCardsConfig.allowFakemonCards) return true;
+                            int dex = species.getNationalPokedexNumber();
+                            // Allow official Gen 1-9 Pokémon OR any explicitly whitelisted Fakemon.
+                            return (dex >= 1 && dex <= 1025)
+                                    || FakemonCardRegistry.isWhitelisted(species.getName());
+                        })
                         .map(species -> species.getName().toLowerCase())
                         .distinct()
                         .sorted()
                         .collect(Collectors.toList());
-                CobblemonCards.LOGGER.info("[CobblemonCards] Liste dynamique chargée : {} espèces de Pokémon disponibles pour les cartes.", cachedPokemonIds.size());
+                CobblemonCards.LOGGER.info(
+                        "[CobblemonCards] Liste dynamique chargée : {} espèces disponibles (allowFakemon={}, whitelist={}).",
+                        cachedPokemonIds.size(), CobblemonCardsConfig.allowFakemonCards, cachedWhitelistSize);
             } catch (Exception e) {
                 CobblemonCards.LOGGER.warn("[CobblemonCards] Impossible de charger les espèces Cobblemon, utilisation d'une liste de secours.", e);
                 cachedPokemonIds = new ArrayList<>(List.of("pikachu", "charizard", "mewtwo", "lucario", "greninja", "gengar", "eevee", "bulbasaur", "squirtle", "rayquaza"));

@@ -154,8 +154,8 @@ public class CardCabinetBlock extends BaseEntityBlock {
                 }
 
                 if (!isEmpty) {
-                    masterAlbum.set(net.minecraft.core.component.DataComponents.CONTAINER,
-                            net.minecraft.world.item.component.ItemContainerContents.fromItems(items));
+                    masterAlbum.set(com.howlite.cobblemoncards.component.ModDataComponents.BINDER_CONTENTS,
+                            java.util.Collections.unmodifiableList(items));
                 }
 
                 Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), masterAlbum);
@@ -169,22 +169,27 @@ public class CardCabinetBlock extends BaseEntityBlock {
         super.setPlacedBy(level, pos, state, placer, stack);
         BlockEntity be = level.getBlockEntity(pos);
         if (be instanceof CardCabinetBlockEntity cabinetEntity) {
-            if (stack.has(net.minecraft.core.component.DataComponents.CONTAINER)) {
+            java.util.List<ItemStack> savedItems = stack.get(com.howlite.cobblemoncards.component.ModDataComponents.BINDER_CONTENTS);
+            if (savedItems == null && stack.has(net.minecraft.core.component.DataComponents.CONTAINER)) {
                 net.minecraft.world.item.component.ItemContainerContents contents = 
                         stack.get(net.minecraft.core.component.DataComponents.CONTAINER);
                 if (contents != null) {
-                    net.minecraft.core.NonNullList<ItemStack> stacks = net.minecraft.core.NonNullList.withSize(12000, ItemStack.EMPTY);
-                    contents.copyInto(stacks);
-                    net.minecraft.core.NonNullList<ItemStack> inventoryList = cabinetEntity.getItems();
-                    for (int i = 0; i < 12000; i++) {
-                        ItemStack itemStack = stacks.get(i);
-                        inventoryList.set(i, itemStack);
-                        if (itemStack.getCount() > cabinetEntity.getMaxStackSize()) {
-                            itemStack.setCount(cabinetEntity.getMaxStackSize());
-                        }
-                    }
-                    cabinetEntity.setChanged();
+                    net.minecraft.core.NonNullList<ItemStack> legacy = net.minecraft.core.NonNullList.withSize(12000, ItemStack.EMPTY);
+                    contents.copyInto(legacy);
+                    savedItems = legacy;
                 }
+            }
+
+            if (savedItems != null) {
+                net.minecraft.core.NonNullList<ItemStack> inventoryList = cabinetEntity.getItems();
+                for (int i = 0; i < Math.min(savedItems.size(), 12000); i++) {
+                    ItemStack itemStack = savedItems.get(i);
+                    inventoryList.set(i, itemStack);
+                    if (itemStack.getCount() > cabinetEntity.getMaxStackSize()) {
+                        itemStack.setCount(cabinetEntity.getMaxStackSize());
+                    }
+                }
+                cabinetEntity.setChanged();
             }
         }
     }

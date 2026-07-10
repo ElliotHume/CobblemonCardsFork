@@ -1,0 +1,6 @@
+﻿{
+  "_comment": "Template for modpack makers — copy this file into YOUR datapack at data/cobblemon-cards/fakemon_cards/your_mod_name.json",
+  "_comment2": "Sprites must be added via resource pack at assets/cobblemon-cards/textures/item/cards/pokemon/regular/{species_name}.png (40x30px)",
+  "replace": false,
+  "species": []
+}

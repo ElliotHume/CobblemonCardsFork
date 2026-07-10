@@ -83,10 +83,17 @@ public class BinderItem extends Item {
         // Affichage du nombre de pages
         tooltipComponents.add(Component.translatable("gui.cobblemon-cards.binder.pages", tier.getPages()).withStyle(ChatFormatting.GRAY));
 
-        ItemContainerContents contents = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+        // Read from BINDER_CONTENTS (new). Fall back to vanilla CONTAINER for unmigrated saves.
+        List<ItemStack> binderItems = stack.get(ModDataComponents.BINDER_CONTENTS);
+        Iterable<ItemStack> contentItems;
+        if (binderItems != null) {
+            contentItems = binderItems.stream().filter(s -> !s.isEmpty()).toList();
+        } else {
+            contentItems = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItems();
+        }
         Map<CardStat, Float> statTotals = new EnumMap<>(CardStat.class);
 
-        for (ItemStack contentStack : contents.nonEmptyItems()) {
+        for (ItemStack contentStack : contentItems) {
             CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
             if (cardData != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(cardData.pokemonId())) {
                 statTotals.merge(cardData.stat(), cardData.statValue(), Float::sum);

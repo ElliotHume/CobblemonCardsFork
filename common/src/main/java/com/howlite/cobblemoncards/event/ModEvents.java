@@ -5,6 +5,7 @@ import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.pokemon.Pokemon;
 import com.howlite.cobblemoncards.CobblemonCards;
 import com.howlite.cobblemoncards.CobblemonCardsConfig;
+import com.howlite.cobblemoncards.util.FakemonCardRegistry;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
@@ -47,6 +48,23 @@ public class ModEvents {
     }
 
     private static void handlePokemonDrop(ServerPlayer player, Pokemon pokemon) {
+        // If Fakemon cards are globally disabled, skip species whose Pokédex number is outside [1, 1025]
+        // UNLESS the species is explicitly whitelisted via a datapack.
+        if (!CobblemonCardsConfig.allowFakemonCards) {
+            int dex = pokemon.getSpecies().getNationalPokedexNumber();
+            if (dex < 1 || dex > 1025) {
+                String speciesName = pokemon.getSpecies().getName();
+                if (!FakemonCardRegistry.isWhitelisted(speciesName)) {
+                    CobblemonCards.LOGGER.debug(
+                            "[CobblemonCards] Skipping card drop for Fakemon '{}' (dex={}, not whitelisted).",
+                            speciesName, dex);
+                    return;
+                }
+                CobblemonCards.LOGGER.debug(
+                        "[CobblemonCards] Fakemon '{}' is whitelisted — allowing drop.", speciesName);
+            }
+        }
+
         float dropBonus = CardStatUtil.getPlayerDropBonus(player);
         // Base chance is defined in the config (default 1.0f)
         float totalChance = CobblemonCardsConfig.cardDropChance + dropBonus;

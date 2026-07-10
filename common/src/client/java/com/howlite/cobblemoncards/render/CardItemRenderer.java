@@ -2906,12 +2906,16 @@ public class CardItemRenderer {
 
     private static String getBaseSpeciesName(String name) {
         String lower = name.toLowerCase();
+        if (lower.startsWith("eternamax_")) return "eternatus";
+        if (lower.endsWith("_rapidstrike_gmax")) return "urshifu";
         if (lower.endsWith("_alolan")) return lower.substring(0, lower.length() - "_alolan".length());
         if (lower.endsWith("_galarian")) return lower.substring(0, lower.length() - "_galarian".length());
         if (lower.endsWith("_hisuian")) return lower.substring(0, lower.length() - "_hisuian".length());
         if (lower.endsWith("_mega_x")) return lower.substring(0, lower.length() - "_mega_x".length());
         if (lower.endsWith("_mega_y")) return lower.substring(0, lower.length() - "_mega_y".length());
         if (lower.endsWith("_mega")) return lower.substring(0, lower.length() - "_mega".length());
+        if (lower.endsWith("_gmax")) return lower.substring(0, lower.length() - "_gmax".length());
+        if (lower.endsWith("_gigantamax")) return lower.substring(0, lower.length() - "_gigantamax".length());
         
         if (lower.endsWith("-alolan")) return lower.substring(0, lower.length() - "-alolan".length());
         if (lower.endsWith("-galarian")) return lower.substring(0, lower.length() - "-galarian".length());
@@ -2919,6 +2923,8 @@ public class CardItemRenderer {
         if (lower.endsWith("-mega-x")) return lower.substring(0, lower.length() - "-mega-x".length());
         if (lower.endsWith("-mega-y")) return lower.substring(0, lower.length() - "-mega-y".length());
         if (lower.endsWith("-mega")) return lower.substring(0, lower.length() - "-mega".length());
+        if (lower.endsWith("-gmax")) return lower.substring(0, lower.length() - "-gmax".length());
+        if (lower.endsWith("-gigantamax")) return lower.substring(0, lower.length() - "-gigantamax".length());
         return lower;
     }
 

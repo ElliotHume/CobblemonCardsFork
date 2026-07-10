@@ -587,6 +587,10 @@ public class GiveCardCommand {
 
     private static String getBaseSpeciesName(String name) {
         String lower = name.toLowerCase();
+        if (lower.startsWith("eternamax_"))
+            return "eternatus";
+        if (lower.endsWith("_rapidstrike_gmax"))
+            return "urshifu";
         if (lower.endsWith("_alolan"))
             return lower.substring(0, lower.length() - "_alolan".length());
         if (lower.endsWith("_galarian"))
@@ -599,6 +603,10 @@ public class GiveCardCommand {
             return lower.substring(0, lower.length() - "_mega_y".length());
         if (lower.endsWith("_mega"))
             return lower.substring(0, lower.length() - "_mega".length());
+        if (lower.endsWith("_gmax"))
+            return lower.substring(0, lower.length() - "_gmax".length());
+        if (lower.endsWith("_gigantamax"))
+            return lower.substring(0, lower.length() - "_gigantamax".length());
         return lower;
     }
 }

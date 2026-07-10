@@ -26,4 +26,12 @@ public class CobblemonCardsConfig extends MidnightConfig {
 
     @Entry(min = 0.0f, max = 100.0f)
     public static float boosterChestSpawnChance = 2.0f;
+
+    /**
+     * When false (default), species whose National Pokédex number is outside [1, 1025]
+     * (i.e. Fakemon added by addon mods) are excluded from card drops and booster packs.
+     * Set to true to allow cards for any registered Cobblemon species.
+     */
+    @Entry
+    public static boolean allowFakemonCards = false;
 }

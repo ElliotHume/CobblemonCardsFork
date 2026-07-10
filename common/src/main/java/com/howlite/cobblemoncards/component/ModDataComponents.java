@@ -37,6 +37,19 @@ public class ModDataComponents {
                     .build()
     );
 
+    /**
+     * Custom binder contents component — replaces DataComponents.CONTAINER to bypass the
+     * vanilla 256-item hard limit in ItemContainerContents. Stores cards as a plain list.
+     */
+    public static final DataComponentType<List<ItemStack>> BINDER_CONTENTS = Registry.register(
+            BuiltInRegistries.DATA_COMPONENT_TYPE,
+            ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "binder_contents"),
+            DataComponentType.<List<ItemStack>>builder()
+                    .persistent(ItemStack.OPTIONAL_CODEC.listOf())
+                    .networkSynchronized(ItemStack.OPTIONAL_STREAM_CODEC.apply(net.minecraft.network.codec.ByteBufCodecs.list()))
+                    .build()
+    );
+
     public static void register() {
         // Méthode vide juste pour charger la classe
     }
