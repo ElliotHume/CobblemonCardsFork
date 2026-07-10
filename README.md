@@ -101,7 +101,7 @@ To run **Cobblemon Cards**, download and place the correct versions of the depen
 | Mod | Required Version | Purpose |
 | :--- | :--- | :--- |
 | **Fabric API** | `0.116.10+1.21.1` | Core Fabric library |
-| **Cobblemon** | `1.6.0+` | Core Pokémon mod |
+| **Cobblemon** | `1.7.0+` | Core Pokémon mod |
 | **Architectury API** | `13.0.6+` | Cross-platform compatibility helper |
 | **Cloth Config** | `15.0.140+` | Mod configuration and UI systems |
 | **Trinkets** | `3.10.0+` | Enables accessory slots to equip binders for RPG stats |
@@ -111,7 +111,7 @@ To run **Cobblemon Cards**, download and place the correct versions of the depen
 ### 🛠️ For NeoForge Users
 | Mod | Required Version | Purpose |
 | :--- | :--- | :--- |
-| **Cobblemon** | `1.6.0+` | Core Pokémon mod |
+| **Cobblemon** | `1.7.0+` | Core Pokémon mod |
 | **Architectury API** | `13.0.6+` | Cross-platform compatibility helper |
 | **Cloth Config** | `15.0.140+` | Mod configuration and UI systems |
 | **Accessories** | `1.1.0-beta.53+` | Enables accessory slots to equip binders for RPG stats |
