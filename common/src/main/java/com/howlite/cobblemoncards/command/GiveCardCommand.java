@@ -60,14 +60,13 @@ public class GiveCardCommand {
         java.util.Set<String> hisuian = java.util.Set.of("growlithe", "arcanine", "voltorb", "electrode", "typhlosion",
                 "qwilfish", "sneasel", "zorua", "zoroark", "braviary", "sliggoo", "goodra", "avalugg", "decidueye",
                 "samurott", "lilligant", "basculin");
-        java.util.Set<String> mega = java.util.Set.of("venusaur", "charizard", "blastoise", "alakazam", "gengar",
-                "kangaskhan", "pinsir", "gyarados", "aerodactyl", "mewtwo", "ampharos", "scizor", "heracross",
-                "tyranitar", "blaziken", "gardevoir", "mawile", "aggron", "medicham", "manectric", "banette", "absol",
+        java.util.Set<String> paldean = java.util.Set.of("wooper", "tauros");
+        java.util.Set<String> mega = java.util.Set.of("venusaur", "charizard", "blastoise", "alakazam", "gengar", "kangaskhan", "pinsir", "gyarados", "aerodactyl", "mewtwo", "ampharos", "scizor", "heracross", "tyranitar", "blaziken", "gardevoir", "mawile", "aggron", "medicham", "manectric", "banette", "absol",
                 "garchomp", "lucario", "abomasnow", "beedrill", "pidgeot", "steelix", "sceptile", "swampert", "sableye",
                 "sharpedo", "camerupt", "altaria", "glalie", "salamence", "metagross", "latias", "latios", "rayquaza",
                 "lopunny", "gallade", "audino", "diancie");
 
-        List<String> baseNames = PokemonSpecies.getImplemented().stream()
+        List<String> baseNames = PokemonSpecies.INSTANCE.getSpecies().stream()
                 .map(s -> s.getName().toLowerCase())
                 .distinct()
                 .toList();
@@ -81,6 +80,15 @@ public class GiveCardCommand {
                 names.add(base + "_galarian");
             if (hisuian.contains(base))
                 names.add(base + "_hisuian");
+            if (paldean.contains(base)) {
+                if (base.equals("tauros")) {
+                    names.add(base + "_paldean_combat");
+                    names.add(base + "_paldean_blaze");
+                    names.add(base + "_paldean_aqua");
+                } else if (base.equals("wooper")) {
+                    names.add(base + "_paldean");
+                }
+            }
             if (mega.contains(base)) {
                 if (base.equals("charizard") || base.equals("mewtwo")) {
                     names.add(base + "_mega_x");
@@ -346,7 +354,7 @@ public class GiveCardCommand {
                                     try {
                                         ServerPlayer player = context.getSource().getPlayerOrException();
                                         java.util.List<String> all = com.cobblemon.mod.common.api.pokemon.PokemonSpecies
-                                                .getImplemented().stream()
+                                                .INSTANCE.getSpecies().stream()
                                                 .map(s -> s.getName().toLowerCase())
                                                 .distinct()
                                                 .toList();
@@ -597,6 +605,14 @@ public class GiveCardCommand {
             return lower.substring(0, lower.length() - "_galarian".length());
         if (lower.endsWith("_hisuian"))
             return lower.substring(0, lower.length() - "_hisuian".length());
+        if (lower.endsWith("_paldean_combat"))
+            return "tauros";
+        if (lower.endsWith("_paldean_blaze"))
+            return "tauros";
+        if (lower.endsWith("_paldean_aqua"))
+            return "tauros";
+        if (lower.endsWith("_paldean"))
+            return lower.substring(0, lower.length() - "_paldean".length());
         if (lower.endsWith("_mega_x"))
             return lower.substring(0, lower.length() - "_mega_x".length());
         if (lower.endsWith("_mega_y"))

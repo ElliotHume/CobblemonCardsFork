@@ -125,13 +125,13 @@ public class CardItemRenderer {
                     // A. Essayer d'abord la texture exacte de la variante (ex: vulpix_alolan.png)
                     String vName = resolvedPokemonId.toLowerCase();
                     String[] variantFiles = {
-                        vName + (data.isShiny() ? "_shiny.png" : ".png"),
-                        vName.replace("-", "_") + (data.isShiny() ? "_shiny.png" : ".png"),
-                        vName.replace("_", "-") + (data.isShiny() ? "_shiny.png" : ".png")
+                        vName + (data.isShiny() ? "_shiny" : ""),
+                        vName.replace("-", "_") + (data.isShiny() ? "_shiny" : ""),
+                        vName.replace("_", "-") + (data.isShiny() ? "_shiny" : "")
                     };
                     
                     for (String vf : variantFiles) {
-                        String cleanVf = sanitizeStandardPath(vf);
+                        String cleanVf = sanitizeStandardPath(vf) + ".png";
                         ResourceLocation vTex = ResourceLocation.fromNamespaceAndPath(
                             "cobblemon-cards",
                             "textures/item/cards/pokemon/entity_icon/" + entityFolderName + "/" + cleanVf
@@ -2911,6 +2911,10 @@ public class CardItemRenderer {
         if (lower.endsWith("_alolan")) return lower.substring(0, lower.length() - "_alolan".length());
         if (lower.endsWith("_galarian")) return lower.substring(0, lower.length() - "_galarian".length());
         if (lower.endsWith("_hisuian")) return lower.substring(0, lower.length() - "_hisuian".length());
+        if (lower.endsWith("_paldean_combat")) return "tauros";
+        if (lower.endsWith("_paldean_blaze")) return "tauros";
+        if (lower.endsWith("_paldean_aqua")) return "tauros";
+        if (lower.endsWith("_paldean")) return lower.substring(0, lower.length() - "_paldean".length());
         if (lower.endsWith("_mega_x")) return lower.substring(0, lower.length() - "_mega_x".length());
         if (lower.endsWith("_mega_y")) return lower.substring(0, lower.length() - "_mega_y".length());
         if (lower.endsWith("_mega")) return lower.substring(0, lower.length() - "_mega".length());
@@ -2920,6 +2924,10 @@ public class CardItemRenderer {
         if (lower.endsWith("-alolan")) return lower.substring(0, lower.length() - "-alolan".length());
         if (lower.endsWith("-galarian")) return lower.substring(0, lower.length() - "-galarian".length());
         if (lower.endsWith("-hisuian")) return lower.substring(0, lower.length() - "-hisuian".length());
+        if (lower.endsWith("-paldean-combat")) return "tauros";
+        if (lower.endsWith("-paldean-blaze")) return "tauros";
+        if (lower.endsWith("-paldean-aqua")) return "tauros";
+        if (lower.endsWith("-paldean")) return lower.substring(0, lower.length() - "-paldean".length());
         if (lower.endsWith("-mega-x")) return lower.substring(0, lower.length() - "-mega-x".length());
         if (lower.endsWith("-mega-y")) return lower.substring(0, lower.length() - "-mega-y".length());
         if (lower.endsWith("-mega")) return lower.substring(0, lower.length() - "-mega".length());

@@ -97,11 +97,12 @@ public class CardWorkshopScreen extends Screen {
         java.util.Set<String> alolan = java.util.Set.of("vulpix", "ninetales", "sandshrew", "sandslash", "raichu", "meowth", "persian", "geodude", "graveler", "golem", "grimer", "muk", "exeggutor", "marowak");
         java.util.Set<String> galarian = java.util.Set.of("zigzagoon", "linoone", "ponyta", "rapidash", "farfetchd", "weezing", "mr_mime", "corsola", "darumaka", "darmanitan", "yamask", "stunfisk", "slowpoke", "slowbro", "slowking", "articuno", "zapdos", "moltres");
         java.util.Set<String> hisuian = java.util.Set.of("growlithe", "arcanine", "voltorb", "electrode", "typhlosion", "qwilfish", "sneasel", "zorua", "zoroark", "braviary", "sliggoo", "goodra", "avalugg", "decidueye", "samurott", "lilligant", "basculin");
+        java.util.Set<String> paldean = java.util.Set.of("wooper", "tauros");
         java.util.Set<String> mega = java.util.Set.of("venusaur", "charizard", "blastoise", "alakazam", "gengar", "kangaskhan", "pinsir", "gyarados", "aerodactyl", "mewtwo", "ampharos", "scizor", "heracross", "tyranitar", "blaziken", "gardevoir", "mawile", "aggron", "medicham", "manectric", "banette", "absol", "garchomp", "lucario", "abomasnow", "beedrill", "pidgeot", "steelix", "sceptile", "swampert", "sableye", "sharpedo", "camerupt", "altaria", "glalie", "salamence", "metagross", "latias", "latios", "rayquaza", "lopunny", "gallade", "audino", "diancie");
         java.util.Set<String> gmax = java.util.Set.of("venusaur", "butterfree", "meowth", "machamp", "gengar", "corviknight", "alcremie", "urshifu");
         java.util.Set<String> gigantamax = java.util.Set.of("charizard", "blastoise", "pikachu", "eevee", "snorlax", "melmetal", "rillaboom", "cinderace", "sandaconda", "toxtricity");
 
-        List<String> baseNames = PokemonSpecies.getImplemented().stream()
+        List<String> baseNames = com.cobblemon.mod.common.api.pokemon.PokemonSpecies.INSTANCE.getSpecies().stream()
                 .map(s -> s.getName().toLowerCase())
                 .distinct()
                 .sorted()
@@ -113,6 +114,15 @@ public class CardWorkshopScreen extends Screen {
             if (alolan.contains(base)) populatedList.add(base + "_alolan");
             if (galarian.contains(base)) populatedList.add(base + "_galarian");
             if (hisuian.contains(base)) populatedList.add(base + "_hisuian");
+            if (paldean.contains(base)) {
+                if (base.equals("tauros")) {
+                    populatedList.add(base + "_paldean_combat");
+                    populatedList.add(base + "_paldean_blaze");
+                    populatedList.add(base + "_paldean_aqua");
+                } else if (base.equals("wooper")) {
+                    populatedList.add(base + "_paldean");
+                }
+            }
             if (mega.contains(base)) {
                 if (base.equals("charizard") || base.equals("mewtwo")) {
                     populatedList.add(base + "_mega_x");
@@ -200,11 +210,26 @@ public class CardWorkshopScreen extends Screen {
                 
                 String label;
                 if (leftPanelMode == 0) {
-                    String localized = net.minecraft.client.resources.language.I18n.get("cobblemon.species." + spec);
-                    label = localized + " (" + spec + ")";
-                    if (this.font.width(label) > 115) {
-                        label = localized;
+                    String baseName = getBaseSpeciesName(spec);
+                    String localized = net.minecraft.client.resources.language.I18n.get("cobblemon.species." + baseName);
+                    
+                    String suffix = "";
+                    if (spec.endsWith("_alolan")) suffix = " (Alola)";
+                    else if (spec.endsWith("_galarian")) suffix = " (Galar)";
+                    else if (spec.endsWith("_hisuian")) suffix = " (Hisui)";
+                    else if (spec.endsWith("_paldean") || spec.contains("_paldean_")) {
+                        if (spec.endsWith("_combat")) suffix = " (Paldea Combat)";
+                        else if (spec.endsWith("_blaze")) suffix = " (Paldea Blaze)";
+                        else if (spec.endsWith("_aqua")) suffix = " (Paldea Aqua)";
+                        else suffix = " (Paldea)";
                     }
+                    else if (spec.endsWith("_mega")) suffix = " (Mega)";
+                    else if (spec.endsWith("_mega_x")) suffix = " (Mega X)";
+                    else if (spec.endsWith("_mega_y")) suffix = " (Mega Y)";
+                    else if (spec.endsWith("_gmax") || spec.endsWith("_gigantamax")) suffix = " (G-Max)";
+                    else if (spec.startsWith("eternamax_")) suffix = " (Eternamax)";
+                    
+                    label = localized + suffix;
                 } else {
                     label = getCapitalized(spec);
                 }
@@ -629,5 +654,24 @@ public class CardWorkshopScreen extends Screen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    private static String getBaseSpeciesName(String name) {
+        String lower = name.toLowerCase();
+        if (lower.startsWith("eternamax_")) return "eternatus";
+        if (lower.endsWith("_rapidstrike_gmax")) return "urshifu";
+        if (lower.endsWith("_alolan")) return lower.substring(0, lower.length() - "_alolan".length());
+        if (lower.endsWith("_galarian")) return lower.substring(0, lower.length() - "_galarian".length());
+        if (lower.endsWith("_hisuian")) return lower.substring(0, lower.length() - "_hisuian".length());
+        if (lower.endsWith("_paldean_combat")) return "tauros";
+        if (lower.endsWith("_paldean_blaze")) return "tauros";
+        if (lower.endsWith("_paldean_aqua")) return "tauros";
+        if (lower.endsWith("_paldean")) return lower.substring(0, lower.length() - "_paldean".length());
+        if (lower.endsWith("_mega_x")) return lower.substring(0, lower.length() - "_mega_x".length());
+        if (lower.endsWith("_mega_y")) return lower.substring(0, lower.length() - "_mega_y".length());
+        if (lower.endsWith("_mega")) return lower.substring(0, lower.length() - "_mega".length());
+        if (lower.endsWith("_gmax")) return lower.substring(0, lower.length() - "_gmax".length());
+        if (lower.endsWith("_gigantamax")) return lower.substring(0, lower.length() - "_gigantamax".length());
+        return lower;
     }
 }
