@@ -50,11 +50,18 @@ public class BinderSpawnModifier {
     }
 
     private static void handleSpawnModification(PokemonEntity pokemonEntity, Pokemon pokemon, ItemStack binderStack) {
-        ItemContainerContents contents = binderStack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY);
+        // Lire les cartes depuis BINDER_CONTENTS (nouveau stockage custom)
+        List<ItemStack> binderItems = binderStack.get(ModDataComponents.BINDER_CONTENTS);
+        Iterable<ItemStack> contentItems;
+        if (binderItems != null) {
+            contentItems = binderItems.stream().filter(s -> !s.isEmpty()).toList();
+        } else {
+            contentItems = binderStack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItems();
+        }
         Map<CardStat, Float> spawnStats = new EnumMap<>(CardStat.class);
 
         // On calcule les totaux pour les stats de spawn uniquement
-        for (ItemStack contentStack : contents.nonEmptyItems()) {
+        for (ItemStack contentStack : contentItems) {
             CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
             if (cardData != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(cardData.pokemonId()) && cardData.stat().getSerializedName().endsWith("_spawn")) {
                 spawnStats.merge(cardData.stat(), cardData.statValue(), Float::sum);

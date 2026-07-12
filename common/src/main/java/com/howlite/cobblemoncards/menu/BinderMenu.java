@@ -30,7 +30,33 @@ public class BinderMenu extends AbstractContainerMenu {
     private final BinderTier tier;
 
     public BinderMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, playerInventory.player.getMainHandItem());
+        this(containerId, playerInventory, findActiveBinder(playerInventory.player));
+    }
+
+    public static ItemStack findActiveBinder(Player player) {
+        // 1. Check accessories
+        for (var acc : PlatformHelper.INSTANCE.getEquippedAccessories(player)) {
+            if (acc.stack().getItem() instanceof BinderItem) {
+                return acc.stack();
+            }
+        }
+        // 2. Check main hand
+        ItemStack mainHand = player.getItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND);
+        if (mainHand.getItem() instanceof BinderItem) {
+            return mainHand;
+        }
+        // 3. Check off hand
+        ItemStack offHand = player.getItemInHand(net.minecraft.world.InteractionHand.OFF_HAND);
+        if (offHand.getItem() instanceof BinderItem) {
+            return offHand;
+        }
+        // 4. Check entire inventory
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getItem() instanceof BinderItem) {
+                return stack;
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     public BinderMenu(int containerId, Inventory playerInventory, ItemStack binderStack) {

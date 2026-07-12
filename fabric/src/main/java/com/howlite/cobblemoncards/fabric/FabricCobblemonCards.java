@@ -57,15 +57,15 @@ public class FabricCobblemonCards implements ModInitializer {
         // 2. Initialiser le mod commun
         CobblemonCards.init();
 
-        // Enregistrer les Trinkets Fabric pour les Binders et Albums
-        if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("trinkets")) {
-            CobblemonCards.LOGGER.info("CobblemonCards: Registering binders and master album as Trinkets!");
-            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.LEATHER_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.LEATHER_BINDER);
-            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.IRON_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.IRON_BINDER);
-            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.GOLD_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.GOLD_BINDER);
-            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.DIAMOND_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.DIAMOND_BINDER);
-            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.NETHERITE_BINDER, (dev.emi.trinkets.api.Trinket) ModItems.NETHERITE_BINDER);
-            dev.emi.trinkets.api.TrinketsApi.registerTrinket(ModItems.MASTER_ALBUM, (dev.emi.trinkets.api.Trinket) ModItems.MASTER_ALBUM);
+        // Enregistrer les Accessories pour les Binders et Albums
+        if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("accessories")) {
+            CobblemonCards.LOGGER.info("CobblemonCards: Registering binders and master album as Accessories!");
+            io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.LEATHER_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.LEATHER_BINDER);
+            io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.IRON_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.IRON_BINDER);
+            io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.GOLD_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.GOLD_BINDER);
+            io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.DIAMOND_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.DIAMOND_BINDER);
+            io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.NETHERITE_BINDER, (io.wispforest.accessories.api.Accessory) ModItems.NETHERITE_BINDER);
+            io.wispforest.accessories.api.AccessoriesAPI.registerAccessory(ModItems.MASTER_ALBUM, (io.wispforest.accessories.api.Accessory) ModItems.MASTER_ALBUM);
         }
 
         // 3. Enregistrer les attachements Fabric
@@ -144,13 +144,7 @@ public class FabricCobblemonCards implements ModInitializer {
         ServerPlayNetworking.registerGlobalReceiver(OpenBinderPayload.ID, (payload, context) -> {
             context.server().execute(() -> {
                 net.minecraft.server.level.ServerPlayer player = context.player();
-                ItemStack binderStack = ItemStack.EMPTY;
-                for (var acc : PlatformHelper.INSTANCE.getEquippedAccessories(player)) {
-                    if (acc.stack().getItem() instanceof com.howlite.cobblemoncards.item.custom.BinderItem) {
-                        binderStack = acc.stack();
-                        break;
-                    }
-                }
+                ItemStack binderStack = BinderMenu.findActiveBinder(player);
                 if (!binderStack.isEmpty()) {
                     ItemStack finalStack = binderStack;
                     player.openMenu(new net.minecraft.world.SimpleMenuProvider(

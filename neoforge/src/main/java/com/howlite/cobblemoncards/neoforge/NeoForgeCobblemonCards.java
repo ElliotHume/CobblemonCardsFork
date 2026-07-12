@@ -128,13 +128,7 @@ public class NeoForgeCobblemonCards {
         registrar.playToServer(OpenBinderPayload.ID, OpenBinderPayload.CODEC, (payload, context) -> {
             context.enqueueWork(() -> {
                 net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) context.player();
-                ItemStack binderStack = ItemStack.EMPTY;
-                for (var acc : PlatformHelper.INSTANCE.getEquippedAccessories(player)) {
-                    if (acc.stack().getItem() instanceof com.howlite.cobblemoncards.item.custom.BinderItem) {
-                        binderStack = acc.stack();
-                        break;
-                    }
-                }
+                ItemStack binderStack = BinderMenu.findActiveBinder(player);
                 if (!binderStack.isEmpty()) {
                     ItemStack finalStack = binderStack;
                     player.openMenu(new net.minecraft.world.SimpleMenuProvider(

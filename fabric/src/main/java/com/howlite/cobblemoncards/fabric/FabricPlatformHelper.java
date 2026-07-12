@@ -23,12 +23,15 @@ public class FabricPlatformHelper implements PlatformHelper {
     @Override
     public List<EquippedAccessory> getEquippedAccessories(LivingEntity entity) {
         List<EquippedAccessory> list = new ArrayList<>();
-        var componentOpt = dev.emi.trinkets.api.TrinketsApi.getTrinketComponent(entity);
-        if (componentOpt.isPresent()) {
-            var component = componentOpt.get();
-            component.forEach((slotReference, itemStack) -> {
-                if (itemStack != null && !itemStack.isEmpty()) {
-                    list.add(new EquippedAccessory(itemStack, slotReference.inventory().getSlotType().getName()));
+        var capability = io.wispforest.accessories.api.AccessoriesCapability.get(entity);
+        if (capability != null) {
+            capability.getContainers().forEach((slotName, container) -> {
+                var inventory = container.getAccessories();
+                for (int i = 0; i < inventory.getContainerSize(); i++) {
+                    ItemStack stack = inventory.getItem(i);
+                    if (stack != null && !stack.isEmpty()) {
+                        list.add(new EquippedAccessory(stack, slotName));
+                    }
                 }
             });
         }
@@ -37,16 +40,27 @@ public class FabricPlatformHelper implements PlatformHelper {
 
     @Override
     public boolean equipItem(Player player, ItemStack stack) {
-        return dev.emi.trinkets.api.TrinketItem.equipItem(player, stack);
+        var capability = io.wispforest.accessories.api.AccessoriesCapability.get(player);
+        if (capability != null) {
+            var ref = capability.attemptToEquipAccessory(stack);
+            if (ref != null && ref.isValid()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
     public void refreshEquippedModifiers(LivingEntity entity) {
         com.howlite.cobblemoncards.CobblemonCards.LOGGER.info("CobblemonCards: FabricPlatformHelper.refreshEquippedModifiers called for " + entity.getName().getString());
-        dev.emi.trinkets.api.TrinketsApi.getTrinketComponent(entity).ifPresent(component -> {
-            component.clearCachedModifiers();
-            component.update();
-        });
+        var capability = io.wispforest.accessories.api.AccessoriesCapability.get(entity);
+        if (capability != null) {
+            capability.clearCachedSlotModifiers();
+            capability.getContainers().values().forEach(container -> {
+                container.markChanged();
+                container.update();
+            });
+        }
     }
 
     @Override
