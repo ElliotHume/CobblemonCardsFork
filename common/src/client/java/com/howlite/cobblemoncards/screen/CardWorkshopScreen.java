@@ -102,7 +102,7 @@ public class CardWorkshopScreen extends Screen {
         java.util.Set<String> gmax = java.util.Set.of("venusaur", "butterfree", "meowth", "machamp", "gengar", "corviknight", "alcremie", "urshifu");
         java.util.Set<String> gigantamax = java.util.Set.of("charizard", "blastoise", "pikachu", "eevee", "snorlax", "melmetal", "rillaboom", "cinderace", "sandaconda", "toxtricity");
 
-        List<String> baseNames = com.cobblemon.mod.common.api.pokemon.PokemonSpecies.INSTANCE.getSpecies().stream()
+        List<String> baseNames = PokemonSpecies.getSpecies().stream()
                 .map(s -> s.getName().toLowerCase())
                 .distinct()
                 .sorted()

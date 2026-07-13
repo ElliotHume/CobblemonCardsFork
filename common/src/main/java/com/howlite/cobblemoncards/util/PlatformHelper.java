@@ -5,9 +5,17 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.world.inventory.MenuType;
+import com.howlite.cobblemoncards.menu.BinderMenu;
+import net.minecraft.network.chat.Component;
 import java.util.List;
 
 public interface PlatformHelper {
+    MenuType<BinderMenu> createBinderMenuType();
+    void openBinderMenu(ServerPlayer player, BinderLocator locator, Component title);
+    default ItemStack getAccessoryItem(Player player, String slotName, int index) {
+        return ItemStack.EMPTY;
+    }
     
     // Instance globale affectée lors de l'initialisation du mod, utilisant un proxy pour éviter les soucis de bootstrap
     PlatformHelper INSTANCE = (PlatformHelper) java.lang.reflect.Proxy.newProxyInstance(

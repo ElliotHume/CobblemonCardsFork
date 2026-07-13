@@ -25,6 +25,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
+@SuppressWarnings("null")
 public class FabricCobblemonCardsClient implements ClientModInitializer {
     private static KeyMapping openBinderKey;
     private static KeyMapping openShowcaseKey;

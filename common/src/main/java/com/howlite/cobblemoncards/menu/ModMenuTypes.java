@@ -7,12 +7,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.inventory.MenuType;
 
+import com.howlite.cobblemoncards.util.PlatformHelper;
+
 public class ModMenuTypes {
 
     public static final MenuType<BinderMenu> BINDER_MENU = Registry.register(
             BuiltInRegistries.MENU,
             ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, "binder_menu"),
-            new MenuType<>(BinderMenu::new, FeatureFlags.DEFAULT_FLAGS)
+            PlatformHelper.INSTANCE.createBinderMenuType()
     );
 
     public static final MenuType<CardRecyclerMenu> CARD_RECYCLER_MENU = Registry.register(

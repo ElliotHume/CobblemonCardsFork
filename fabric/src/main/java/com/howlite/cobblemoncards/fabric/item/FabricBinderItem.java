@@ -19,6 +19,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("null")
 public class FabricBinderItem extends BinderItem implements Accessory {
 
     public FabricBinderItem(BinderTier tier, Properties properties) {

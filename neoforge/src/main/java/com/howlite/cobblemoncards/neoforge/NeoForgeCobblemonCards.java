@@ -128,13 +128,12 @@ public class NeoForgeCobblemonCards {
         registrar.playToServer(OpenBinderPayload.ID, OpenBinderPayload.CODEC, (payload, context) -> {
             context.enqueueWork(() -> {
                 net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) context.player();
-                ItemStack binderStack = BinderMenu.findActiveBinder(player);
-                if (!binderStack.isEmpty()) {
-                    ItemStack finalStack = binderStack;
-                    player.openMenu(new net.minecraft.world.SimpleMenuProvider(
-                            (containerId, playerInventory, p) -> new BinderMenu(containerId, playerInventory, finalStack),
-                            binderStack.getHoverName()
-                    ));
+                com.howlite.cobblemoncards.util.BinderLocator locator = BinderMenu.findActiveBinderLocator(player);
+                if (locator != null) {
+                    ItemStack binderStack = locator.findItem(player);
+                    if (!binderStack.isEmpty()) {
+                        PlatformHelper.INSTANCE.openBinderMenu(player, locator, binderStack.getHoverName());
+                    }
                 }
             });
         });

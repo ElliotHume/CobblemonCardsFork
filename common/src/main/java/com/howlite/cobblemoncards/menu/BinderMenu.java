@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import com.howlite.cobblemoncards.util.BinderLocator;
 
 public class BinderMenu extends AbstractContainerMenu {
     public static final int SLOTS_PER_PAGE = 12; // 4x3
@@ -30,7 +31,39 @@ public class BinderMenu extends AbstractContainerMenu {
     private final BinderTier tier;
 
     public BinderMenu(int containerId, Inventory playerInventory) {
-        this(containerId, playerInventory, findActiveBinder(playerInventory.player));
+        this(containerId, playerInventory, ItemStack.EMPTY);
+    }
+
+    public BinderMenu(int containerId, Inventory playerInventory, BinderLocator locator) {
+        this(containerId, playerInventory, locator != null ? locator.findItem(playerInventory.player) : ItemStack.EMPTY);
+    }
+
+    public static BinderLocator findActiveBinderLocator(Player player) {
+        // 1. Check accessories
+        var equipped = PlatformHelper.INSTANCE.getEquippedAccessories(player);
+        for (var acc : equipped) {
+            if (acc.stack().getItem() instanceof BinderItem) {
+                return BinderLocator.accessory(acc.slotName(), acc.index());
+            }
+        }
+        // 2. Check main hand
+        ItemStack mainHand = player.getItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND);
+        if (mainHand.getItem() instanceof BinderItem) {
+            return BinderLocator.hand(net.minecraft.world.InteractionHand.MAIN_HAND);
+        }
+        // 3. Check off hand
+        ItemStack offHand = player.getItemInHand(net.minecraft.world.InteractionHand.OFF_HAND);
+        if (offHand.getItem() instanceof BinderItem) {
+            return BinderLocator.hand(net.minecraft.world.InteractionHand.OFF_HAND);
+        }
+        // 4. Check entire inventory
+        for (int i = 0; i < player.getInventory().items.size(); i++) {
+            ItemStack stack = player.getInventory().items.get(i);
+            if (stack.getItem() instanceof BinderItem) {
+                return BinderLocator.inventory(i);
+            }
+        }
+        return null;
     }
 
     public static ItemStack findActiveBinder(Player player) {

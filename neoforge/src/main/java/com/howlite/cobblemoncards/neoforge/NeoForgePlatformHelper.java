@@ -19,8 +19,42 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+import com.howlite.cobblemoncards.util.BinderLocator;
+import net.minecraft.world.inventory.MenuType;
+import com.howlite.cobblemoncards.menu.BinderMenu;
+
 @SuppressWarnings("null")
 public class NeoForgePlatformHelper implements PlatformHelper {
+
+    @Override
+    public MenuType<BinderMenu> createBinderMenuType() {
+        return net.neoforged.neoforge.common.extensions.IMenuTypeExtension.create(
+                (containerId, playerInventory, buf) -> new BinderMenu(containerId, playerInventory, BinderLocator.read(buf))
+        );
+    }
+
+    @Override
+    public void openBinderMenu(ServerPlayer player, BinderLocator locator, Component title) {
+        player.openMenu(new net.minecraft.world.SimpleMenuProvider(
+                (containerId, playerInventory, p) -> new BinderMenu(containerId, playerInventory, locator),
+                title
+        ), buf -> locator.write(buf));
+    }
+
+    @Override
+    public ItemStack getAccessoryItem(Player player, String slotName, int index) {
+        var capability = io.wispforest.accessories.api.AccessoriesCapability.get(player);
+        if (capability != null) {
+            var container = capability.getContainers().get(slotName);
+            if (container != null) {
+                var inventory = container.getAccessories();
+                if (index >= 0 && index < inventory.getContainerSize()) {
+                    return inventory.getItem(index);
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
     @Override
     public List<EquippedAccessory> getEquippedAccessories(LivingEntity entity) {
@@ -32,7 +66,7 @@ public class NeoForgePlatformHelper implements PlatformHelper {
                 for (int i = 0; i < inventory.getContainerSize(); i++) {
                     ItemStack stack = inventory.getItem(i);
                     if (stack != null && !stack.isEmpty()) {
-                        list.add(new EquippedAccessory(stack, slotName));
+                        list.add(new EquippedAccessory(stack, slotName, i));
                     }
                 }
             });

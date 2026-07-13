@@ -18,7 +18,57 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+import com.howlite.cobblemoncards.util.BinderLocator;
+import net.minecraft.world.inventory.MenuType;
+import com.howlite.cobblemoncards.menu.BinderMenu;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+
+@SuppressWarnings("null")
 public class FabricPlatformHelper implements PlatformHelper {
+
+    @Override
+    public MenuType<BinderMenu> createBinderMenuType() {
+        return new net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType<>(
+                (containerId, playerInventory, locator) -> new BinderMenu(containerId, playerInventory, locator),
+                BinderLocator.STREAM_CODEC
+        );
+    }
+
+    @Override
+    public void openBinderMenu(ServerPlayer player, BinderLocator locator, Component title) {
+        player.openMenu(new net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory<BinderLocator>() {
+            @Override
+            public BinderLocator getScreenOpeningData(ServerPlayer p) {
+                return locator;
+            }
+
+            @Override
+            public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player p) {
+                return new BinderMenu(containerId, playerInventory, locator);
+            }
+
+            @Override
+            public Component getDisplayName() {
+                return title;
+            }
+        });
+    }
+
+    @Override
+    public ItemStack getAccessoryItem(Player player, String slotName, int index) {
+        var capability = io.wispforest.accessories.api.AccessoriesCapability.get(player);
+        if (capability != null) {
+            var container = capability.getContainers().get(slotName);
+            if (container != null) {
+                var inventory = container.getAccessories();
+                if (index >= 0 && index < inventory.getContainerSize()) {
+                    return inventory.getItem(index);
+                }
+            }
+        }
+        return ItemStack.EMPTY;
+    }
 
     @Override
     public List<EquippedAccessory> getEquippedAccessories(LivingEntity entity) {
@@ -30,7 +80,7 @@ public class FabricPlatformHelper implements PlatformHelper {
                 for (int i = 0; i < inventory.getContainerSize(); i++) {
                     ItemStack stack = inventory.getItem(i);
                     if (stack != null && !stack.isEmpty()) {
-                        list.add(new EquippedAccessory(stack, slotName));
+                        list.add(new EquippedAccessory(stack, slotName, i));
                     }
                 }
             });

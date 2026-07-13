@@ -66,7 +66,7 @@ public class GiveCardCommand {
                 "sharpedo", "camerupt", "altaria", "glalie", "salamence", "metagross", "latias", "latios", "rayquaza",
                 "lopunny", "gallade", "audino", "diancie");
 
-        List<String> baseNames = PokemonSpecies.INSTANCE.getSpecies().stream()
+        List<String> baseNames = PokemonSpecies.getSpecies().stream()
                 .map(s -> s.getName().toLowerCase())
                 .distinct()
                 .toList();
@@ -354,7 +354,7 @@ public class GiveCardCommand {
                                     try {
                                         ServerPlayer player = context.getSource().getPlayerOrException();
                                         java.util.List<String> all = com.cobblemon.mod.common.api.pokemon.PokemonSpecies
-                                                .INSTANCE.getSpecies().stream()
+                                                .getSpecies().stream()
                                                 .map(s -> s.getName().toLowerCase())
                                                 .distinct()
                                                 .toList();

@@ -4,7 +4,6 @@ import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
-import com.howlite.cobblemoncards.menu.BinderMenu;
 import com.howlite.cobblemoncards.util.PlatformHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -14,7 +13,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -27,6 +25,9 @@ import net.minecraft.world.level.Level;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+
+import com.howlite.cobblemoncards.util.BinderLocator;
+import net.minecraft.server.level.ServerPlayer;
 
 public class BinderItem extends Item {
     private final BinderTier tier;
@@ -56,10 +57,7 @@ public class BinderItem extends Item {
                 SoundEvents.BOOK_PAGE_TURN, SoundSource.PLAYERS, 1.0f, 0.8f);
 
         if (!level.isClientSide()) {
-            player.openMenu(new SimpleMenuProvider(
-                    (containerId, playerInventory, p) -> new BinderMenu(containerId, playerInventory, itemStack),
-                    itemStack.getHoverName()
-            ));
+            PlatformHelper.INSTANCE.openBinderMenu((ServerPlayer) player, BinderLocator.hand(hand), itemStack.getHoverName());
         }
 
         return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());

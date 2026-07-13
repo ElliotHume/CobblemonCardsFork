@@ -18,6 +18,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings("null")
 public class FabricMasterAlbumItem extends MasterAlbumItem implements Accessory {
 
     public FabricMasterAlbumItem(Properties properties) {
