@@ -33,20 +33,22 @@ public class ModCreativeTabs {
 
                     // Création d'une carte avec des données aléatoires pour le menu créatif
                     List<String> pokemonIds = BoosterLootTable.getPokemonIds();
-                    String randomPokemon = pokemonIds.get(RANDOM.nextInt(pokemonIds.size()));
-                    
-                    ItemStack randomCard = new ItemStack(ModItems.CARD);
-                    randomCard.set(ModDataComponents.CARD_DATA, new CardData(
-                            randomPokemon,
-                            RANDOM.nextBoolean(),
-                            RARITIES[RANDOM.nextInt(RARITIES.length)],
-                            CardStat.values()[RANDOM.nextInt(CardStat.values().length)],
-                            (RANDOM.nextFloat() * 2.0f) - 1.0f, // Valeur entre -1.0 et 1.0
-                            RANDOM.nextInt(11), // Grade entre 0 et 10
-                            Optional.empty(),
-                            Optional.empty()
-                    ));
-                    output.accept(randomCard);
+                    if (!pokemonIds.isEmpty()) {
+                        String randomPokemon = pokemonIds.get(RANDOM.nextInt(pokemonIds.size()));
+                        
+                        ItemStack randomCard = new ItemStack(ModItems.CARD);
+                        randomCard.set(ModDataComponents.CARD_DATA, new CardData(
+                                randomPokemon,
+                                RANDOM.nextBoolean(),
+                                RARITIES[RANDOM.nextInt(RARITIES.length)],
+                                CardStat.values()[RANDOM.nextInt(CardStat.values().length)],
+                                (RANDOM.nextFloat() * 2.0f) - 1.0f, // Valeur entre -1.0 et 1.0
+                                RANDOM.nextInt(11), // Grade entre 0 et 10
+                                Optional.empty(),
+                                Optional.empty()
+                        ));
+                        output.accept(randomCard);
+                    }
 
                     // 2. Rangement & Stockage (Classeurs & Meuble)
                     output.accept(ModItems.LEATHER_BINDER);

@@ -46,11 +46,11 @@ public class BoosterLootTable {
             invalidateCache();
         }
 
-        if (cachedPokemonIds == null) {
+        if (cachedPokemonIds == null || cachedPokemonIds.isEmpty()) {
             cachedAllowFakemon = CobblemonCardsConfig.allowFakemonCards;
             cachedWhitelistSize = FakemonCardRegistry.getWhitelistedIds().size();
             try {
-                cachedPokemonIds = PokemonSpecies.getImplemented().stream()
+                List<String> loadedIds = PokemonSpecies.getImplemented().stream()
                         .filter(species -> {
                             if (CobblemonCardsConfig.allowFakemonCards) return true;
                             int dex = species.getNationalPokedexNumber();
@@ -62,9 +62,15 @@ public class BoosterLootTable {
                         .distinct()
                         .sorted()
                         .collect(Collectors.toList());
-                CobblemonCards.LOGGER.info(
-                        "[CobblemonCards] Liste dynamique chargée : {} espèces disponibles (allowFakemon={}, whitelist={}).",
-                        cachedPokemonIds.size(), CobblemonCardsConfig.allowFakemonCards, cachedWhitelistSize);
+                if (!loadedIds.isEmpty()) {
+                    cachedPokemonIds = loadedIds;
+                    CobblemonCards.LOGGER.info(
+                            "[CobblemonCards] Liste dynamique chargée : {} espèces disponibles (allowFakemon={}, whitelist={}).",
+                            cachedPokemonIds.size(), CobblemonCardsConfig.allowFakemonCards, cachedWhitelistSize);
+                } else {
+                    // Si la liste est vide (chargement trop précoce), on retourne une liste temporaire de secours sans la mettre en cache définitivement
+                    return List.of("pikachu", "charizard", "mewtwo", "lucario", "greninja", "gengar", "eevee", "bulbasaur", "squirtle", "rayquaza");
+                }
             } catch (Exception e) {
                 CobblemonCards.LOGGER.warn("[CobblemonCards] Impossible de charger les espèces Cobblemon, utilisation d'une liste de secours.", e);
                 cachedPokemonIds = new ArrayList<>(List.of("pikachu", "charizard", "mewtwo", "lucario", "greninja", "gengar", "eevee", "bulbasaur", "squirtle", "rayquaza"));
