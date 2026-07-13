@@ -25,6 +25,15 @@ public class CardItemRenderer {
     private static final ResourceLocation TEXTURE_NOISE = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/noise.png");
     private static final ResourceLocation TEXTURE_FLOW = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/effect/flow.png");
 
+    // UV crop constants for textures padded to the next multiple of 16 (mipmap fix).
+    // Original 40x30 sprites are embedded in a 48x32 canvas (padding right+bottom).
+    // UV must stop at 40/48 horizontally and 30/32 vertically to avoid sampling transparent padding.
+    private static final float UV_40x30_U = 40.0f / 48.0f; // 0.8333f
+    private static final float UV_40x30_V = 30.0f / 32.0f; // 0.9375f
+    // Original 68x56 sprites (hi-res entity icons) padded to 80x64.
+    private static final float UV_68x56_U = 68.0f / 80.0f; // 0.85f
+    private static final float UV_68x56_V = 56.0f / 64.0f; // 0.875f
+
     public static void render(ItemStack stack, ItemDisplayContext mode, PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay) {
 
         // 🛑 SÉCURITÉ :
@@ -204,8 +213,10 @@ public class CardItemRenderer {
                     
                     if (resolvedTex != null) {
                         pokemonTex = resolvedTex;
-                        imageWidth = 68.0f;
-                        imageHeight = 56.0f;
+                        // entity_icon textures are 40x30 (padded to 48x32 for mipmap).
+                        // Use 40x30 ratio so the quad matches the content ratio exactly (no horizontal squish).
+                        imageWidth = 40.0f;
+                        imageHeight = 30.0f;
                     }
                 }
             }
@@ -249,7 +260,8 @@ public class CardItemRenderer {
                 }
             } else {
                 ResourceLocation bgTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/background/" + bgType + ".png");
-                renderQuad(matrices.last().pose(), vertexConsumers.getBuffer(RenderType.entityCutout(bgTex)), light, overlay, cardWindowWidth, cardWindowHeight);
+                // UV cropped to original 40x30 content area in the padded 48x32 texture
+                renderQuad(matrices.last().pose(), vertexConsumers.getBuffer(RenderType.entityCutout(bgTex)), light, overlay, cardWindowWidth, cardWindowHeight, 0, 0, UV_40x30_U, UV_40x30_V, 255, 255, 255, 255);
             }
             
             matrices.popPose();
@@ -291,10 +303,13 @@ public class CardItemRenderer {
             renderQuad(matrices.last().pose(), vertexConsumers.getBuffer(RenderType.entityTranslucent(skinTex)), light, overlay, headSize, headSize, 0.625f, 0.125f, 0.75f, 0.25f, 255, 255, 255, 255);
             matrices.popPose();
         } else {
+            // All pokemon sprites come from the entity_icon folder (40x30 padded to 48x32 for mipmap).
+            // imageWidth/imageHeight control QUAD sizing only — the actual texture is always 48x32.
+            // UV_68x56 would be wrong here (68/80*32=40.8 wide, 56/64*32=28 tall instead of 30 → squish).
             if (isSilhouette) {
-                renderQuad(matrices.last().pose(), vertexConsumers.getBuffer(RenderType.entityCutout(pokemonTex)), light, overlay, pokeWidth, pokeHeight, 0, 0, 1, 1, 30, 30, 30, 255);
+                renderQuad(matrices.last().pose(), vertexConsumers.getBuffer(RenderType.entityCutout(pokemonTex)), light, overlay, pokeWidth, pokeHeight, 0, 0, UV_40x30_U, UV_40x30_V, 30, 30, 30, 255);
             } else {
-                renderQuad(matrices.last().pose(), vertexConsumers.getBuffer(RenderType.entityCutout(pokemonTex)), light, overlay, pokeWidth, pokeHeight);
+                renderQuad(matrices.last().pose(), vertexConsumers.getBuffer(RenderType.entityCutout(pokemonTex)), light, overlay, pokeWidth, pokeHeight, 0, 0, UV_40x30_U, UV_40x30_V, 255, 255, 255, 255);
             }
         }
         matrices.popPose();
@@ -2820,7 +2835,11 @@ public class CardItemRenderer {
         float vOffset = time;
 
         VertexConsumer consumer = vertexConsumers.getBuffer(RenderType.entityTranslucent(TEXTURE_STARS));
-        renderQuad(matrices.last().pose(), consumer, light, overlay, w, h, uOffset, vOffset, 1f + uOffset, 1f + vOffset, 255, 255, 255, (int)(alpha * 255));
+        // UV crop: foil_stars was 40x30, now padded to 48x32. Scale u/v range by crop factor.
+        renderQuad(matrices.last().pose(), consumer, light, overlay, w, h,
+            uOffset * UV_40x30_U, vOffset * UV_40x30_V,
+            UV_40x30_U * (1f + uOffset), UV_40x30_V * (1f + vOffset),
+            255, 255, 255, (int)(alpha * 255));
     }
 
     private static void renderDynamicGlint(PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, float w, float h) {
@@ -2839,13 +2858,16 @@ public class CardItemRenderer {
         VertexConsumer consumer = vertexConsumers.getBuffer(RenderType.entityTranslucent(TEXTURE_GLINT));
 
         // On dessine le quad en passant les nouvelles coordonnées V calculées
-        renderQuad(matrices.last().pose(), consumer, light, overlay, w, h, 0, v0, 1, v1, 255, 255, 255, (int)(0.5f * 255));
+        // UV crop: glint was 40x2400, padded to 48x2400. Height (2400) is already div by 16, only U changes.
+        renderQuad(matrices.last().pose(), consumer, light, overlay, w, h, 0, v0, UV_40x30_U, v1, 255, 255, 255, (int)(0.5f * 255));
     }
 
     private static void renderFlow(PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, float w, float h) {
         float time = (System.currentTimeMillis() % 5000) / 5000f;
         VertexConsumer consumer = vertexConsumers.getBuffer(RenderType.entityTranslucentEmissive(TEXTURE_FLOW));
-        renderQuad(matrices.last().pose(), consumer, light, overlay, w, h, 0, time, 1, 1 + time, 255, 255, 255, 128);
+        // UV crop: flow was 40x30, padded to 48x32. Scale scrolling UV range accordingly.
+        renderQuad(matrices.last().pose(), consumer, light, overlay, w, h,
+            0, time * UV_40x30_V, UV_40x30_U, UV_40x30_V + time * UV_40x30_V, 255, 255, 255, 128);
     }
 
     private static void renderPlasma(PoseStack matrices, MultiBufferSource vertexConsumers, int light, int overlay, float w, float h) {
