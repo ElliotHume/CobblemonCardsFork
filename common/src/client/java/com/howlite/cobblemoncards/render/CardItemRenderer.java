@@ -210,9 +210,10 @@ public class CardItemRenderer {
                 }
             }
             
-            // Si toujours manquant après recherche, fallback sur missing.png (40x30)
+            // Si toujours manquant après recherche, fallback sur substitute.png ou substitute_shiny.png (40x30)
             if (!Minecraft.getInstance().getResourceManager().getResource(pokemonTex).isPresent()) {
-                pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/regular/missing.png");
+                String fallbackName = data.isShiny() ? "substitute_shiny.png" : "substitute.png";
+                pokemonTex = ResourceLocation.fromNamespaceAndPath("cobblemon-cards", "textures/item/cards/pokemon/entity_icon/" + fallbackName);
                 imageWidth = 40.0f;
                 imageHeight = 30.0f;
             }
