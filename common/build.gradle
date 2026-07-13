@@ -41,3 +41,9 @@ loom {
         ideConfigGenerated = false
     }
 }
+
+tasks.named('jar', Jar) {
+    exclude("assets/**")
+    exclude("data/**")
+}
+
