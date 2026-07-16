@@ -53,9 +53,10 @@ public class BoosterLootTable {
                 List<String> loadedIds = PokemonSpecies.getImplemented().stream()
                         .filter(species -> {
                             if (CobblemonCardsConfig.allowFakemonCards) return true;
-                            int dex = species.getNationalPokedexNumber();
-                            // Allow official Gen 1-9 Pokémon OR any explicitly whitelisted Fakemon.
-                            return (dex >= 1 && dex <= 1025)
+                            // Allow officially registered Cobblemon species OR explicitly whitelisted Fakemon.
+                            // Namespace-based check is more reliable than dex numbers because some
+                            // Fakemon addons reuse dex numbers within the 1-1025 range.
+                            return isOfficialSpecies(species)
                                     || FakemonCardRegistry.isWhitelisted(species.getName());
                         })
                         .map(species -> species.getName().toLowerCase())
@@ -87,9 +88,24 @@ public class BoosterLootTable {
      */
     public static void invalidateCache() {
         cachedPokemonIds = null;
+        cachedAllowFakemon = false;
         FILTERED_POKEMON_CACHE.clear();
         SpeciesRarityManager.invalidateCaches();
         CobblemonCards.LOGGER.info("[CobblemonCards] Cache des espèces Pokémon invalidé, rechargement au prochain appel.");
+    }
+
+    /**
+     * Returns true if the given species belongs to the official Cobblemon registry
+     * (namespace "cobblemon"), meaning it is not a Fakemon added by an addon mod.
+     * Falls back to the dex-number range [1, 1025] if no ResourceIdentifier is available.
+     */
+    private static boolean isOfficialSpecies(Species species) {
+        if (species.getResourceIdentifier() != null) {
+            return "cobblemon".equals(species.getResourceIdentifier().getNamespace());
+        }
+        // Fallback: trust the dex number if no resource identifier is available
+        int dex = species.getNationalPokedexNumber();
+        return dex >= 1 && dex <= 1025;
     }
 
 

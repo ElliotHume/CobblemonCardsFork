@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "cobblemon-cards:grading_station",
+    "cobblemon-cards:card_recycler",
+    "cobblemon-cards:holo_projector",
+    "cobblemon-cards:advanced_holo_projector"
+  ]
+}

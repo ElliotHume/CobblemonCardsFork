@@ -3,6 +3,7 @@ package com.howlite.cobblemoncards.event;
 import com.cobblemon.mod.common.api.Priority;
 import com.cobblemon.mod.common.api.events.CobblemonEvents;
 import com.cobblemon.mod.common.pokemon.Pokemon;
+import com.cobblemon.mod.common.pokemon.Species;
 import com.howlite.cobblemoncards.CobblemonCards;
 import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import com.howlite.cobblemoncards.util.FakemonCardRegistry;
@@ -47,16 +48,17 @@ public class ModEvents {
     }
 
     private static void handlePokemonDrop(ServerPlayer player, Pokemon pokemon) {
-        // If Fakemon cards are globally disabled, skip species whose Pokédex number is outside [1, 1025]
-        // UNLESS the species is explicitly whitelisted via a datapack.
+        // If Fakemon cards are globally disabled, skip species that are not from the
+        // official Cobblemon namespace — UNLESS the species is explicitly whitelisted
+        // via a datapack. Namespace-based detection is more reliable than dex numbers
+        // because some Fakemon addons reuse dex slots within the 1-1025 range.
         if (!CobblemonCardsConfig.allowFakemonCards) {
-            int dex = pokemon.getSpecies().getNationalPokedexNumber();
-            if (dex < 1 || dex > 1025) {
+            if (!isOfficialSpecies(pokemon.getSpecies())) {
                 String speciesName = pokemon.getSpecies().getName();
                 if (!FakemonCardRegistry.isWhitelisted(speciesName)) {
                     CobblemonCards.LOGGER.debug(
-                            "[CobblemonCards] Skipping card drop for Fakemon '{}' (dex={}, not whitelisted).",
-                            speciesName, dex);
+                            "[CobblemonCards] Skipping card drop for Fakemon '{}' (not whitelisted).",
+                            speciesName);
                     return;
                 }
                 CobblemonCards.LOGGER.debug(
@@ -118,5 +120,18 @@ public class ModEvents {
         } else {
             CobblemonCards.LOGGER.info("Drop failed.");
         }
+    }
+
+    /**
+     * Returns true if the given species belongs to the official Cobblemon registry
+     * (namespace "cobblemon"). Falls back to the dex-number range [1, 1025] if no
+     * ResourceIdentifier is available.
+     */
+    private static boolean isOfficialSpecies(Species species) {
+        if (species.getResourceIdentifier() != null) {
+            return "cobblemon".equals(species.getResourceIdentifier().getNamespace());
+        }
+        int dex = species.getNationalPokedexNumber();
+        return dex >= 1 && dex <= 1025;
     }
 }
