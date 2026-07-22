@@ -54,7 +54,9 @@ public class FabricBinderItem extends BinderItem implements Accessory {
             float totalValue = entry.getValue();
             Holder<Attribute> attribute = getVanillaAttribute(stat);
             if (attribute != null && totalValue != 0) {
-                float val = totalValue * CobblemonCardsConfig.globalStatMultiplier;
+                float multiplier = CobblemonCardsConfig.getStatMultiplier(stat);
+                if (multiplier == 0.0f) continue;
+                float val = totalValue * multiplier;
                 AttributeModifier.Operation operation;
                 // ADD_VALUE pour les stats à base nulle ou absolues
                 // ADD_MULTIPLIED_BASE pour les stats à base non nulle (vitesse, dégâts...)
@@ -84,6 +86,6 @@ public class FabricBinderItem extends BinderItem implements Accessory {
 
     @Override
     public boolean canEquip(ItemStack stack, SlotReference reference) {
-        return reference.slotName().equals("belt");
+        return reference.slotName().equals("binder");
     }
 }

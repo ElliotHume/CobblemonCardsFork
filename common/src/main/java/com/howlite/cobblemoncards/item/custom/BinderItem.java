@@ -110,7 +110,8 @@ public class BinderItem extends Item {
                     hasHeader = true;
                 }
 
-                float finalValue = totalValue * CobblemonCardsConfig.globalStatMultiplier;
+                float finalValue = totalValue * CobblemonCardsConfig.getStatMultiplier(stat);
+                if (finalValue <= 0) continue;
                 String formattedValue = String.format("+%.1f%%", finalValue);
 
                 tooltipComponents.add(Component.literal(formattedValue + " ").append(stat.getTranslatedName())

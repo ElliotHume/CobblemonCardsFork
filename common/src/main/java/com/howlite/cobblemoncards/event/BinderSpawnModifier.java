@@ -41,7 +41,7 @@ public class BinderSpawnModifier {
             if (nearestPlayer instanceof ServerPlayer serverPlayer) {
                 for (EquippedAccessory equipped : PlatformHelper.INSTANCE.getEquippedAccessories(serverPlayer)) {
                     String slotId = equipped.slotName();
-                    if ((slotId.equals("belt") || slotId.equals("legs")) && equipped.stack().getItem() instanceof BinderItem) {
+                    if ((slotId.equals("binder") || slotId.equals("legs/binder")) && equipped.stack().getItem() instanceof BinderItem) {
                         handleSpawnModification(pokemonEntity, pokemon, equipped.stack());
                     }
                 }
@@ -85,7 +85,7 @@ public class BinderSpawnModifier {
                 // Si le Pokémon n'est pas déjà du type cible
                 if (pokemon.getPrimaryType() != targetType && pokemon.getSecondaryType() != targetType) {
                     // Cap à 30% max : transformer 1 Pokémon sur 3 reste fun sans être trivial
-                    float finalChance = Math.min(30.0f, totalSpawnChance * CobblemonCardsConfig.globalStatMultiplier);
+                    float finalChance = Math.min(30.0f, totalSpawnChance * CobblemonCardsConfig.getStatMultiplier(bestStat));
 
                     // Lancer de dé (0-100)
                     if (RANDOM.nextFloat() * 100 < finalChance) {

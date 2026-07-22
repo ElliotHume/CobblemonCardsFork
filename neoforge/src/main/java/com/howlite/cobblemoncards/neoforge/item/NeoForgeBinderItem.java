@@ -52,7 +52,9 @@ public class NeoForgeBinderItem extends BinderItem implements Accessory {
             float totalValue = entry.getValue();
             Holder<Attribute> attribute = getVanillaAttribute(stat);
             if (attribute != null && totalValue != 0) {
-                float val = totalValue * CobblemonCardsConfig.globalStatMultiplier;
+                float multiplier = CobblemonCardsConfig.getStatMultiplier(stat);
+                if (multiplier == 0.0f) continue;
+                float val = totalValue * multiplier;
                 AttributeModifier.Operation operation;
                 if (stat == CardStat.MAX_HEALTH || stat == CardStat.ARMOR || stat == CardStat.LUCK
                         || stat == CardStat.MINING_SPEED) {
@@ -80,6 +82,6 @@ public class NeoForgeBinderItem extends BinderItem implements Accessory {
 
     @Override
     public boolean canEquip(ItemStack stack, SlotReference reference) {
-        return reference.slotName().equals("belt");
+        return reference.slotName().equals("binder");
     }
 }

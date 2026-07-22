@@ -1,9 +1,19 @@
 package com.howlite.cobblemoncards;
 
+import com.howlite.cobblemoncards.component.CardStat;
 import eu.midnightdust.lib.config.MidnightConfig;
 
 public class CobblemonCardsConfig extends MidnightConfig {
-    @Entry(min = 0.1f, max = 100.0f)
+    @Entry
+    public static boolean enableCardStats = true;
+
+    @Entry
+    public static boolean enablePlayerStats = true;
+
+    @Entry
+    public static boolean enableSpawnBoostStats = true;
+
+    @Entry(min = 0.0f, max = 100.0f)
     public static float globalStatMultiplier = 10.0f;
 
     @Entry(min = 1, max = 1200)
@@ -34,4 +44,31 @@ public class CobblemonCardsConfig extends MidnightConfig {
      */
     @Entry
     public static boolean allowFakemonCards = false;
+
+    public static float getStatMultiplier(CardStat stat) {
+        if (!enableCardStats) {
+            return 0.0f;
+        }
+        if (stat == null) {
+            return globalStatMultiplier;
+        }
+        if (!enablePlayerStats && isPlayerStat(stat)) {
+            return 0.0f;
+        }
+        if (!enableSpawnBoostStats && isSpawnStat(stat)) {
+            return 0.0f;
+        }
+        return globalStatMultiplier;
+    }
+
+    public static boolean isPlayerStat(CardStat stat) {
+        return stat == CardStat.MINING_SPEED || stat == CardStat.MOVEMENT_SPEED
+                || stat == CardStat.ATTACK_DAMAGE || stat == CardStat.ATTACK_SPEED
+                || stat == CardStat.LUCK || stat == CardStat.ARMOR
+                || stat == CardStat.MAX_HEALTH || stat == CardStat.CARD_DROP_CHANCE;
+    }
+
+    public static boolean isSpawnStat(CardStat stat) {
+        return stat != null && stat.getSerializedName().endsWith("_spawn");
+    }
 }

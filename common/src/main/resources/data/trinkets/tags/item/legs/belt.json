@@ -1,10 +1,4 @@
 {
   "replace": false,
-  "values": [
-    "cobblemon-cards:leather_binder",
-    "cobblemon-cards:iron_binder",
-    "cobblemon-cards:gold_binder",
-    "cobblemon-cards:diamond_binder",
-    "cobblemon-cards:netherite_binder"
-  ]
+  "values": []
 }

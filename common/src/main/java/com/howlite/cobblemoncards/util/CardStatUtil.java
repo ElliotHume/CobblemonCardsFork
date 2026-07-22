@@ -39,8 +39,8 @@ public class CardStatUtil {
             totalBonus += offHandBonus;
         }
         
-        // Apply the global stat multiplier from config
-        float finalBonus = totalBonus * CobblemonCardsConfig.globalStatMultiplier;
+        // Apply the stat multiplier from config
+        float finalBonus = totalBonus * CobblemonCardsConfig.getStatMultiplier(CardStat.CARD_DROP_CHANCE);
         com.howlite.cobblemoncards.CobblemonCards.LOGGER.info("[CobblemonCards] Final calculated drop bonus: " + finalBonus);
         return finalBonus;
     }

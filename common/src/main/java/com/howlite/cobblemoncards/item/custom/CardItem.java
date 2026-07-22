@@ -53,7 +53,7 @@ public class CardItem extends Item {
                             .withStyle(ChatFormatting.LIGHT_PURPLE));
                 } else {
                     // 1. Statistique (mise en avant avec couleur de rareté)
-                    float realValue = data.statValue() * CobblemonCardsConfig.globalStatMultiplier;
+                    float realValue = data.statValue() * CobblemonCardsConfig.getStatMultiplier(data.stat());
                     String sign = realValue >= 0 ? "+" : "";
                     String formattedValue = String.format("%s%.2f", sign, realValue);
 

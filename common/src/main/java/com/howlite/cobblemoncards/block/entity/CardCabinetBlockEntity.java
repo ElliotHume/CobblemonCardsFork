@@ -6,11 +6,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -38,14 +39,46 @@ public class CardCabinetBlockEntity extends BlockEntity implements ImplementedIn
     @Override
     protected void saveAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        ContainerHelper.saveAllItems(tag, inventory, registries);
+        saveCabinetItems(tag, inventory, registries);
     }
 
     @Override
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
         super.loadAdditional(tag, registries);
         inventory.clear();
-        ContainerHelper.loadAllItems(tag, inventory, registries);
+        loadCabinetItems(tag, inventory, registries);
+    }
+
+    public static CompoundTag saveCabinetItems(CompoundTag tag, NonNullList<ItemStack> items, HolderLookup.Provider registries) {
+        ListTag listTag = new ListTag();
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack stack = items.get(i);
+            if (!stack.isEmpty()) {
+                CompoundTag itemTag = new CompoundTag();
+                itemTag.putInt("Slot", i);
+                stack.save(registries, itemTag);
+                listTag.add(itemTag);
+            }
+        }
+        tag.put("Items", listTag);
+        return tag;
+    }
+
+    public static void loadCabinetItems(CompoundTag tag, NonNullList<ItemStack> items, HolderLookup.Provider registries) {
+        items.clear();
+        ListTag listTag = tag.getList("Items", Tag.TAG_COMPOUND);
+        for (int i = 0; i < listTag.size(); i++) {
+            CompoundTag itemTag = listTag.getCompound(i);
+            int slot;
+            if (itemTag.contains("Slot", Tag.TAG_INT)) {
+                slot = itemTag.getInt("Slot");
+            } else {
+                slot = itemTag.getByte("Slot") & 0xFF;
+            }
+            if (slot >= 0 && slot < items.size()) {
+                items.set(slot, ItemStack.parse(registries, itemTag).orElse(ItemStack.EMPTY));
+            }
+        }
     }
 
     @Nullable
