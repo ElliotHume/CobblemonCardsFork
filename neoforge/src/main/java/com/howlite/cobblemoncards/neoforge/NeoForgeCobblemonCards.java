@@ -302,19 +302,24 @@ public class NeoForgeCobblemonCards {
 
     @SubscribeEvent
     public void onLootTableLoad(LootTableLoadEvent event) {
-        if (CobblemonCardsConfig.enableBoosterChestSpawn) {
-            ResourceLocation key = event.getName();
-            String path = key.getPath();
-            if (key.getNamespace().equals("minecraft") && path.startsWith("chests/") && !path.startsWith("chests/village/")) {
-                float chance = CobblemonCardsConfig.boosterChestSpawnChance / 100.0f;
-                if (chance > 0.0f) {
-                    LootPool pool = LootPool.lootPool()
-                            .setRolls(ConstantValue.exactly(1))
-                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK))
-                            .when(LootItemRandomChanceCondition.randomChance(chance))
-                            .build();
-                    event.getTable().addPool(pool);
-                }
+        if (CobblemonCardsConfig.enableBoosterChestSpawn && event.getName() != null && isChestLootTable(event.getName())) {
+            float chance = CobblemonCardsConfig.boosterChestSpawnChance / 100.0f;
+            if (chance > 0.0f) {
+                LootPool pool = LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK).setWeight(10))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN1).setWeight(3))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN2).setWeight(3))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN3).setWeight(3))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN4).setWeight(3))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN5).setWeight(3))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN6).setWeight(3))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN7).setWeight(3))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN8).setWeight(3))
+                        .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN9).setWeight(3))
+                        .when(LootItemRandomChanceCondition.randomChance(chance))
+                        .build();
+                event.getTable().addPool(pool);
             }
         }
     }
@@ -333,5 +338,11 @@ public class NeoForgeCobblemonCards {
         // Register the Fakemon whitelist datapack reload listener.
         // Fires on server start and on every /reload command.
         event.addListener((ResourceManagerReloadListener) FakemonWhitelistReloader::loadFrom);
+    }
+
+    private static boolean isChestLootTable(ResourceLocation location) {
+        if (location == null) return false;
+        String path = location.getPath().toLowerCase(java.util.Locale.ROOT);
+        return path.startsWith("chests/") || path.contains("/chests/") || path.endsWith("_chest") || path.contains("chest");
     }
 }

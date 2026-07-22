@@ -89,17 +89,23 @@ public class FabricCobblemonCards implements ModInitializer {
 
         // 8. Modifier les tables de butin
         LootTableEvents.MODIFY.register((key, tableBuilder, source, registries) -> {
-            if (source.isBuiltin() && CobblemonCardsConfig.enableBoosterChestSpawn) {
-                String path = key.location().getPath();
-                if (key.location().getNamespace().equals("minecraft") && path.startsWith("chests/") && !path.startsWith("chests/village/")) {
-                    float chance = CobblemonCardsConfig.boosterChestSpawnChance / 100.0f;
-                    if (chance > 0.0f) {
-                        LootPool.Builder poolBuilder = LootPool.lootPool()
-                                .setRolls(ConstantValue.exactly(1))
-                                .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK))
-                                .conditionally(LootItemRandomChanceCondition.randomChance(chance).build());
-                        tableBuilder.pool(poolBuilder.build());
-                    }
+            if (CobblemonCardsConfig.enableBoosterChestSpawn && key != null && isChestLootTable(key.location())) {
+                float chance = CobblemonCardsConfig.boosterChestSpawnChance / 100.0f;
+                if (chance > 0.0f) {
+                    LootPool.Builder poolBuilder = LootPool.lootPool()
+                            .setRolls(ConstantValue.exactly(1))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK).setWeight(10))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN1).setWeight(3))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN2).setWeight(3))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN3).setWeight(3))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN4).setWeight(3))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN5).setWeight(3))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN6).setWeight(3))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN7).setWeight(3))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN8).setWeight(3))
+                            .add(LootItem.lootTableItem(ModItems.BOOSTER_PACK_GEN9).setWeight(3))
+                            .conditionally(LootItemRandomChanceCondition.randomChance(chance).build());
+                    tableBuilder.pool(poolBuilder.build());
                 }
             }
         });
@@ -292,5 +298,11 @@ public class FabricCobblemonCards implements ModInitializer {
                 factories.add(cardTrade);
             }
         });
+    }
+
+    private static boolean isChestLootTable(net.minecraft.resources.ResourceLocation location) {
+        if (location == null) return false;
+        String path = location.getPath().toLowerCase(java.util.Locale.ROOT);
+        return path.startsWith("chests/") || path.contains("/chests/") || path.endsWith("_chest") || path.contains("chest");
     }
 }
