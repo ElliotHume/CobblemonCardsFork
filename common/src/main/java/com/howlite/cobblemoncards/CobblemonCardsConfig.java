@@ -65,7 +65,7 @@ public class CobblemonCardsConfig extends MidnightConfig {
     public static float attackSpeedStatMultiplier = 1.0f;
 
     @Entry(min = 0.0f, max = 100.0f)
-    public static float luckStatMultiplier = 1.0f;
+    public static float luckStatMultiplier = 0.1f;
 
     @Entry(min = 0.0f, max = 100.0f)
     public static float armorStatMultiplier = 1.0f;

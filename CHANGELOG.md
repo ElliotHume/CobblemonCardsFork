@@ -4,6 +4,28 @@ All major changes brought to **Cobblemon Cards** in this update.
 
 ---
 
+## ⚙️ Unreleased (Spawning Overhaul, Stats Additions)
+
+### 🌱 Spawning Logic Rework
+* **Weight-based spawn boosts**: Spawn stats now influence the **weights of Pokémon that *could* spawn** (`BinderSpawnModifier` hooking into Cobblemon's `SpawningInfluence` / `affectWeight`), instead of forcefully transforming entities *after* they had already spawned.
+  * Plays much nicer with other Cobblemon addons and no longer breaks game balance.
+  * Respects spawn buckets and biome-specific spawn rules.
+  * Spawn boosts are capped by the new `maxSpawnBoostMultiplier` config.
+  * The best of the primary/secondary elemental type multipliers is applied to each species.
+  * The equipped binder is re-scanned every 40 ticks instead of on every spawn attempt.
+  
+### 🎛️ Config Additions
+* **Granular multipliers**: `globalStatMultiplier`, `playerStatMultiplier`, `spawnBoostStatMultiplier`, `maxSpawnBoostMultiplier`.
+* **Per-stat multipliers**: a dedicated multiplier for every player/vanilla-attribute stat — `miningSpeedStatMultiplier`, `movementSpeedStatMultiplier`, `attackDamageStatMultiplier`, `attackSpeedStatMultiplier`, `luckStatMultiplier`, `armorStatMultiplier`, `maxHealthStatMultiplier`, `cardDropChanceStatMultiplier`. These stack on top of `globalStatMultiplier` and `playerStatMultiplier`.
+* **Fix**: MidnightLib no longer skips writing newly added config values when a config file already exists.
+
+### 🧮 Accurate Stat Tooltips
+* Tooltips and GUIs now reflect how each stat is applied: **flat** stats (Max Health, Armor, Luck, Mining Speed → `ADD_VALUE`) display as `+5.0`, while **percentage** stats (Movement Speed, Attack Damage, Attack Speed, Card Drop Chance, spawn boosts → `ADD_MULTIPLIED_BASE`) display as `+5.0%`.
+* The application mode and modifier maths are now centralized in `CardStatUtil` for every platform.
+* A config option exists to display non-formatted values, like in previous versions
+
+---
+
 ## 🚀 Version 1.0.1 (Multiloader & Easter Eggs Update)
 
 ### ⚙️ Multiloader Architecture (Fabric & NeoForge)
