@@ -53,7 +53,7 @@ public class BinderSpawnModifier implements SpawningInfluence {
     public static final Logger LOGGER = LoggerFactory.getLogger("cobblemon-cards");
 
     /** Temporary testing switch: verbose console logging for the spawn influence. */
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     /** One-shot flag so we log the very first time Cobblemon asks us for a weight. */
     private static volatile boolean FIRST_CALL_LOGGED = false;
 
