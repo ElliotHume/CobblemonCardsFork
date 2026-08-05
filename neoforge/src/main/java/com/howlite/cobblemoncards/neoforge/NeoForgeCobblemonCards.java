@@ -49,7 +49,6 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import com.howlite.cobblemoncards.util.FakemonWhitelistReloader;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
@@ -92,13 +91,7 @@ public class NeoForgeCobblemonCards {
             eu.midnightdust.lib.config.MidnightConfig.write(CobblemonCards.MOD_ID);
 
             // Binder spawn boosts: hook into Cobblemon's per-player spawner weighting pipeline.
-            try {
-                PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(BinderSpawnModifier::new);
-                CobblemonCards.LOGGER.info("[BinderSpawn] Registered binder SpawningInfluence builder ({} builders total)",
-                        PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().size());
-            } catch (Throwable t) {
-                CobblemonCards.LOGGER.error("[BinderSpawn] FAILED to register binder SpawningInfluence builder", t);
-            }
+            BinderSpawnModifier.registerSpawnInfluence();
 
             // Enregistrer les événements communs (ex: capture de Pokémon)
             ModEvents.registerEvents();

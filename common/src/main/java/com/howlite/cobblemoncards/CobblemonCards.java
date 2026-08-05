@@ -1,6 +1,5 @@
 package com.howlite.cobblemoncards;
 
-import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.howlite.cobblemoncards.block.ModBlocks;
 import com.howlite.cobblemoncards.block.entity.ModBlockEntities;
 import com.howlite.cobblemoncards.component.ModDataComponents;
@@ -38,12 +37,6 @@ public class CobblemonCards {
         ModSounds.registerSounds();
 
         // Binder spawn boosts: hook into Cobblemon's per-player spawner weighting pipeline.
-        try {
-            PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(BinderSpawnModifier::new);
-            LOGGER.info("[BinderSpawn] Registered binder SpawningInfluence builder ({} builders total)",
-                    PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().size());
-        } catch (Throwable t) {
-            LOGGER.error("[BinderSpawn] FAILED to register binder SpawningInfluence builder", t);
-        }
+        BinderSpawnModifier.registerSpawnInfluence();
     }
 }

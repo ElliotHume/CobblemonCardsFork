@@ -1,8 +1,6 @@
 package com.howlite.cobblemoncards.fabric.item;
 
-import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
-import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.item.custom.MasterAlbumItem;
 import io.wispforest.accessories.api.Accessory;
 import io.wispforest.accessories.api.attributes.AccessoryAttributeBuilder;
@@ -13,8 +11,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("null")
@@ -26,26 +22,8 @@ public class FabricMasterAlbumItem extends MasterAlbumItem implements Accessory 
 
     @Override
     public void getDynamicModifiers(ItemStack stack, SlotReference reference, AccessoryAttributeBuilder builder) {
-        // Lire les cartes depuis le nouveau composant BINDER_CONTENTS
-        List<ItemStack> binderItems = stack.get(ModDataComponents.BINDER_CONTENTS);
-        Iterable<ItemStack> contentItems;
-        if (binderItems != null) {
-            contentItems = binderItems.stream().filter(s -> !s.isEmpty()).toList();
-        } else {
-            // Fallback sur le composant vanilla CONTAINER pour la rétrocompatibilité
-            contentItems = stack.getOrDefault(
-                    net.minecraft.core.component.DataComponents.CONTAINER,
-                    net.minecraft.world.item.component.ItemContainerContents.EMPTY
-            ).nonEmptyItems();
-        }
-
-        Map<CardStat, Float> statTotals = new EnumMap<>(CardStat.class);
-        for (ItemStack contentStack : contentItems) {
-            CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
-            if (cardData != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(cardData.pokemonId())) {
-                statTotals.merge(cardData.stat(), cardData.statValue(), Float::sum);
-            }
-        }
+        // Shared reader: BINDER_CONTENTS with a fallback to vanilla CONTAINER for unmigrated saves.
+        Map<CardStat, Float> statTotals = com.howlite.cobblemoncards.util.CardStatUtil.collectStats(stack);
 
         for (Map.Entry<CardStat, Float> entry : statTotals.entrySet()) {
             CardStat stat = entry.getKey();

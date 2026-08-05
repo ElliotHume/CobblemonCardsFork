@@ -13,8 +13,65 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
 public class CardStatUtil {
+
+    // ------------------------------------------------------------------
+    // Binder contents
+    // ------------------------------------------------------------------
+
+    /**
+     * Single source of truth for reading the cards stored in a binder-like stack.
+     * Prefers the unlimited {@link ModDataComponents#BINDER_CONTENTS} component and falls back to the
+     * vanilla {@link DataComponents#CONTAINER} component for saves that predate the migration.
+     */
+    public static Iterable<ItemStack> getBinderContents(ItemStack binderStack) {
+        if (binderStack == null || binderStack.isEmpty()) {
+            return Collections.emptyList();
+        }
+        List<ItemStack> binderItems = binderStack.get(ModDataComponents.BINDER_CONTENTS);
+        if (binderItems != null) {
+            return binderItems.stream().filter(stack -> !stack.isEmpty()).toList();
+        }
+        return binderStack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItems();
+    }
+
+    /**
+     * Sums the <em>raw</em> stat values of every non-cosmetic card in the binder. Cosmetic cards never
+     * contribute stats. Feed the totals through {@link #getEffectiveValue(CardStat, float)} before
+     * displaying or applying them.
+     *
+     * @param filter optional stat filter, e.g. {@code CobblemonCardsConfig::isSpawnStat}
+     */
+    public static Map<CardStat, Float> collectStats(ItemStack binderStack, Predicate<CardStat> filter) {
+        Map<CardStat, Float> totals = new EnumMap<>(CardStat.class);
+        collectStats(binderStack, filter, totals);
+        return totals;
+    }
+
+    /** See {@link #collectStats(ItemStack, Predicate)}; collects every stat. */
+    public static Map<CardStat, Float> collectStats(ItemStack binderStack) {
+        return collectStats(binderStack, null);
+    }
+
+    /** Accumulating variant of {@link #collectStats(ItemStack, Predicate)}, for summing several binders. */
+    public static void collectStats(ItemStack binderStack, Predicate<CardStat> filter, Map<CardStat, Float> out) {
+        for (ItemStack contentStack : getBinderContents(binderStack)) {
+            CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
+            if (cardData == null || cardData.stat() == null || CardUtil.isCosmeticCard(cardData.pokemonId())) {
+                continue;
+            }
+            if (filter != null && !filter.test(cardData.stat())) {
+                continue;
+            }
+            out.merge(cardData.stat(), cardData.statValue(), Float::sum);
+        }
+    }
 
     /**
      * How a stat is applied in game.
@@ -138,27 +195,7 @@ public class CardStatUtil {
     }
     
     private static float getBonusFromStack(ItemStack stack) {
-        float bonus = 0f;
-        if (stack == null || stack.isEmpty()) return bonus;
-
-        // Lire depuis BINDER_CONTENTS (nouveau stockage custom)
-        List<ItemStack> binderItems = stack.get(ModDataComponents.BINDER_CONTENTS);
-        Iterable<ItemStack> contentItems;
-        if (binderItems != null) {
-            contentItems = binderItems.stream().filter(s -> !s.isEmpty()).toList();
-        } else if (stack.has(DataComponents.CONTAINER)) {
-            // Fallback sur CONTAINER pour la rétrocompatibilité
-            contentItems = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItems();
-        } else {
-            return bonus;
-        }
-
-        for (ItemStack contentStack : contentItems) {
-            CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
-            if (cardData != null && !CardUtil.isCosmeticCard(cardData.pokemonId()) && cardData.stat() == CardStat.CARD_DROP_CHANCE) {
-                bonus += cardData.statValue();
-            }
-        }
-        return bonus;
+        return collectStats(stack, s -> s == CardStat.CARD_DROP_CHANCE)
+                .getOrDefault(CardStat.CARD_DROP_CHANCE, 0f);
     }
 }
