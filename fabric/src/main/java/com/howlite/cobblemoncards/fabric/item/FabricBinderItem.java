@@ -1,6 +1,5 @@
 package com.howlite.cobblemoncards.fabric.item;
 
-import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
@@ -54,19 +53,11 @@ public class FabricBinderItem extends BinderItem implements Accessory {
             float totalValue = entry.getValue();
             Holder<Attribute> attribute = getVanillaAttribute(stat);
             if (attribute != null && totalValue != 0) {
-                float multiplier = CobblemonCardsConfig.getStatMultiplier(stat);
-                if (multiplier == 0.0f) continue;
-                float val = totalValue * multiplier;
-                AttributeModifier.Operation operation;
-                // ADD_VALUE pour les stats à base nulle ou absolues
-                // ADD_MULTIPLIED_BASE pour les stats à base non nulle (vitesse, dégâts...)
-                if (stat == CardStat.MAX_HEALTH || stat == CardStat.ARMOR || stat == CardStat.LUCK
-                        || stat == CardStat.MINING_SPEED) {
-                    operation = AttributeModifier.Operation.ADD_VALUE;
-                } else {
-                    operation = AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
-                    val /= 100.0f;
-                }
+                // Config multiplier + application mode (flat vs percent) resolved in one place.
+                float val = com.howlite.cobblemoncards.util.CardStatUtil.getAttributeModifierValue(stat, totalValue);
+                if (val == 0.0f) continue;
+                AttributeModifier.Operation operation =
+                        com.howlite.cobblemoncards.util.CardStatUtil.getAttributeOperation(stat);
 
                 String path = "binder_modifier_" + reference.slotName() + "_" + reference.slot() + "_" + stat.getSerializedName();
                 builder.addExclusive(

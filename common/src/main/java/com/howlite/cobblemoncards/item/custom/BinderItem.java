@@ -1,6 +1,5 @@
 package com.howlite.cobblemoncards.item.custom;
 
-import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
@@ -110,9 +109,9 @@ public class BinderItem extends Item {
                     hasHeader = true;
                 }
 
-                float finalValue = totalValue * CobblemonCardsConfig.getStatMultiplier(stat);
+                float finalValue = com.howlite.cobblemoncards.util.CardStatUtil.getEffectiveValue(stat, totalValue);
                 if (finalValue <= 0) continue;
-                String formattedValue = String.format("+%.1f%%", finalValue);
+                String formattedValue = com.howlite.cobblemoncards.util.CardStatUtil.formatValue(stat, totalValue);
 
                 tooltipComponents.add(Component.literal(formattedValue + " ").append(stat.getTranslatedName())
                         .withStyle(ChatFormatting.AQUA));

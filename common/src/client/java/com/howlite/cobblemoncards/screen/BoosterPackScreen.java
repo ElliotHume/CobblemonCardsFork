@@ -509,8 +509,8 @@ public class BoosterPackScreen extends Screen {
 
                 // Dessiner le bonus si data présent
                 if (data != null) {
-                    int percent = Math.round(data.statValue() * 100);
-                    Component bonusText = Component.literal("+" + percent + "% ").append(data.stat().getTranslatedName()).withStyle(ChatFormatting.GREEN);
+                    String percent = com.howlite.cobblemoncards.util.CardStatUtil.formatValue(data.stat(), data.statValue());
+                    Component bonusText = Component.literal(percent + " ").append(data.stat().getTranslatedName()).withStyle(ChatFormatting.GREEN);
                     graphics.drawCenteredString(this.font, bonusText, xCenter, (int)(currentCardY + 82), statColor);
                 }
             }

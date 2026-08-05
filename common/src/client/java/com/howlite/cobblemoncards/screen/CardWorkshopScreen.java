@@ -332,7 +332,10 @@ public class CardWorkshopScreen extends Screen {
             graphics.renderOutline(tooltipX + 1, tooltipY + 1, tooltipW - 2, tooltipH - 2, 0xFF4A0896);
 
             String nameText = getRarityColor() + (isShiny ? "Shiny " : "") + getCapitalized(pokemonId);
-            String statText = "§a+" + Math.round(STAT_VALUES.get(statValueIndex) * 100) + "% " + getCapitalized(CardStat.values()[statIndex].getSerializedName());
+            // Preview must match the real card tooltip: the config multiplier is applied exactly once.
+            String statText = "§a" + com.howlite.cobblemoncards.util.CardStatUtil.formatValue(
+                    CardStat.values()[statIndex], STAT_VALUES.get(statValueIndex))
+                    + " " + getCapitalized(CardStat.values()[statIndex].getSerializedName());
 
             graphics.drawString(this.font, nameText, tooltipX + 8, tooltipY + 6, 0xFFFFFF, true);
             graphics.drawString(this.font, statText, tooltipX + 8, tooltipY + 18, 0xFFFFFF, true);
@@ -392,10 +395,10 @@ public class CardWorkshopScreen extends Screen {
         }).bounds(rightX, 132, 130, 18).build();
         this.addRenderableWidget(this.statButton);
 
-        // Valeur Statistique
-        this.addRenderableWidget(Button.builder(Component.literal("Value: +" + Math.round(STAT_VALUES.get(statValueIndex) * 100) + "%"), b -> {
+        // Valeur Statistique (valeur brute stockée sur la carte, avant multiplicateur de config)
+        this.addRenderableWidget(Button.builder(Component.literal("Raw Value: +" + Math.round(STAT_VALUES.get(statValueIndex) * 100) + "%"), b -> {
             statValueIndex = (statValueIndex + 1) % STAT_VALUES.size();
-            b.setMessage(Component.literal("Value: +" + Math.round(STAT_VALUES.get(statValueIndex) * 100) + "%"));
+            b.setMessage(Component.literal("Raw Value: +" + Math.round(STAT_VALUES.get(statValueIndex) * 100) + "%"));
             playClickSound();
         }).bounds(rightX, 155, 130, 18).build());
 

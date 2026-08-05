@@ -5,7 +5,6 @@ import com.howlite.cobblemoncards.item.custom.BinderTier;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
-import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import io.wispforest.accessories.api.Accessory;
 import io.wispforest.accessories.api.attributes.AccessoryAttributeBuilder;
 import io.wispforest.accessories.api.slot.SlotReference;
@@ -52,17 +51,11 @@ public class NeoForgeBinderItem extends BinderItem implements Accessory {
             float totalValue = entry.getValue();
             Holder<Attribute> attribute = getVanillaAttribute(stat);
             if (attribute != null && totalValue != 0) {
-                float multiplier = CobblemonCardsConfig.getStatMultiplier(stat);
-                if (multiplier == 0.0f) continue;
-                float val = totalValue * multiplier;
-                AttributeModifier.Operation operation;
-                if (stat == CardStat.MAX_HEALTH || stat == CardStat.ARMOR || stat == CardStat.LUCK
-                        || stat == CardStat.MINING_SPEED) {
-                    operation = AttributeModifier.Operation.ADD_VALUE;
-                } else {
-                    operation = AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
-                    val /= 100.0f;
-                }
+                // Config multiplier + application mode (flat vs percent) resolved in one place.
+                float val = com.howlite.cobblemoncards.util.CardStatUtil.getAttributeModifierValue(stat, totalValue);
+                if (val == 0.0f) continue;
+                AttributeModifier.Operation operation =
+                        com.howlite.cobblemoncards.util.CardStatUtil.getAttributeOperation(stat);
 
                 String path = "binder_modifier_" + reference.slotName() + "_" + reference.slot() + "_" + stat.getSerializedName();
                 builder.addExclusive(

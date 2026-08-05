@@ -255,7 +255,7 @@ public class BinderScreen extends AbstractContainerScreen<BinderMenu> {
         for (int i = 0; i < this.menu.getMaxPages() * BinderMenu.SLOTS_PER_PAGE; i++) {
             ItemStack stack = this.menu.getSlot(i).getItem();
             CardData data = stack.get(ModDataComponents.CARD_DATA);
-            if (data != null && !data.pokemonId().startsWith("player_")) {
+            if (data != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(data.pokemonId())) {
                 stats.put(data.stat(), stats.getOrDefault(data.stat(), 0f) + data.statValue());
             }
         }
@@ -264,11 +264,20 @@ public class BinderScreen extends AbstractContainerScreen<BinderMenu> {
         if (stats.isEmpty()) {
             graphics.drawString(this.font, Component.translatable("gui.cobblemon-cards.binder.no_bonus"), x + 10, startY, 0xAAAAAA, false);
         } else {
+            boolean anyShown = false;
             for (Map.Entry<CardStat, Float> entry : stats.entrySet()) {
-                int percent = Math.round(entry.getValue() * 100);
-                Component text = Component.translatable("gui.cobblemon-cards.binder.stat_entry", entry.getKey().getTranslatedName(), percent);
+                // Same maths as the binder tooltip: the config multiplier is applied exactly once.
+                float value = com.howlite.cobblemoncards.util.CardStatUtil.getEffectiveValue(entry.getKey(), entry.getValue());
+                if (value <= 0f) continue;
+                // The formatting depends on how the stat is applied (flat value vs percentage of base).
+                String formatted = com.howlite.cobblemoncards.util.CardStatUtil.formatValue(entry.getKey(), entry.getValue());
+                Component text = Component.translatable("gui.cobblemon-cards.binder.stat_entry_value", entry.getKey().getTranslatedName(), formatted);
                 graphics.drawString(this.font, text, x + 10, startY, 0x55FF55, false);
                 startY += 10;
+                anyShown = true;
+            }
+            if (!anyShown) {
+                graphics.drawString(this.font, Component.translatable("gui.cobblemon-cards.binder.no_bonus"), x + 10, startY, 0xAAAAAA, false);
             }
         }
     }

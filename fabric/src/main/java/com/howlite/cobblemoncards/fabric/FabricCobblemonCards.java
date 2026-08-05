@@ -1,5 +1,6 @@
 package com.howlite.cobblemoncards.fabric;
 
+import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.howlite.cobblemoncards.CobblemonCards;
 import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import com.howlite.cobblemoncards.attachment.PlayerDataAttachments;
@@ -10,6 +11,7 @@ import com.howlite.cobblemoncards.command.GiveCardCommand;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
+import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import com.howlite.cobblemoncards.item.ModItems;
 import com.howlite.cobblemoncards.item.custom.loot.BoosterLootTable;
 import com.howlite.cobblemoncards.manager.BoosterPackManager;
@@ -24,11 +26,8 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
-import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
-import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -110,12 +109,9 @@ public class FabricCobblemonCards implements ModInitializer {
             }
         });
 
-        // 9. Enregistrer le modificateur de spawn
-        ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-            if (entity instanceof PokemonEntity pokemonEntity) {
-                BinderSpawnModifier.onEntityLoad(pokemonEntity, world);
-            }
-        });
+        // 9. Le modificateur de spawn du Binder est enregistré dans CobblemonCards.init()
+        //    via PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders() (SpawningInfluence).
+        // PlayerSpawnerFactory.INSTANCE.getInfluenceBuilders().add(BinderSpawnModifier::new);
 
         // 10. Enregistrer le reload listener datapack pour la whitelist Fakemon
         ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(
