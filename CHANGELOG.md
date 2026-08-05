@@ -13,6 +13,7 @@ All major changes brought to **Cobblemon Cards** in this update.
   * Spawn boosts are capped by the new `maxSpawnBoostMultiplier` config.
   * The best of the primary/secondary elemental type multipliers is applied to each species.
   * The equipped binder is re-scanned every 40 ticks instead of on every spawn attempt.
+  * Even works with Pokenavs!!
   
 ### 🎛️ Config Additions
 * **Granular multipliers**: `globalStatMultiplier`, `playerStatMultiplier`, `spawnBoostStatMultiplier`, `maxSpawnBoostMultiplier`.
