@@ -1,6 +1,5 @@
 package com.howlite.cobblemoncards.item.custom;
 
-import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.util.ClientAccess;
@@ -53,9 +52,10 @@ public class CardItem extends Item {
                             .withStyle(ChatFormatting.LIGHT_PURPLE));
                 } else {
                     // 1. Statistique (mise en avant avec couleur de rareté)
-                    float realValue = data.statValue() * CobblemonCardsConfig.getStatMultiplier(data.stat());
-                    String sign = realValue >= 0 ? "+" : "";
-                    String formattedValue = String.format("%s%.2f", sign, realValue);
+                    // Le format dépend du mode d'application du stat (valeur plate vs pourcentage).
+                    String formattedValue = com.howlite.cobblemoncards.CobblemonCardsConfig.displayPercentStatOnCards
+                            ? com.howlite.cobblemoncards.util.CardStatUtil.formatValue(data.stat(), data.statValue())
+                            : String.valueOf(data.statValue());
 
                     // Séparateur décoratif supérieur
                     tooltipComponents.add(Component.literal("─────────────────").withStyle(ChatFormatting.DARK_GRAY));
@@ -190,4 +190,4 @@ public class CardItem extends Item {
         if (text == null || text.isEmpty()) return text;
         return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
     }
-}
+}

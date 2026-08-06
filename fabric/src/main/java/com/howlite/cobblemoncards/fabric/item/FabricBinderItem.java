@@ -1,9 +1,6 @@
 package com.howlite.cobblemoncards.fabric.item;
 
-import com.howlite.cobblemoncards.CobblemonCardsConfig;
-import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
-import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.item.custom.BinderItem;
 import com.howlite.cobblemoncards.item.custom.BinderTier;
 import io.wispforest.accessories.api.Accessory;
@@ -15,8 +12,6 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 @SuppressWarnings("null")
@@ -28,45 +23,19 @@ public class FabricBinderItem extends BinderItem implements Accessory {
 
     @Override
     public void getDynamicModifiers(ItemStack stack, SlotReference reference, AccessoryAttributeBuilder builder) {
-        // Lire les cartes depuis le nouveau composant BINDER_CONTENTS
-        List<ItemStack> binderItems = stack.get(ModDataComponents.BINDER_CONTENTS);
-        Iterable<ItemStack> contentItems;
-        if (binderItems != null) {
-            contentItems = binderItems.stream().filter(s -> !s.isEmpty()).toList();
-        } else {
-            // Fallback sur le composant vanilla CONTAINER pour la rétrocompatibilité
-            contentItems = stack.getOrDefault(
-                    net.minecraft.core.component.DataComponents.CONTAINER,
-                    net.minecraft.world.item.component.ItemContainerContents.EMPTY
-            ).nonEmptyItems();
-        }
-
-        Map<CardStat, Float> statTotals = new EnumMap<>(CardStat.class);
-        for (ItemStack contentStack : contentItems) {
-            CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
-            if (cardData != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(cardData.pokemonId())) {
-                statTotals.merge(cardData.stat(), cardData.statValue(), Float::sum);
-            }
-        }
+        // Shared reader: BINDER_CONTENTS with a fallback to vanilla CONTAINER for unmigrated saves.
+        Map<CardStat, Float> statTotals = com.howlite.cobblemoncards.util.CardStatUtil.collectStats(stack);
 
         for (Map.Entry<CardStat, Float> entry : statTotals.entrySet()) {
             CardStat stat = entry.getKey();
             float totalValue = entry.getValue();
             Holder<Attribute> attribute = getVanillaAttribute(stat);
             if (attribute != null && totalValue != 0) {
-                float multiplier = CobblemonCardsConfig.getStatMultiplier(stat);
-                if (multiplier == 0.0f) continue;
-                float val = totalValue * multiplier;
-                AttributeModifier.Operation operation;
-                // ADD_VALUE pour les stats à base nulle ou absolues
-                // ADD_MULTIPLIED_BASE pour les stats à base non nulle (vitesse, dégâts...)
-                if (stat == CardStat.MAX_HEALTH || stat == CardStat.ARMOR || stat == CardStat.LUCK
-                        || stat == CardStat.MINING_SPEED) {
-                    operation = AttributeModifier.Operation.ADD_VALUE;
-                } else {
-                    operation = AttributeModifier.Operation.ADD_MULTIPLIED_BASE;
-                    val /= 100.0f;
-                }
+                // Config multiplier + application mode (flat vs percent) resolved in one place.
+                float val = com.howlite.cobblemoncards.util.CardStatUtil.getAttributeModifierValue(stat, totalValue);
+                if (val == 0.0f) continue;
+                AttributeModifier.Operation operation =
+                        com.howlite.cobblemoncards.util.CardStatUtil.getAttributeOperation(stat);
 
                 String path = "binder_modifier_" + reference.slotName() + "_" + reference.slot() + "_" + stat.getSerializedName();
                 builder.addExclusive(

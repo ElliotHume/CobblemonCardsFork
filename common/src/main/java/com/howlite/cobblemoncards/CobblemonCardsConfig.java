@@ -16,6 +16,15 @@ public class CobblemonCardsConfig extends MidnightConfig {
     @Entry(min = 0.0f, max = 100.0f)
     public static float globalStatMultiplier = 10.0f;
 
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float playerStatMultiplier = 1.0f;
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float spawnBoostStatMultiplier = 1.0f;
+
+    @Entry(min = 0.0f, max = 10000.0f)
+    public static float maxSpawnBoostMultiplier = 100.0f;
+
     @Entry(min = 1, max = 1200)
     public static int recyclerProcessTime = 40;
 
@@ -37,6 +46,36 @@ public class CobblemonCardsConfig extends MidnightConfig {
     @Entry(min = 0.0f, max = 100.0f)
     public static float boosterChestSpawnChance = 2.0f;
 
+    @Entry
+    public static boolean displayPercentStatOnCards = true;
+
+    // --- Per-stat multipliers for the vanilla-attribute / player stats ---
+    // Each of these is applied on top of globalStatMultiplier * playerStatMultiplier.
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float miningSpeedStatMultiplier = 1.0f;
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float movementSpeedStatMultiplier = 1.0f;
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float attackDamageStatMultiplier = 1.0f;
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float attackSpeedStatMultiplier = 1.0f;
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float luckStatMultiplier = 0.1f;
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float armorStatMultiplier = 1.0f;
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float maxHealthStatMultiplier = 1.0f;
+
+    @Entry(min = 0.0f, max = 100.0f)
+    public static float cardDropChanceStatMultiplier = 1.0f;
+
     /**
      * When false (default), species whose National Pokédex number is outside [1, 1025]
      * (i.e. Fakemon added by addon mods) are excluded from card drops and booster packs.
@@ -45,20 +84,40 @@ public class CobblemonCardsConfig extends MidnightConfig {
     @Entry
     public static boolean allowFakemonCards = false;
 
+
     public static float getStatMultiplier(CardStat stat) {
-        if (!enableCardStats) {
+        if (stat == null || !enableCardStats || (!enablePlayerStats && isPlayerStat(stat)) || (!enableSpawnBoostStats && isSpawnStat(stat))) {
             return 0.0f;
         }
-        if (stat == null) {
-            return globalStatMultiplier;
+
+        if (isPlayerStat(stat)) {
+            return globalStatMultiplier * playerStatMultiplier * getPerStatMultiplier(stat);
         }
-        if (!enablePlayerStats && isPlayerStat(stat)) {
-            return 0.0f;
+        if (isSpawnStat(stat)) {
+            return globalStatMultiplier * spawnBoostStatMultiplier;
         }
-        if (!enableSpawnBoostStats && isSpawnStat(stat)) {
-            return 0.0f;
-        }
+
+        // Fallback return, shouldn't get hit unless a stat does not count as either a player or spawn boost stat
         return globalStatMultiplier;
+    }
+
+    /**
+     * Per-stat multiplier for the "vanilla attribute" / player stats.
+     * Returns 1.0f for any stat without a dedicated config entry.
+     */
+    public static float getPerStatMultiplier(CardStat stat) {
+        if (stat == null) return 1.0f;
+        return switch (stat) {
+            case MINING_SPEED -> miningSpeedStatMultiplier;
+            case MOVEMENT_SPEED -> movementSpeedStatMultiplier;
+            case ATTACK_DAMAGE -> attackDamageStatMultiplier;
+            case ATTACK_SPEED -> attackSpeedStatMultiplier;
+            case LUCK -> luckStatMultiplier;
+            case ARMOR -> armorStatMultiplier;
+            case MAX_HEALTH -> maxHealthStatMultiplier;
+            case CARD_DROP_CHANCE -> cardDropChanceStatMultiplier;
+            default -> 1.0f;
+        };
     }
 
     public static boolean isPlayerStat(CardStat stat) {

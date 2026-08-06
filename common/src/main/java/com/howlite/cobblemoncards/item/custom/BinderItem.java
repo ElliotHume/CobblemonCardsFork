@@ -1,13 +1,9 @@
 package com.howlite.cobblemoncards.item.custom;
 
-import com.howlite.cobblemoncards.CobblemonCardsConfig;
-import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
-import com.howlite.cobblemoncards.component.ModDataComponents;
 import com.howlite.cobblemoncards.util.PlatformHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -19,10 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.Level;
 
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -81,22 +75,8 @@ public class BinderItem extends Item {
         // Affichage du nombre de pages
         tooltipComponents.add(Component.translatable("gui.cobblemon-cards.binder.pages", tier.getPages()).withStyle(ChatFormatting.GRAY));
 
-        // Read from BINDER_CONTENTS (new). Fall back to vanilla CONTAINER for unmigrated saves.
-        List<ItemStack> binderItems = stack.get(ModDataComponents.BINDER_CONTENTS);
-        Iterable<ItemStack> contentItems;
-        if (binderItems != null) {
-            contentItems = binderItems.stream().filter(s -> !s.isEmpty()).toList();
-        } else {
-            contentItems = stack.getOrDefault(DataComponents.CONTAINER, ItemContainerContents.EMPTY).nonEmptyItems();
-        }
-        Map<CardStat, Float> statTotals = new EnumMap<>(CardStat.class);
-
-        for (ItemStack contentStack : contentItems) {
-            CardData cardData = contentStack.get(ModDataComponents.CARD_DATA);
-            if (cardData != null && !com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(cardData.pokemonId())) {
-                statTotals.merge(cardData.stat(), cardData.statValue(), Float::sum);
-            }
-        }
+        // Shared reader: BINDER_CONTENTS with a fallback to vanilla CONTAINER for unmigrated saves.
+        Map<CardStat, Float> statTotals = com.howlite.cobblemoncards.util.CardStatUtil.collectStats(stack);
 
         boolean hasHeader = false;
         for (Map.Entry<CardStat, Float> entry : statTotals.entrySet()) {
@@ -110,9 +90,9 @@ public class BinderItem extends Item {
                     hasHeader = true;
                 }
 
-                float finalValue = totalValue * CobblemonCardsConfig.getStatMultiplier(stat);
+                float finalValue = com.howlite.cobblemoncards.util.CardStatUtil.getEffectiveValue(stat, totalValue);
                 if (finalValue <= 0) continue;
-                String formattedValue = String.format("+%.1f%%", finalValue);
+                String formattedValue = com.howlite.cobblemoncards.util.CardStatUtil.formatValue(stat, totalValue);
 
                 tooltipComponents.add(Component.literal(formattedValue + " ").append(stat.getTranslatedName())
                         .withStyle(ChatFormatting.AQUA));

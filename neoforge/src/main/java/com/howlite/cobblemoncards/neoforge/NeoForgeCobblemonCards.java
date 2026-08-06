@@ -1,5 +1,6 @@
 package com.howlite.cobblemoncards.neoforge;
 
+import com.cobblemon.mod.common.api.spawning.spawner.PlayerSpawnerFactory;
 import com.howlite.cobblemoncards.CobblemonCards;
 import com.howlite.cobblemoncards.CobblemonCardsConfig;
 import com.howlite.cobblemoncards.block.ModBlocks;
@@ -10,6 +11,7 @@ import com.howlite.cobblemoncards.command.GiveCardCommand;
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.CardStat;
 import com.howlite.cobblemoncards.component.ModDataComponents;
+import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import com.howlite.cobblemoncards.event.ModEvents;
 import com.howlite.cobblemoncards.item.ModCreativeTabs;
 import com.howlite.cobblemoncards.item.ModItems;
@@ -46,10 +48,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import com.cobblemon.mod.common.entity.pokemon.PokemonEntity;
 import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import com.howlite.cobblemoncards.util.FakemonWhitelistReloader;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
@@ -88,6 +87,12 @@ public class NeoForgeCobblemonCards {
         event.enqueueWork(() -> {
             // Initialisation de la configuration MidnightLib - ON L'INITIALISE ICI
             eu.midnightdust.lib.config.MidnightConfig.init(CobblemonCards.MOD_ID, CobblemonCardsConfig.class);
+            // Force the config file to be (re)written so newly added entries appear on disk
+            eu.midnightdust.lib.config.MidnightConfig.write(CobblemonCards.MOD_ID);
+
+            // Binder spawn boosts: hook into Cobblemon's per-player spawner weighting pipeline.
+            BinderSpawnModifier.registerSpawnInfluence();
+
             // Enregistrer les événements communs (ex: capture de Pokémon)
             ModEvents.registerEvents();
 
@@ -324,14 +329,6 @@ public class NeoForgeCobblemonCards {
         }
     }
 
-    @SubscribeEvent
-    public void onEntityJoinLevel(EntityJoinLevelEvent event) {
-        if (event.getLevel() instanceof ServerLevel serverLevel) {
-            if (event.getEntity() instanceof PokemonEntity pokemonEntity) {
-                BinderSpawnModifier.onEntityLoad(pokemonEntity, serverLevel);
-            }
-        }
-    }
 
     @SubscribeEvent
     public void onAddReloadListeners(AddReloadListenerEvent event) {

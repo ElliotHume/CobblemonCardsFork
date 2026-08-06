@@ -3,6 +3,7 @@ package com.howlite.cobblemoncards;
 import com.howlite.cobblemoncards.block.ModBlocks;
 import com.howlite.cobblemoncards.block.entity.ModBlockEntities;
 import com.howlite.cobblemoncards.component.ModDataComponents;
+import com.howlite.cobblemoncards.event.BinderSpawnModifier;
 import com.howlite.cobblemoncards.event.ModEvents;
 import com.howlite.cobblemoncards.item.ModCreativeTabs;
 import com.howlite.cobblemoncards.item.ModItems;
@@ -18,8 +19,11 @@ public class CobblemonCards {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static void init() {
+        LOGGER.info("[CobblemonCards] init() starting (build with binder SpawningInfluence)");
         // Initialisation de la configuration MidnightLib
         MidnightConfig.init(MOD_ID, CobblemonCardsConfig.class);
+        // Force the config file to be (re)written so newly added entries appear on disk
+        MidnightConfig.write(MOD_ID);
         // Initialize species-aware card rarity weighting
         SpeciesRarityManager.initialize();
 
@@ -31,5 +35,8 @@ public class CobblemonCards {
         ModCreativeTabs.register();
         ModEvents.registerEvents();
         ModSounds.registerSounds();
+
+        // Binder spawn boosts: hook into Cobblemon's per-player spawner weighting pipeline.
+        BinderSpawnModifier.registerSpawnInfluence();
     }
 }
