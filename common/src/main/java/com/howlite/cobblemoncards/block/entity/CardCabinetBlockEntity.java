@@ -1,5 +1,6 @@
 package com.howlite.cobblemoncards.block.entity;
 
+import com.howlite.cobblemoncards.CobblemonCards;
 import com.howlite.cobblemoncards.block.CardCabinetBlock;
 import com.howlite.cobblemoncards.menu.CardCabinetMenu;
 import net.minecraft.core.BlockPos;
@@ -51,14 +52,29 @@ public class CardCabinetBlockEntity extends BlockEntity implements ImplementedIn
 
     public static CompoundTag saveCabinetItems(CompoundTag tag, NonNullList<ItemStack> items, HolderLookup.Provider registries) {
         ListTag listTag = new ListTag();
+        int skipped = 0;
         for (int i = 0; i < items.size(); i++) {
             ItemStack stack = items.get(i);
-            if (!stack.isEmpty()) {
+            if (stack.isEmpty()) {
+                continue;
+            }
+            try {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
-                stack.save(registries, itemTag);
-                listTag.add(itemTag);
+                // ItemStack#save does NOT mutate the tag it is given: NbtOps#mergeToMap makes a
+                // shallow copy and returns the merged result. Dropping the return value here
+                // means only {Slot: n} is written and every card is lost on the next load.
+                listTag.add(stack.save(registries, itemTag));
+            } catch (Exception e) {
+                // Never let a single bad stack abort the whole chunk save (that would wipe
+                // far more than the cabinet).
+                skipped++;
+                CobblemonCards.LOGGER.error("[CardCabinet] Failed to save item in slot {} ({}), it will be lost",
+                        i, stack, e);
             }
+        }
+        if (skipped > 0) {
+            CobblemonCards.LOGGER.error("[CardCabinet] {} item(s) could not be serialized and were dropped from the save", skipped);
         }
         tag.put("Items", listTag);
         return tag;
@@ -66,18 +82,55 @@ public class CardCabinetBlockEntity extends BlockEntity implements ImplementedIn
 
     public static void loadCabinetItems(CompoundTag tag, NonNullList<ItemStack> items, HolderLookup.Provider registries) {
         items.clear();
+        if (!tag.contains("Items", Tag.TAG_LIST)) {
+            // No inventory tag at all: either a brand-new cabinet, or the block entity NBT
+            // never made it to disk. Both are worth knowing about when cards go missing.
+            CobblemonCards.LOGGER.debug("[CardCabinet] No 'Items' tag found while loading a cabinet");
+            return;
+        }
         ListTag listTag = tag.getList("Items", Tag.TAG_COMPOUND);
+        int loaded = 0;
+        int failed = 0;
         for (int i = 0; i < listTag.size(); i++) {
             CompoundTag itemTag = listTag.getCompound(i);
             int slot;
             if (itemTag.contains("Slot", Tag.TAG_INT)) {
                 slot = itemTag.getInt("Slot");
             } else {
+                // Written by ContainerHelper.saveAllItems in 1.0.4 and earlier: the slot index is
+                // a byte, so only the first 256 slots survived that format.
                 slot = itemTag.getByte("Slot") & 0xFF;
             }
-            if (slot >= 0 && slot < items.size()) {
-                items.set(slot, ItemStack.parse(registries, itemTag).orElse(ItemStack.EMPTY));
+            if (slot < 0 || slot >= items.size()) {
+                failed++;
+                CobblemonCards.LOGGER.error("[CardCabinet] Discarding item with out-of-range slot {} (size {})", slot, items.size());
+                continue;
             }
+            // ItemStack.parse() returns Optional.empty() on ANY decoding problem (unknown
+            // item id, invalid count, a data component whose codec rejected the data...).
+            // Swallowing that silently is exactly what makes a cabinet look "wiped", so log it.
+            if (!itemTag.contains("id")) {
+                // Written by a build affected by the "ItemStack#save return value discarded"
+                // bug: only {Slot: n} made it to disk, so the card itself is unrecoverable.
+                failed++;
+                CobblemonCards.LOGGER.error(
+                        "[CardCabinet] Slot {} was saved without an item id (corrupted by a pre-fix build) and cannot be restored",
+                        slot);
+                continue;
+            }
+            java.util.Optional<ItemStack> parsed = ItemStack.parse(registries, itemTag);
+            if (parsed.isEmpty()) {
+                failed++;
+                CobblemonCards.LOGGER.error("[CardCabinet] Failed to parse item for slot {}; raw tag = {}", slot, itemTag);
+                continue;
+            }
+            items.set(slot, parsed.get());
+            loaded++;
+        }
+        if (failed > 0) {
+            CobblemonCards.LOGGER.error("[CardCabinet] Loaded {} item(s), but {} entrie(s) failed to load and were lost", loaded, failed);
+        } else {
+            CobblemonCards.LOGGER.debug("[CardCabinet] Loaded {} item(s)", loaded);
         }
     }
 
@@ -89,9 +142,13 @@ public class CardCabinetBlockEntity extends BlockEntity implements ImplementedIn
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        CompoundTag tag = super.getUpdateTag(registries);
-        saveAdditional(tag, registries);
-        return tag;
+        // IMPORTANT: do NOT send the inventory to clients here.
+        // This cabinet has 12 000 slots; serialising them into every block-entity update
+        // packet (and into every chunk packet) can easily produce multi-megabyte payloads,
+        // which throws "Packet too big" on the encoder and kicks players.
+        // The client renderer only needs the block state (FACING / FILL_LEVEL) and the
+        // contents are synced through CardCabinetMenu when the GUI is open.
+        return super.getUpdateTag(registries);
     }
 
     @Override
@@ -105,8 +162,6 @@ public class CardCabinetBlockEntity extends BlockEntity implements ImplementedIn
                 level.setBlock(getBlockPos(),
                         currentState.setValue(CardCabinetBlock.FILL_LEVEL, newFillLevel),
                         3); // flag 3 = update + notify neighbours (comparator)
-            } else {
-                level.sendBlockUpdated(getBlockPos(), currentState, currentState, 3);
             }
             level.updateNeighbourForOutputSignal(getBlockPos(), getBlockState().getBlock());
 

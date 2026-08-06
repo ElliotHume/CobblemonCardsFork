@@ -25,6 +25,15 @@ All major changes brought to **Cobblemon Cards** in this update.
 * The application mode and modifier maths are now centralized in `CardStatUtil` for every platform.
 * A config option exists to display non-formatted values, like in previous versions
 
+### 🛠️ Critical Fix — Card Cabinet data loss
+* **Card Cabinets no longer lose their contents on restart.** Introduced in 1.0.5; **1.0.4 and earlier are unaffected** and still load normally.
+* Load failures are now logged with the offending NBT instead of being swallowed, and a failure to serialise a single stack can no longer abort the whole chunk save.
+* Fixed `ItemStack` instances being shared between a cabinet's container and the `BINDER_CONTENTS` component when broken or placed.
+
+
+### Master Album Config for Disabling Stats
+* **New Config Option**: `doesMasterBinderProvideStats` — Set to `false` to disable stats from master tier binders. Due to their large card capacity.
+
 ---
 
 ## 🚀 Version 1.0.1 (Multiloader & Easter Eggs Update)

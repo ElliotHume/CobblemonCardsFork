@@ -147,7 +147,10 @@ public class CardCabinetBlock extends BaseEntityBlock {
                 boolean isEmpty = true;
                 for (int i = 0; i < cabinetEntity.getContainerSize(); i++) {
                     ItemStack itemStack = cabinetEntity.getItem(i);
-                    items.add(itemStack);
+                    // Copy: the block entity is about to be discarded, but sharing the same
+                    // ItemStack instances between the container and the item component means a
+                    // later mutation on one side silently corrupts the other.
+                    items.add(itemStack.copy());
                     if (!itemStack.isEmpty()) {
                         isEmpty = false;
                     }
@@ -183,11 +186,13 @@ public class CardCabinetBlock extends BaseEntityBlock {
             if (savedItems != null) {
                 net.minecraft.core.NonNullList<ItemStack> inventoryList = cabinetEntity.getItems();
                 for (int i = 0; i < Math.min(savedItems.size(), 12000); i++) {
-                    ItemStack itemStack = savedItems.get(i);
-                    inventoryList.set(i, itemStack);
+                    // Copy: BINDER_CONTENTS is an immutable component list, and its stacks must
+                    // never be handed out by reference to a mutable container.
+                    ItemStack itemStack = savedItems.get(i).copy();
                     if (itemStack.getCount() > cabinetEntity.getMaxStackSize()) {
                         itemStack.setCount(cabinetEntity.getMaxStackSize());
                     }
+                    inventoryList.set(i, itemStack);
                 }
                 cabinetEntity.setChanged();
             }
