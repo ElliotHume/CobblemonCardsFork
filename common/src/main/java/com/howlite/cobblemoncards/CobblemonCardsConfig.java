@@ -49,6 +49,10 @@ public class CobblemonCardsConfig extends MidnightConfig {
     @Entry
     public static boolean displayPercentStatOnCards = true;
 
+    @Entry
+    public static boolean doesMasterBinderProvideStats = false;
+
+
     // --- Per-stat multipliers for the vanilla-attribute / player stats ---
     // Each of these is applied on top of globalStatMultiplier * playerStatMultiplier.
 
