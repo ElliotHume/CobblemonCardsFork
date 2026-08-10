@@ -17,6 +17,15 @@ public class ShapedRecipeMixin {
     @Inject(method = "assemble", at = @At("RETURN"), cancellable = true)
     private void copyBinderContainer(CraftingInput craftingInput, HolderLookup.Provider provider, CallbackInfoReturnable<ItemStack> cir) {
         ItemStack result = cir.getReturnValue();
+        if (result == null || result.isEmpty()) return;
+
+        if (result.getItem() instanceof BinderItem binder) {
+            if (!com.howlite.cobblemoncards.CobblemonCardsConfig.isBinderTierEnabled(binder.getTier())) {
+                cir.setReturnValue(ItemStack.EMPTY);
+                return;
+            }
+        }
+
         boolean isTarget = result.getItem() instanceof BinderItem || result.is(ModBlocks.CARD_CABINET.asItem());
 
         if (!isTarget) return;

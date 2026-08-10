@@ -49,6 +49,34 @@ public class CobblemonCardsConfig extends MidnightConfig {
     @Entry
     public static boolean displayPercentStatOnCards = true;
 
+    // --- Binder Config Options ---
+
+    @Entry
+    public static boolean enableLeatherBinder = true;
+    @Entry
+    public static boolean enableIronBinder = true;
+    @Entry
+    public static boolean enableGoldBinder = true;
+    @Entry
+    public static boolean enableDiamondBinder = true;
+    @Entry
+    public static boolean enableNetheriteBinder = true;
+    @Entry
+    public static boolean enableMasterAlbum = true;
+
+    @Entry(min = 1, max = 1000)
+    public static int leatherBinderPages = 1;
+    @Entry(min = 1, max = 1000)
+    public static int ironBinderPages = 2;
+    @Entry(min = 1, max = 1000)
+    public static int goldBinderPages = 3;
+    @Entry(min = 1, max = 1000)
+    public static int diamondBinderPages = 6;
+    @Entry(min = 1, max = 1000)
+    public static int netheriteBinderPages = 10;
+    @Entry(min = 1, max = 2000)
+    public static int masterAlbumPages = 1000;
+
     // --- Per-stat multipliers for the vanilla-attribute / player stats ---
     // Each of these is applied on top of globalStatMultiplier * playerStatMultiplier.
 
@@ -129,5 +157,29 @@ public class CobblemonCardsConfig extends MidnightConfig {
 
     public static boolean isSpawnStat(CardStat stat) {
         return stat != null && stat.getSerializedName().endsWith("_spawn");
+    }
+
+    public static int getBinderPages(com.howlite.cobblemoncards.item.custom.BinderTier tier, int defaultPages) {
+        if (tier == null) return defaultPages;
+        return switch (tier) {
+            case LEATHER -> leatherBinderPages;
+            case IRON -> ironBinderPages;
+            case GOLD -> goldBinderPages;
+            case DIAMOND -> diamondBinderPages;
+            case NETHERITE -> netheriteBinderPages;
+            case MASTER -> masterAlbumPages;
+        };
+    }
+
+    public static boolean isBinderTierEnabled(com.howlite.cobblemoncards.item.custom.BinderTier tier) {
+        if (tier == null) return true;
+        return switch (tier) {
+            case LEATHER -> enableLeatherBinder;
+            case IRON -> enableIronBinder;
+            case GOLD -> enableGoldBinder;
+            case DIAMOND -> enableDiamondBinder;
+            case NETHERITE -> enableNetheriteBinder;
+            case MASTER -> enableMasterAlbum;
+        };
     }
 }
