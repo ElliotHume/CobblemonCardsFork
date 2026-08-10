@@ -27,4 +27,16 @@ public class NeoForgePacketHandlerClient {
     public static void handleRenderCard(RenderCardPayload payload) {
         Minecraft.getInstance().setScreen(new com.howlite.cobblemoncards.screen.CardShowcaseScreen(payload.cards()));
     }
+
+    public static void handleInspectCard(com.howlite.cobblemoncards.network.InspectCardPayload payload) {
+        Minecraft.getInstance().setScreen(new com.howlite.cobblemoncards.screen.CardInspectScreen(payload.card()));
+    }
+
+    public static void handleShowCard(com.howlite.cobblemoncards.network.ShowCardPayload payload) {
+        com.howlite.cobblemoncards.render.CardShowRenderer.onPlayerShow(payload.holderUuid(), payload.card());
+    }
+
+    public static void handleStopShowCard(com.howlite.cobblemoncards.network.StopShowCardPayload payload) {
+        com.howlite.cobblemoncards.render.CardShowRenderer.stopPlayerShow(payload.holderUuid());
+    }
 }

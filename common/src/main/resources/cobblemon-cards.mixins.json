@@ -5,6 +5,9 @@
 	"mixins": [
 		"ShapedRecipeMixin"
 	],
+	"client": [
+		"HumanoidModelMixin"
+	],
 	"injectors": {
 		"defaultRequire": 1
 	},

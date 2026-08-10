@@ -141,9 +141,25 @@ public class FabricCobblemonCards implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(OpenWorkshopPayload.ID, OpenWorkshopPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(SyncDiscoveredCardsPayload.ID, SyncDiscoveredCardsPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(RenderCardPayload.ID, RenderCardPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(com.howlite.cobblemoncards.network.CloseInspectPayload.ID, com.howlite.cobblemoncards.network.CloseInspectPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(com.howlite.cobblemoncards.network.InspectCardPayload.ID, com.howlite.cobblemoncards.network.InspectCardPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(com.howlite.cobblemoncards.network.ShowCardPayload.ID, com.howlite.cobblemoncards.network.ShowCardPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(com.howlite.cobblemoncards.network.StopShowCardPayload.ID, com.howlite.cobblemoncards.network.StopShowCardPayload.CODEC);
     }
 
     private void registerServerPacketReceivers() {
+        ServerPlayNetworking.registerGlobalReceiver(com.howlite.cobblemoncards.network.CloseInspectPayload.ID, (payload, context) -> {
+            context.server().execute(() -> {
+                net.minecraft.server.level.ServerPlayer player = context.player();
+                if (player != null) {
+                    com.howlite.cobblemoncards.network.StopShowCardPayload stopPayload =
+                            new com.howlite.cobblemoncards.network.StopShowCardPayload(player.getUUID());
+                    player.serverLevel().players().stream()
+                            .filter(p -> p != player && p.distanceTo(player) <= 16f)
+                            .forEach(p -> PlatformHelper.INSTANCE.sendToPlayer(p, stopPayload));
+                }
+            });
+        });
         ServerPlayNetworking.registerGlobalReceiver(OpenBinderPayload.ID, (payload, context) -> {
             context.server().execute(() -> {
                 net.minecraft.server.level.ServerPlayer player = context.player();

@@ -252,6 +252,35 @@ public class NeoForgeCobblemonCards {
         registrar.playToClient(RenderCardPayload.ID, RenderCardPayload.CODEC, (payload, context) -> {
             context.enqueueWork(() -> NeoForgePacketHandlerClient.handleRenderCard(payload));
         });
+
+        registrar.playToServer(com.howlite.cobblemoncards.network.CloseInspectPayload.ID,
+                com.howlite.cobblemoncards.network.CloseInspectPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> {
+                net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) context.player();
+                if (player != null) {
+                    com.howlite.cobblemoncards.network.StopShowCardPayload stopPayload =
+                            new com.howlite.cobblemoncards.network.StopShowCardPayload(player.getUUID());
+                    player.serverLevel().players().stream()
+                            .filter(p -> p != player && p.distanceTo(player) <= 16f)
+                            .forEach(p -> PlatformHelper.INSTANCE.sendToPlayer(p, stopPayload));
+                }
+            });
+        });
+
+        registrar.playToClient(com.howlite.cobblemoncards.network.InspectCardPayload.ID,
+                com.howlite.cobblemoncards.network.InspectCardPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> NeoForgePacketHandlerClient.handleInspectCard(payload));
+        });
+
+        registrar.playToClient(com.howlite.cobblemoncards.network.ShowCardPayload.ID,
+                com.howlite.cobblemoncards.network.ShowCardPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> NeoForgePacketHandlerClient.handleShowCard(payload));
+        });
+
+        registrar.playToClient(com.howlite.cobblemoncards.network.StopShowCardPayload.ID,
+                com.howlite.cobblemoncards.network.StopShowCardPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> NeoForgePacketHandlerClient.handleStopShowCard(payload));
+        });
     }
 
     @SubscribeEvent

@@ -16,6 +16,14 @@ evaluationDependsOn(':common')
 loom {
     splitEnvironmentSourceSets()
 
+    runs {
+        client2 {
+            client()
+            name "Minecraft Client 2"
+            programArgs "--username", "Dev2"
+        }
+    }
+
     mods {
         "cobblemon-cards" {
             sourceSet sourceSets.main
