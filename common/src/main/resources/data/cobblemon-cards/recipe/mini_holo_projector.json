@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "cobblemon-cards:holo_projector"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "cobblemon-cards:mini_holo_projector"
+  }
+}

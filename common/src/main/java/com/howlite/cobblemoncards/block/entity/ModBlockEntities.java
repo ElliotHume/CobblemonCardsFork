@@ -32,6 +32,12 @@ public class ModBlockEntities {
             BlockEntityType.Builder.of(AdvancedHoloProjectorBlockEntity::new, ModBlocks.ADVANCED_HOLO_PROJECTOR).build(null)
     );
 
+    public static final BlockEntityType<MiniHoloProjectorBlockEntity> MINI_HOLO_PROJECTOR_BE = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, "mini_holo_projector_be"),
+            BlockEntityType.Builder.of(MiniHoloProjectorBlockEntity::new, ModBlocks.MINI_HOLO_PROJECTOR).build(null)
+    );
+
     public static final BlockEntityType<CardCabinetBlockEntity> CARD_CABINET_BE = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, "card_cabinet_be"),

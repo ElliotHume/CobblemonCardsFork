@@ -75,6 +75,7 @@ public class ModCreativeTabs {
                     // 6. Hologrammes & Exposition
                     output.accept(ModBlocks.HOLO_PROJECTOR);
                     output.accept(ModBlocks.ADVANCED_HOLO_PROJECTOR);
+                    output.accept(ModBlocks.MINI_HOLO_PROJECTOR);
                 }
         );
 

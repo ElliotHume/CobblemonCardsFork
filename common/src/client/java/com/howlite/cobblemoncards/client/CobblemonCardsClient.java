@@ -12,6 +12,7 @@ import com.howlite.cobblemoncards.screen.CardCabinetScreen;
 import com.howlite.cobblemoncards.screen.CardRecyclerScreen;
 import com.howlite.cobblemoncards.util.ClientAccess;
 import com.howlite.cobblemoncards.util.PlatformHelper;
+import com.howlite.cobblemoncards.client.render.MiniHoloProjectorBlockEntityRenderer;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
@@ -34,6 +35,7 @@ public class CobblemonCardsClient {
         BlockEntityRenderers.register(ModBlockEntities.GRADING_STATION_BE, GradingStationBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.HOLO_PROJECTOR_BE, HoloProjectorBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.ADVANCED_HOLO_PROJECTOR_BE, AdvancedHoloProjectorBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntities.MINI_HOLO_PROJECTOR_BE, MiniHoloProjectorBlockEntityRenderer::new);
         BlockEntityRenderers.register(ModBlockEntities.CARD_CABINET_BE, CardCabinetBlockEntityRenderer::new);
     }
 }

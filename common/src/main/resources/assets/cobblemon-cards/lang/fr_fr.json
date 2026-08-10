@@ -49,7 +49,10 @@
   "block.cobblemon-cards.card_dust_sack": "Sac de Poudre de Cartes",
   "block.cobblemon-cards.holo_projector": "Holo-Projecteur",
   "block.cobblemon-cards.advanced_holo_projector": "Holo-Projecteur Avancé",
+  "block.cobblemon-cards.mini_holo_projector": "Mini Holo-Projecteur",
   "block.cobblemon-cards.card_cabinet": "Meuble à Cartes",
+  "tooltip.cobblemon-cards.mini_holo_projector.description": "Exposition compacte ! Posez jusqu'à 4 projecteurs sur un même bloc pour exposer 4 mini cartes en lévitation.",
+  "message.cobblemon-cards.mini_holo_projector.mode": "Mini Projecteur n°%s Mode d'affichage : %s",
   "itemGroup.cobblemon-cards.cards_tab": "Cobblemon Cards",
   "itemGroup.cobblemon-cards.boosters_tab": "Boosters Thématiques Cobblemon",
 
