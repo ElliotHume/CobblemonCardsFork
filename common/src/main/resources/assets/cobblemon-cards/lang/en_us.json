@@ -44,6 +44,7 @@
   "item.cobblemon-cards.instant_dex": "Instant Dex",
   "block.cobblemon-cards.grading_station": "Grading Station",
   "block.cobblemon-cards.card_recycler": "Card Recycler",
+  "block.cobblemon-cards.card_restorer": "Card Restorer",
   "block.cobblemon-cards.card_dust_sack": "Card Dust Sack",
   "block.cobblemon-cards.holo_projector": "Holo Projector",
   "block.cobblemon-cards.advanced_holo_projector": "Advanced Holo Projector",
@@ -378,5 +379,11 @@
   "cobblemon-cards.midnightconfig.enableBoosterChestSpawn": "Enable Booster Spawning in Chests",
   "cobblemon-cards.midnightconfig.enableBoosterChestSpawn.tooltip": "If enabled, classic card boosters will randomly spawn in structure chests.",
   "cobblemon-cards.midnightconfig.boosterChestSpawnChance": "Booster Chest Spawn Chance",
-  "cobblemon-cards.midnightconfig.boosterChestSpawnChance.tooltip": "Percentage chance to find a classic booster pack in a structure chest."
+  "cobblemon-cards.midnightconfig.boosterChestSpawnChance.tooltip": "Percentage chance to find a classic booster pack in a structure chest.",
+  "gui.cobblemon-cards.card_restorer.restore": "Restore Card Grade",
+  "gui.cobblemon-cards.card_restorer.no_card": "No gradable card inserted",
+  "gui.cobblemon-cards.card_restorer.no_target": "Select a target grade higher than current",
+  "gui.cobblemon-cards.card_restorer.not_enough_dust": "Not enough Card Dust",
+  "cobblemon-cards.midnightconfig.restorerBaseCost": "Restorer Base Cost",
+  "cobblemon-cards.midnightconfig.restorerBaseCost.tooltip": "Base cost multiplier for the Card Restorer. Final cost = (targetGrade × baseCost) × 2^(targetGrade - currentGrade - 1)."
 }

@@ -8,6 +8,7 @@ import com.howlite.cobblemoncards.screen.AdvancedHoloProjectorScreen;
 import com.howlite.cobblemoncards.screen.BinderScreen;
 import com.howlite.cobblemoncards.screen.CardCabinetScreen;
 import com.howlite.cobblemoncards.screen.CardRecyclerScreen;
+import com.howlite.cobblemoncards.screen.CardRestorerScreen;
 import com.howlite.cobblemoncards.menu.ModMenuTypes;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -54,6 +55,7 @@ public class NeoForgeCobblemonCardsClient {
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenuTypes.BINDER_MENU, BinderScreen::new);
         event.register(ModMenuTypes.CARD_RECYCLER_MENU, CardRecyclerScreen::new);
+        event.register(ModMenuTypes.CARD_RESTORER_MENU, CardRestorerScreen::new);
         event.register(ModMenuTypes.ADVANCED_HOLO_PROJECTOR_MENU, AdvancedHoloProjectorScreen::new);
         event.register(ModMenuTypes.CARD_CABINET_MENU, CardCabinetScreen::new);
     }

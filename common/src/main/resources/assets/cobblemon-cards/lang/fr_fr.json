@@ -46,6 +46,7 @@
   "item.cobblemon-cards.instant_dex": "Insta-Dex",
   "block.cobblemon-cards.grading_station": "Station de Gradage",
   "block.cobblemon-cards.card_recycler": "Recycleur de Cartes",
+  "block.cobblemon-cards.card_restorer": "Restaurateur de Cartes",
   "block.cobblemon-cards.card_dust_sack": "Sac de Poudre de Cartes",
   "block.cobblemon-cards.holo_projector": "Holo-Projecteur",
   "block.cobblemon-cards.advanced_holo_projector": "Holo-Projecteur Avancé",
@@ -395,5 +396,11 @@
   "cobblemon-cards.midnightconfig.enableBoosterChestSpawn": "Activer le spawn de boosters dans les coffres",
   "cobblemon-cards.midnightconfig.enableBoosterChestSpawn.tooltip": "Si activé, les boosters de cartes classiques apparaîtront aléatoirement dans les coffres de structures.",
   "cobblemon-cards.midnightconfig.boosterChestSpawnChance": "Chance de spawn de booster dans les coffres",
-  "cobblemon-cards.midnightconfig.boosterChestSpawnChance.tooltip": "Pourcentage de chance de trouver un booster classique dans un coffre de structure."
+  "cobblemon-cards.midnightconfig.boosterChestSpawnChance.tooltip": "Pourcentage de chance de trouver un booster classique dans un coffre de structure.",
+  "gui.cobblemon-cards.card_restorer.restore": "Restaurer le Grade de la Carte",
+  "gui.cobblemon-cards.card_restorer.no_card": "Aucune carte gradée insérée",
+  "gui.cobblemon-cards.card_restorer.no_target": "Sélectionne un grade cible supérieur au grade actuel",
+  "gui.cobblemon-cards.card_restorer.not_enough_dust": "Pas assez de Poudre de Cartes",
+  "cobblemon-cards.midnightconfig.restorerBaseCost": "Coût de Base du Restaurateur",
+  "cobblemon-cards.midnightconfig.restorerBaseCost.tooltip": "Multiplicateur de coût de base pour le Restaurateur. Coût final = (gradesCible × coûtBase) × 2^(gradeCible - gradeActuel - 1)."
 }

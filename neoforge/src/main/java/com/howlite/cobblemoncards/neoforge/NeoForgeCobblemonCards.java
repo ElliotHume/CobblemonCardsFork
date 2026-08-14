@@ -20,6 +20,7 @@ import com.howlite.cobblemoncards.manager.BoosterPackManager;
 import com.howlite.cobblemoncards.menu.AdvancedHoloProjectorMenu;
 import com.howlite.cobblemoncards.menu.BinderMenu;
 import com.howlite.cobblemoncards.menu.CardCabinetMenu;
+import com.howlite.cobblemoncards.menu.CardRestorerMenu;
 import com.howlite.cobblemoncards.menu.ModMenuTypes;
 import com.howlite.cobblemoncards.network.*;
 import com.howlite.cobblemoncards.neoforge.attachment.NeoForgePlayerDataAttachments;
@@ -280,6 +281,26 @@ public class NeoForgeCobblemonCards {
         registrar.playToClient(com.howlite.cobblemoncards.network.StopShowCardPayload.ID,
                 com.howlite.cobblemoncards.network.StopShowCardPayload.CODEC, (payload, context) -> {
             context.enqueueWork(() -> NeoForgePacketHandlerClient.handleStopShowCard(payload));
+        });
+
+        registrar.playToServer(ChangeRestorerTargetGradePayload.ID, ChangeRestorerTargetGradePayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> {
+                if (context.player().containerMenu instanceof CardRestorerMenu menu) {
+                    if (menu.getBlockEntity() != null) {
+                        menu.getBlockEntity().setTargetGrade(payload.targetGrade());
+                    }
+                }
+            });
+        });
+
+        registrar.playToServer(PerformRestorerPayload.ID, PerformRestorerPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> {
+                if (context.player().containerMenu instanceof CardRestorerMenu menu) {
+                    if (menu.getBlockEntity() != null) {
+                        menu.getBlockEntity().performRestore(context.player());
+                    }
+                }
+            });
         });
     }
 

@@ -19,6 +19,7 @@ import com.howlite.cobblemoncards.menu.AdvancedHoloProjectorMenu;
 import com.howlite.cobblemoncards.menu.BinderMenu;
 import com.howlite.cobblemoncards.menu.CardCabinetMenu;
 import com.howlite.cobblemoncards.network.*;
+import com.howlite.cobblemoncards.menu.CardRestorerMenu;
 import com.howlite.cobblemoncards.util.FakemonWhitelistReloader;
 import com.howlite.cobblemoncards.util.PlatformHelper;
 import net.fabricmc.api.ModInitializer;
@@ -145,6 +146,8 @@ public class FabricCobblemonCards implements ModInitializer {
         PayloadTypeRegistry.playS2C().register(com.howlite.cobblemoncards.network.InspectCardPayload.ID, com.howlite.cobblemoncards.network.InspectCardPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(com.howlite.cobblemoncards.network.ShowCardPayload.ID, com.howlite.cobblemoncards.network.ShowCardPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(com.howlite.cobblemoncards.network.StopShowCardPayload.ID, com.howlite.cobblemoncards.network.StopShowCardPayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(ChangeRestorerTargetGradePayload.ID, ChangeRestorerTargetGradePayload.CODEC);
+        PayloadTypeRegistry.playC2S().register(PerformRestorerPayload.ID, PerformRestorerPayload.CODEC);
     }
 
     private void registerServerPacketReceivers() {
@@ -157,6 +160,26 @@ public class FabricCobblemonCards implements ModInitializer {
                     player.serverLevel().players().stream()
                             .filter(p -> p != player && p.distanceTo(player) <= 16f)
                             .forEach(p -> PlatformHelper.INSTANCE.sendToPlayer(p, stopPayload));
+                }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(ChangeRestorerTargetGradePayload.ID, (payload, context) -> {
+            context.server().execute(() -> {
+                if (context.player().containerMenu instanceof CardRestorerMenu menu) {
+                    if (menu.getBlockEntity() != null) {
+                        menu.getBlockEntity().setTargetGrade(payload.targetGrade());
+                    }
+                }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(PerformRestorerPayload.ID, (payload, context) -> {
+            context.server().execute(() -> {
+                if (context.player().containerMenu instanceof CardRestorerMenu menu) {
+                    if (menu.getBlockEntity() != null) {
+                        menu.getBlockEntity().performRestore(context.player());
+                    }
                 }
             });
         });

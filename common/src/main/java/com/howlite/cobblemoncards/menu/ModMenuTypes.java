@@ -23,6 +23,12 @@ public class ModMenuTypes {
             new MenuType<>(CardRecyclerMenu::new, FeatureFlags.DEFAULT_FLAGS)
     );
 
+    public static final MenuType<CardRestorerMenu> CARD_RESTORER_MENU = Registry.register(
+            BuiltInRegistries.MENU,
+            ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, "card_restorer_menu"),
+            new MenuType<>(CardRestorerMenu::new, FeatureFlags.DEFAULT_FLAGS)
+    );
+
     public static final MenuType<AdvancedHoloProjectorMenu> ADVANCED_HOLO_PROJECTOR_MENU = Registry.register(
             BuiltInRegistries.MENU,
             ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, "advanced_holo_projector_menu"),

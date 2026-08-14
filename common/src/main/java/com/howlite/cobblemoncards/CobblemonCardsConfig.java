@@ -40,6 +40,9 @@ public class CobblemonCardsConfig extends MidnightConfig {
     @Entry(min = 0, max = 64)
     public static int gradingStationDustCost = 5;
 
+    @Entry(min = 1, max = 1000)
+    public static int restorerBaseCost = 5;
+
     @Entry
     public static boolean enableBoosterChestSpawn = true;
 

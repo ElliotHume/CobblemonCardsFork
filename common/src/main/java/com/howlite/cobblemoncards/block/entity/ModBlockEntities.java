@@ -20,6 +20,12 @@ public class ModBlockEntities {
             BlockEntityType.Builder.of(CardRecyclerBlockEntity::new, ModBlocks.CARD_RECYCLER).build(null)
     );
 
+    public static final BlockEntityType<CardRestorerBlockEntity> CARD_RESTORER_BE = Registry.register(
+            BuiltInRegistries.BLOCK_ENTITY_TYPE,
+            ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, "card_restorer_be"),
+            BlockEntityType.Builder.of(CardRestorerBlockEntity::new, ModBlocks.CARD_RESTORER).build(null)
+    );
+
     public static final BlockEntityType<HoloProjectorBlockEntity> HOLO_PROJECTOR_BE = Registry.register(
             BuiltInRegistries.BLOCK_ENTITY_TYPE,
             ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, "holo_projector_be"),

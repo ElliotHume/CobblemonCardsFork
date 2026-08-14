@@ -27,6 +27,13 @@ public class ModBlocks {
                     .sound(SoundType.METAL)
             ));
 
+    public static final Block CARD_RESTORER = registerBlock("card_restorer",
+            new CardRestorerBlock(BlockBehaviour.Properties.of()
+                    .strength(3.0f)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.METAL)
+            ));
+
     public static final Block CARD_DUST_SACK = registerBlock("card_dust_sack",
             new Block(BlockBehaviour.Properties.of()
                     .strength(0.5f)
