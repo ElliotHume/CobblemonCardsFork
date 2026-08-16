@@ -34,7 +34,7 @@ public class CardRecyclerMenu extends AbstractContainerMenu {
         // Grille d'entrée 3x4
         for (int row = 0; row < 3; ++row) {
             for (int col = 0; col < 4; ++col) {
-                this.addSlot(new Slot(container, col + row * 4, 8 + col * 18, 17 + row * 18));
+                this.addSlot(new RecyclerInputSlot(container, col + row * 4, 8 + col * 18, 17 + row * 18));
             }
         }
 
@@ -52,6 +52,18 @@ public class CardRecyclerMenu extends AbstractContainerMenu {
 
         for (int i = 0; i < 9; ++i) {
             this.addSlot(new Slot(playerInventory, i, 8 + i * 18, 142));
+        }
+    }
+
+    private static class RecyclerInputSlot extends Slot {
+        public RecyclerInputSlot(Container container, int slot, int x, int y) {
+            super(container, slot, x, y);
+        }
+
+        @Override
+        public boolean mayPlace(ItemStack stack) {
+            return stack.has(com.howlite.cobblemoncards.component.ModDataComponents.CARD_DATA)
+                    || stack.getItem() instanceof com.howlite.cobblemoncards.item.custom.BoosterPackItem;
         }
     }
 
@@ -78,9 +90,12 @@ public class CardRecyclerMenu extends AbstractContainerMenu {
             } 
             // Si on clique dans l'inventaire du joueur
             else {
-                // On tente d'envoyer vers les slots d'entrée de la machine
-                if (!this.moveItemStackTo(itemstack1, 0, 12, false)) {
-                    // Si machine pleine, transfert entre hotbar et inventaire
+                if (itemstack1.has(com.howlite.cobblemoncards.component.ModDataComponents.CARD_DATA)
+                        || itemstack1.getItem() instanceof com.howlite.cobblemoncards.item.custom.BoosterPackItem) {
+                    if (!this.moveItemStackTo(itemstack1, 0, 12, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                } else {
                     if (index < 40) {
                         if (!this.moveItemStackTo(itemstack1, 40, 49, false)) {
                             return ItemStack.EMPTY;

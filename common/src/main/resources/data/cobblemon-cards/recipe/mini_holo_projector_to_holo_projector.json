@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PP",
+    "PP"
+  ],
+  "key": {
+    "P": {
+      "item": "cobblemon-cards:mini_holo_projector"
+    }
+  },
+  "result": {
+    "count": 1,
+    "id": "cobblemon-cards:holo_projector"
+  }
+}

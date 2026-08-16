@@ -2,13 +2,20 @@ package com.howlite.cobblemoncards.item.custom;
 
 import com.howlite.cobblemoncards.component.CardData;
 import com.howlite.cobblemoncards.component.ModDataComponents;
+import com.howlite.cobblemoncards.network.InspectCardPayload;
 import com.howlite.cobblemoncards.util.ClientAccess;
+import com.howlite.cobblemoncards.util.PlatformHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
@@ -35,6 +42,26 @@ public class CardItem extends Item {
         }
 
         return Component.translatable("item.cobblemon-cards.card").withStyle(ChatFormatting.GRAY);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        ItemStack stack = player.getItemInHand(usedHand);
+        if (usedHand != InteractionHand.MAIN_HAND) {
+            return InteractionResultHolder.pass(stack);
+        }
+        if (!level.isClientSide() && player instanceof ServerPlayer serverPlayer) {
+            // The right-clicking player sees the full inspection GUI
+            PlatformHelper.INSTANCE.sendToPlayer(serverPlayer, new InspectCardPayload(stack.copy()));
+            // Nearby players see the card rendered large in the world next to the holder
+            com.howlite.cobblemoncards.network.ShowCardPayload showPayload =
+                    new com.howlite.cobblemoncards.network.ShowCardPayload(
+                            serverPlayer.getUUID(), stack.copy());
+            serverPlayer.serverLevel().players().stream()
+                    .filter(p -> p != serverPlayer && p.distanceTo(serverPlayer) <= 16f)
+                    .forEach(p -> PlatformHelper.INSTANCE.sendToPlayer(p, showPayload));
+        }
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
     @Override
@@ -148,6 +175,12 @@ public class CardItem extends Item {
                 tooltipComponents.add(
                     Component.literal("⬆ ").withStyle(ChatFormatting.DARK_AQUA)
                         .append(Component.translatable("tooltip.cobblemon-cards.press_shift")
+                            .withStyle(ChatFormatting.DARK_GRAY))
+                );
+                // Hint to right-click for card inspection
+                tooltipComponents.add(
+                    Component.literal("▶ ").withStyle(ChatFormatting.DARK_AQUA)
+                        .append(Component.translatable("tooltip.cobblemon-cards.right_click_inspect")
                             .withStyle(ChatFormatting.DARK_GRAY))
                 );
             }

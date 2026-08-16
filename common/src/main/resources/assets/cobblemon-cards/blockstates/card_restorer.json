@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "cobblemon-cards:block/card_restorer" },
+    "facing=south": { "model": "cobblemon-cards:block/card_restorer", "y": 180 },
+    "facing=west": { "model": "cobblemon-cards:block/card_restorer", "y": 270 },
+    "facing=east": { "model": "cobblemon-cards:block/card_restorer", "y": 90 }
+  }
+}

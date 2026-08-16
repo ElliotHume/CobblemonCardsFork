@@ -39,6 +39,14 @@ public class CardItemRenderer {
         // 🛑 SÉCURITÉ :
         if (Minecraft.getInstance().level == null || Minecraft.getInstance().player == null) return;
 
+        // Hide small item in hand while this card is being shown off in big
+        if (mode == ItemDisplayContext.THIRD_PERSON_RIGHT_HAND || mode == ItemDisplayContext.THIRD_PERSON_LEFT_HAND ||
+            mode == ItemDisplayContext.FIRST_PERSON_RIGHT_HAND || mode == ItemDisplayContext.FIRST_PERSON_LEFT_HAND) {
+            if (CardShowRenderer.isShowingStack(stack)) {
+                return;
+            }
+        }
+
         // Informe ModShaders du contexte courant :
         // - GUI → Iris n'intercepte pas le pipeline → les custom shaders GLSL fonctionnent
         // - Monde (main, sol, holo projector) → Iris peut intercepter → fallback CPU si actif

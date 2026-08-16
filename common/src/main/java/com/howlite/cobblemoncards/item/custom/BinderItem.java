@@ -40,6 +40,15 @@ public class BinderItem extends Item {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
 
+        if (!com.howlite.cobblemoncards.CobblemonCardsConfig.isBinderTierEnabled(tier)) {
+            if (!level.isClientSide()) {
+                player.displayClientMessage(
+                    Component.translatable("message.cobblemon-cards.binder_tier_disabled")
+                        .withStyle(ChatFormatting.RED), true);
+            }
+            return InteractionResultHolder.fail(itemStack);
+        }
+
         if (player.isShiftKeyDown()) {
             if (PlatformHelper.INSTANCE.equipItem(player, itemStack)) {
                 return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());

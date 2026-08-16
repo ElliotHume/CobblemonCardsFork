@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "projectors=1": { "model": "cobblemon-cards:block/mini_holo_projector_1" },
+    "projectors=2": { "model": "cobblemon-cards:block/mini_holo_projector_2" },
+    "projectors=3": { "model": "cobblemon-cards:block/mini_holo_projector_3" },
+    "projectors=4": { "model": "cobblemon-cards:block/mini_holo_projector_4" }
+  }
+}

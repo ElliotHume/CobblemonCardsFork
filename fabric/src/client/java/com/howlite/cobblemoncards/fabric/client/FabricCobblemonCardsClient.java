@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.CoreShaderRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -120,6 +121,39 @@ public class FabricCobblemonCardsClient implements ClientModInitializer {
                 Minecraft.getInstance().setScreen(
                         new com.howlite.cobblemoncards.screen.CardShowcaseScreen(payload.cards()));
             });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(com.howlite.cobblemoncards.network.InspectCardPayload.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                Minecraft.getInstance().setScreen(
+                        new com.howlite.cobblemoncards.screen.CardInspectScreen(payload.card()));
+            });
+        });
+
+        // ShowCardPayload: register the card in the world-space renderer for nearby observers
+        ClientPlayNetworking.registerGlobalReceiver(com.howlite.cobblemoncards.network.ShowCardPayload.ID, (payload, context) -> {
+            context.client().execute(() ->
+                com.howlite.cobblemoncards.render.CardShowRenderer.onPlayerShow(
+                        payload.holderUuid(), payload.card())
+            );
+        });
+
+        // StopShowCardPayload: remove the 3D card when the player closes their inspection screen
+        ClientPlayNetworking.registerGlobalReceiver(com.howlite.cobblemoncards.network.StopShowCardPayload.ID, (payload, context) -> {
+            context.client().execute(() ->
+                com.howlite.cobblemoncards.render.CardShowRenderer.stopPlayerShow(payload.holderUuid())
+            );
+        });
+
+        // World render hook: draw shown cards in the world after entities are rendered
+        WorldRenderEvents.AFTER_ENTITIES.register(ctx -> {
+            if (ctx.consumers() == null || ctx.matrixStack() == null) return;
+            com.howlite.cobblemoncards.render.CardShowRenderer.renderAll(
+                    ctx.matrixStack(),
+                    ctx.consumers(),
+                    ctx.camera(),
+                    ctx.world()
+            );
         });
 
         ClientPlayNetworking.registerGlobalReceiver(GiveRewardPayload.ID, (payload, context) -> {

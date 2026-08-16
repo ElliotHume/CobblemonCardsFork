@@ -8,6 +8,7 @@ import com.howlite.cobblemoncards.screen.AdvancedHoloProjectorScreen;
 import com.howlite.cobblemoncards.screen.BinderScreen;
 import com.howlite.cobblemoncards.screen.CardCabinetScreen;
 import com.howlite.cobblemoncards.screen.CardRecyclerScreen;
+import com.howlite.cobblemoncards.screen.CardRestorerScreen;
 import com.howlite.cobblemoncards.menu.ModMenuTypes;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -20,6 +21,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 
@@ -39,6 +41,9 @@ public class NeoForgeCobblemonCardsClient {
         modEventBus.addListener(NeoForgeCobblemonCardsClient::registerScreens);
         modEventBus.addListener(NeoForgeCobblemonCardsClient::registerShaders);
         modEventBus.addListener(NeoForgeCobblemonCardsClient::registerKeyMappings);
+
+        // World render hook: draw shown cards in the world after entities are rendered
+        NeoForge.EVENT_BUS.addListener(NeoForgeCobblemonCardsClient::onRenderLevelStage);
     }
 
     public static void clientSetup(FMLClientSetupEvent event) {
@@ -50,6 +55,7 @@ public class NeoForgeCobblemonCardsClient {
     public static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenuTypes.BINDER_MENU, BinderScreen::new);
         event.register(ModMenuTypes.CARD_RECYCLER_MENU, CardRecyclerScreen::new);
+        event.register(ModMenuTypes.CARD_RESTORER_MENU, CardRestorerScreen::new);
         event.register(ModMenuTypes.ADVANCED_HOLO_PROJECTOR_MENU, AdvancedHoloProjectorScreen::new);
         event.register(ModMenuTypes.CARD_CABINET_MENU, CardCabinetScreen::new);
     }
@@ -116,5 +122,17 @@ public class NeoForgeCobblemonCardsClient {
                 }
             }
         }
+    }
+
+    public static void onRenderLevelStage(RenderLevelStageEvent event) {
+        if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
+        net.minecraft.client.Minecraft mc = net.minecraft.client.Minecraft.getInstance();
+        if (mc.level == null) return;
+        com.howlite.cobblemoncards.render.CardShowRenderer.renderAll(
+                event.getPoseStack(),
+                mc.renderBuffers().bufferSource(),
+                event.getCamera(),
+                mc.level
+        );
     }
 }

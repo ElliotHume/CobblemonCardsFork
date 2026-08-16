@@ -8,17 +8,17 @@ public enum BinderTier {
     NETHERITE(10),
     MASTER(1000); // Ajustez le nombre de pages pour le Master Album
 
-    private final int pages;
+    private final int defaultPages;
 
-    BinderTier(int pages) {
-        this.pages = pages;
+    BinderTier(int defaultPages) {
+        this.defaultPages = defaultPages;
     }
 
     public int getPages() {
-        return pages;
+        return com.howlite.cobblemoncards.CobblemonCardsConfig.getBinderPages(this, defaultPages);
     }
 
     public int getMaxSlots(int slotsPerPage) {
-        return pages * slotsPerPage;
+        return getPages() * slotsPerPage;
     }
 }

@@ -27,6 +27,13 @@ public class ModBlocks {
                     .sound(SoundType.METAL)
             ));
 
+    public static final Block CARD_RESTORER = registerBlock("card_restorer",
+            new CardRestorerBlock(BlockBehaviour.Properties.of()
+                    .strength(3.0f)
+                    .requiresCorrectToolForDrops()
+                    .sound(SoundType.METAL)
+            ));
+
     public static final Block CARD_DUST_SACK = registerBlock("card_dust_sack",
             new Block(BlockBehaviour.Properties.of()
                     .strength(0.5f)
@@ -49,6 +56,13 @@ public class ModBlocks {
                     .noOcclusion()
             ));
 
+    public static final Block MINI_HOLO_PROJECTOR = registerBlock("mini_holo_projector",
+            new MiniHoloProjectorBlock(BlockBehaviour.Properties.of()
+                    .strength(2.0f)
+                    .sound(SoundType.METAL)
+                    .noOcclusion()
+            ));
+
     public static final Block CARD_CABINET = registerBlock("card_cabinet",
             new CardCabinetBlock(BlockBehaviour.Properties.of()
                     .strength(2.5f)
@@ -62,7 +76,7 @@ public class ModBlocks {
     }
 
     private static void registerBlockItem(String name, Block block) {
-        if (name.equals("holo_projector") || name.equals("advanced_holo_projector") || name.equals("card_cabinet")) {
+        if (name.equals("holo_projector") || name.equals("advanced_holo_projector") || name.equals("mini_holo_projector") || name.equals("card_cabinet")) {
             Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(CobblemonCards.MOD_ID, name),
                     new com.howlite.cobblemoncards.item.custom.DescribedBlockItem(block, "tooltip.cobblemon-cards." + name + ".description", new Item.Properties()));
         } else {

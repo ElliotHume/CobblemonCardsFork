@@ -100,7 +100,7 @@ public class CardRecyclerBlockEntity extends BlockEntity implements ImplementedI
     private int findFirstValidInputSlot() {
         for (int i = 0; i < 12; i++) {
             ItemStack stack = getItem(i);
-            if (!stack.isEmpty() && stack.has(ModDataComponents.CARD_DATA)) {
+            if (!stack.isEmpty() && (stack.has(ModDataComponents.CARD_DATA) || stack.getItem() instanceof com.howlite.cobblemoncards.item.custom.BoosterPackItem)) {
                 return i;
             }
         }
@@ -108,10 +108,7 @@ public class CardRecyclerBlockEntity extends BlockEntity implements ImplementedI
     }
 
     private boolean canOutput(ItemStack input) {
-        CardData data = input.get(ModDataComponents.CARD_DATA);
-        if (data == null) return false;
-
-        int dustAmount = calculateDustAmount(data);
+        int dustAmount = calculateDustAmount(input);
         if (dustAmount <= 0) return false;
 
         ItemStack outputSlot = getItem(12);
@@ -123,10 +120,7 @@ public class CardRecyclerBlockEntity extends BlockEntity implements ImplementedI
 
     private void craftItem(int slotIndex) {
         ItemStack input = getItem(slotIndex);
-        CardData data = input.get(ModDataComponents.CARD_DATA);
-        if (data == null) return;
-
-        int dustAmount = calculateDustAmount(data);
+        int dustAmount = calculateDustAmount(input);
         if (dustAmount <= 0) return;
         input.shrink(1);
         
@@ -140,7 +134,16 @@ public class CardRecyclerBlockEntity extends BlockEntity implements ImplementedI
         setChanged();
     }
 
-    private int calculateDustAmount(CardData data) {
+    private int calculateDustAmount(ItemStack stack) {
+        if (stack.isEmpty()) return 0;
+
+        if (stack.getItem() instanceof com.howlite.cobblemoncards.item.custom.BoosterPackItem) {
+            return 5;
+        }
+
+        CardData data = stack.get(ModDataComponents.CARD_DATA);
+        if (data == null) return 0;
+
         // Les cartes cosmétiques / de joueur ne donnent pas de card dust
         if (com.howlite.cobblemoncards.util.CardUtil.isCosmeticCard(data.pokemonId())) {
             return 0;
@@ -198,7 +201,7 @@ public class CardRecyclerBlockEntity extends BlockEntity implements ImplementedI
 
     @Override
     public boolean canPlaceItemThroughFace(int index, ItemStack itemStack, @Nullable Direction direction) {
-        return index < 12 && itemStack.has(ModDataComponents.CARD_DATA);
+        return index < 12 && (itemStack.has(ModDataComponents.CARD_DATA) || itemStack.getItem() instanceof com.howlite.cobblemoncards.item.custom.BoosterPackItem);
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.howlite.cobblemoncards.manager.BoosterPackManager;
 import com.howlite.cobblemoncards.menu.AdvancedHoloProjectorMenu;
 import com.howlite.cobblemoncards.menu.BinderMenu;
 import com.howlite.cobblemoncards.menu.CardCabinetMenu;
+import com.howlite.cobblemoncards.menu.CardRestorerMenu;
 import com.howlite.cobblemoncards.menu.ModMenuTypes;
 import com.howlite.cobblemoncards.network.*;
 import com.howlite.cobblemoncards.neoforge.attachment.NeoForgePlayerDataAttachments;
@@ -251,6 +252,55 @@ public class NeoForgeCobblemonCards {
 
         registrar.playToClient(RenderCardPayload.ID, RenderCardPayload.CODEC, (payload, context) -> {
             context.enqueueWork(() -> NeoForgePacketHandlerClient.handleRenderCard(payload));
+        });
+
+        registrar.playToServer(com.howlite.cobblemoncards.network.CloseInspectPayload.ID,
+                com.howlite.cobblemoncards.network.CloseInspectPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> {
+                net.minecraft.server.level.ServerPlayer player = (net.minecraft.server.level.ServerPlayer) context.player();
+                if (player != null) {
+                    com.howlite.cobblemoncards.network.StopShowCardPayload stopPayload =
+                            new com.howlite.cobblemoncards.network.StopShowCardPayload(player.getUUID());
+                    player.serverLevel().players().stream()
+                            .filter(p -> p != player && p.distanceTo(player) <= 16f)
+                            .forEach(p -> PlatformHelper.INSTANCE.sendToPlayer(p, stopPayload));
+                }
+            });
+        });
+
+        registrar.playToClient(com.howlite.cobblemoncards.network.InspectCardPayload.ID,
+                com.howlite.cobblemoncards.network.InspectCardPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> NeoForgePacketHandlerClient.handleInspectCard(payload));
+        });
+
+        registrar.playToClient(com.howlite.cobblemoncards.network.ShowCardPayload.ID,
+                com.howlite.cobblemoncards.network.ShowCardPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> NeoForgePacketHandlerClient.handleShowCard(payload));
+        });
+
+        registrar.playToClient(com.howlite.cobblemoncards.network.StopShowCardPayload.ID,
+                com.howlite.cobblemoncards.network.StopShowCardPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> NeoForgePacketHandlerClient.handleStopShowCard(payload));
+        });
+
+        registrar.playToServer(ChangeRestorerTargetGradePayload.ID, ChangeRestorerTargetGradePayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> {
+                if (context.player().containerMenu instanceof CardRestorerMenu menu) {
+                    if (menu.getBlockEntity() != null) {
+                        menu.getBlockEntity().setTargetGrade(payload.targetGrade());
+                    }
+                }
+            });
+        });
+
+        registrar.playToServer(PerformRestorerPayload.ID, PerformRestorerPayload.CODEC, (payload, context) -> {
+            context.enqueueWork(() -> {
+                if (context.player().containerMenu instanceof CardRestorerMenu menu) {
+                    if (menu.getBlockEntity() != null) {
+                        menu.getBlockEntity().performRestore(context.player());
+                    }
+                }
+            });
         });
     }
 

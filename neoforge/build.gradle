@@ -17,6 +17,11 @@ neoForge {
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', 'cobblemon_cards'
         }
+        client2 {
+            client()
+            programArguments.addAll '--username', 'Dev2'
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'cobblemon_cards'
+        }
         server {
             server()
             programArgument '--nogui'

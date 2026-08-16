@@ -63,6 +63,7 @@ public class ModCreativeTabs {
                     output.accept(ModBlocks.GRADING_STATION);
                     output.accept(ModItems.GRADING_STATION_BYPASS);
                     output.accept(ModBlocks.CARD_RECYCLER);
+                    output.accept(ModBlocks.CARD_RESTORER);
                     output.accept(ModItems.INSTANT_DEX);
                     output.accept(ModItems.CARD_DEX);
 
@@ -75,6 +76,7 @@ public class ModCreativeTabs {
                     // 6. Hologrammes & Exposition
                     output.accept(ModBlocks.HOLO_PROJECTOR);
                     output.accept(ModBlocks.ADVANCED_HOLO_PROJECTOR);
+                    output.accept(ModBlocks.MINI_HOLO_PROJECTOR);
                 }
         );
 
