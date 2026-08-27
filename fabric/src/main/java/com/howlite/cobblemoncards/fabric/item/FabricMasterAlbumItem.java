@@ -23,8 +23,6 @@ public class FabricMasterAlbumItem extends MasterAlbumItem implements Accessory 
 
     @Override
     public void getDynamicModifiers(ItemStack stack, SlotReference reference, AccessoryAttributeBuilder builder) {
-        // If configured, master tier binders do not provide stats
-        if (!CobblemonCardsConfig.doesMasterBinderProvideStats) return;
 
         // Shared reader: BINDER_CONTENTS with a fallback to vanilla CONTAINER for unmigrated saves.
         Map<CardStat, Float> statTotals = com.howlite.cobblemoncards.util.CardStatUtil.collectStats(stack);
