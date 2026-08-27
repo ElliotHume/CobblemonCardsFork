@@ -69,7 +69,7 @@ public class CobblemonCardsConfig extends MidnightConfig {
 
     /** Chance (%) that a Legendary / Mythic / Shiny card rolls a trainer stat on drop. */
     @Entry(min = 0.0f, max = 100.0f)
-    public static float trainerStatLuckyChance = 2.0f;
+    public static float trainerStatLuckyChance = 5.0f;
 
     /** Lucky trainer stats roll at this fraction of the normal rarity-based value. */
     @Entry(min = 0.0f, max = 1.0f)
@@ -158,14 +158,14 @@ public class CobblemonCardsConfig extends MidnightConfig {
     public static float cardDropChanceStatMultiplier = 1.0f;
 
     // --- Per-stat multipliers for the trainer stats ---
+    /** Trainer stats are incredibly powerful, so they are damped by default. */
 
     @Entry(min = 0.0f, max = 100.0f)
-    public static float expBoostStatMultiplier = 1.0f;
+    public static float expBoostStatMultiplier = 0.8f;
 
     @Entry(min = 0.0f, max = 100.0f)
-    public static float catchBoostStatMultiplier = 1.0f;
+    public static float catchBoostStatMultiplier = 0.25f;
 
-    /** Shiny chance is by far the most potent trainer stat, so it is damped by default. */
     @Entry(min = 0.0f, max = 100.0f)
     public static float shinyChanceStatMultiplier = 0.1f;
 
