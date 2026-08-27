@@ -85,14 +85,6 @@ public class BinderItem extends Item {
         // Affichage du nombre de pages
         tooltipComponents.add(Component.translatable("gui.cobblemon-cards.binder.pages", tier.getPages()).withStyle(ChatFormatting.GRAY));
 
-        // Master tier binders do not provide stats due to their insane space limits.
-        // If you want stats from your cards, use a netherite binder
-        // There is a config option to allow master binders to provide stats if desired, but it is not recommended.
-        if (tier == BinderTier.MASTER && !CobblemonCardsConfig.doesMasterBinderProvideStats){
-          super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-          return;
-        }
-
         // Shared reader: BINDER_CONTENTS with a fallback to vanilla CONTAINER for unmigrated saves.
         Map<CardStat, Float> statTotals = com.howlite.cobblemoncards.util.CardStatUtil.collectStats(stack);
 

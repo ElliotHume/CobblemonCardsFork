@@ -94,7 +94,6 @@ public class CardStatUtil {
      * trainer-stat event handlers.
      *
      * <p>{@link MasterAlbumItem} extends {@link BinderItem}, so albums are included only when
-     * {@link CobblemonCardsConfig#doesMasterBinderProvideStats} allows it.</p>
      *
      * @param filter optional stat filter, e.g. {@code CobblemonCardsConfig::isSpawnBoostStat}
      */
@@ -108,9 +107,6 @@ public class CardStatUtil {
                 continue;
             }
             if (!(equipped.stack().getItem() instanceof BinderItem binder)) {
-                continue;
-            }
-            if (binder.getTier() == BinderTier.MASTER && !CobblemonCardsConfig.doesMasterBinderProvideStats) {
                 continue;
             }
             collectStats(equipped.stack(), filter, totals);
