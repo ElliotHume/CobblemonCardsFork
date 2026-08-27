@@ -19,11 +19,11 @@ public class CobblemonCardsConfig extends MidnightConfig {
 
     /** Single toggle for all 15 egg-group spawn influences. Also requires {@link #enableSpawnBoostStats}. */
     @Entry
-    public static boolean enableEggGroupStats = true;
+    public static boolean enableEggGroupStats = false;
 
     /** Single toggle for all 6 EV-yield spawn influences. Also requires {@link #enableSpawnBoostStats}. */
     @Entry
-    public static boolean enableEvYieldStats = true;
+    public static boolean enableEvYieldStats = false;
 
     @Entry(min = 0.0f, max = 100.0f)
     public static float globalStatMultiplier = 10.0f;
